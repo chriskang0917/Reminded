@@ -1,6 +1,5 @@
 import { NextUIProvider } from "@nextui-org/react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import "./App.css";
 import RootLayout from "./components/RootLayout";
 import Home from "./pages/Home";
 
