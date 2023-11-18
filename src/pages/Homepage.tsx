@@ -1,18 +1,27 @@
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { TodayIdea, TodayReminder, TodayTodo } from "../components/Content";
+
+import {
+  IdeaInput,
+  TodayIdea,
+  TodayReminder,
+  TodayTodo,
+} from "../components/Content";
 import { cardStore } from "../store/cardStore";
 
 const Homepage = observer(() => {
   useEffect(() => {
-    cardStore.fetchCards();
+    cardStore.getCards();
   }, []);
 
   return (
-    <main className="ml-20 flex flex-col items-center">
-      <TodayTodo />
-      <TodayIdea />
-      <TodayReminder />
+    <main className="ml-20 mt-10">
+      <div className="px-auto mx-auto flex max-w-fit flex-col items-center">
+        <IdeaInput />
+        <TodayTodo />
+        <TodayIdea />
+        <TodayReminder />
+      </div>
     </main>
   );
 });

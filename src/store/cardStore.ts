@@ -25,7 +25,7 @@ export class CardStore {
     makeAutoObservable(this);
   }
 
-  async fetchCards() {
+  async getCards() {
     try {
       const response = await fetch("http://localhost:3004/cards");
       const data = await response.json();
@@ -35,6 +35,11 @@ export class CardStore {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  getTags() {
+    const tags = this.cards.map((card) => card.tags).flat();
+    return [...new Set(tags)];
   }
 
   addCard(status: cardStatus, content: string, tags: string[]) {
