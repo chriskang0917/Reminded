@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface EditableProps {
   text: string;
@@ -10,17 +10,11 @@ interface EditableProps {
 }
 
 const Editable = ({ text, placeholder, children, childRef }: EditableProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   useEffect(() => {
     if (isEditing && childRef) childRef.current?.focus();
   }, [isEditing, childRef]);
-
-  useEffect(() => {
-    if (isEditing && inputRef.current) {
-    }
-  }, [isEditing, text]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const { key: keyDown } = event;
@@ -40,7 +34,7 @@ const Editable = ({ text, placeholder, children, childRef }: EditableProps) => {
         </div>
       ) : (
         <div onClick={() => setIsEditing(true)}>
-          <div ref={inputRef}>{text || placeholder || "請輸入您的內容..."}</div>
+          <div>{text || placeholder || "請輸入您的內容..."}</div>
         </div>
       )}
     </section>

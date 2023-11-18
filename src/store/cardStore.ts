@@ -1,9 +1,9 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { nanoid } from "nanoid";
 
 type cardStatus = "idea" | "action" | "todo" | "remind" | "note" | "execute";
 
-interface Card {
+export interface ICard {
   id: string;
   content: string;
   tags: string[];
@@ -18,10 +18,23 @@ interface Card {
 }
 
 export class CardStore {
-  cards: Card[] = [];
+  cards: ICard[] = [];
+  selectedTab: cardStatus = "idea";
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  async fetchCards() {
+    try {
+      const response = await fetch("http://localhost:3004/cards");
+      const data = await response.json();
+      runInAction(() => {
+        this.cards = data;
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   addCard(status: cardStatus, content: string, tags: string[]) {

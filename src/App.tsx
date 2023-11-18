@@ -1,7 +1,7 @@
 import { NextUIProvider } from "@nextui-org/react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./components/RootLayout";
-import Home from "./pages/Home";
+import Homepage from "./pages/Homepage";
 
 const router = createBrowserRouter([
   {
@@ -10,7 +10,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: <Homepage />,
       },
     ],
   },
