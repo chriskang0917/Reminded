@@ -7,6 +7,7 @@ import {
 } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
+import { IoIosAdd } from "react-icons/io";
 import { cardStore } from "../../store/cardStore";
 
 const tabs = [
@@ -16,10 +17,17 @@ const tabs = [
 
 export const IdeaInput = observer(() => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const tagRef = useRef<HTMLInputElement>(null);
 
   const [input, setInput] = useState<string>("");
   const [tagInput, setTagInput] = useState<string>("");
   const [selectedTab, setSelectedTab] = useState<"idea" | "todo">("idea");
+
+  const handleAddCard = () => {
+    if (!input) return;
+    cardStore.addCard(selectedTab, input, [tagInput]);
+    setInput("");
+  };
 
   useEffect(() => {
     const handleTab = (key: string) => {
@@ -27,9 +35,9 @@ export const IdeaInput = observer(() => {
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") inputRef.current?.blur();
       if (e.key === "Enter") {
-        cardStore.addCard(selectedTab, input, [tagInput]);
-        setInput("");
+        handleAddCard();
       }
       if (e.key === "i" && e.metaKey && e.shiftKey) handleTab(selectedTab);
       if (e.key === "i" && e.metaKey) inputRef.current?.focus();
@@ -44,8 +52,9 @@ export const IdeaInput = observer(() => {
   const getFilteredTags = (tagInput: string) => {
     const tags = cardStore.getTags();
     const emptyTagPlaceholder = [`新增 ${tagInput}`];
-    const filteredTags = tags.filter((tag) =>
-      tag.toLowerCase().includes(tagInput.toLowerCase()),
+    const filteredTags = tags.filter(
+      (tag) =>
+        tag.toLowerCase().includes(tagInput.toLowerCase()) && tag.length > 0,
     );
 
     if (filteredTags.length === 0) return emptyTagPlaceholder;
@@ -73,6 +82,9 @@ export const IdeaInput = observer(() => {
           value={input}
           name={selectedTab}
           ref={inputRef}
+          endContent={
+            <IoIosAdd className="cursor-pointer" onClick={handleAddCard} />
+          }
           placeholder={placeholder}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setInput(e.target.value)
@@ -83,6 +95,7 @@ export const IdeaInput = observer(() => {
           variant="bordered"
           label="標籤"
           size="sm"
+          ref={tagRef}
           allowsCustomValue
           onInputChange={setTagInput}
         >
