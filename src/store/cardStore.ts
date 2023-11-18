@@ -37,7 +37,7 @@ export class CardStore {
     }
   }
 
-  getTags() {
+  getAllTags() {
     const tags = this.cards.map((card) => card.tags).flat();
     return [...new Set(tags)];
   }
