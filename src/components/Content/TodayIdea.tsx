@@ -9,7 +9,7 @@ export const TodayIdea = observer(() => {
   const ideaCards = cardStore.cards.filter((card) => card.status === "idea");
 
   return (
-    <section className="flex w-[500px] flex-col items-center">
+    <section className="flex w-full flex-col items-center">
       <div className="flex w-full justify-between">
         <h2 className={style.subTitle}>Today's ideas</h2>
         <IoFilterOutline className="text-lg" />

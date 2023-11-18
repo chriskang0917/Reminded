@@ -8,7 +8,7 @@ export const TodayReminder = observer(() => {
   const todoCards = cardStore.cards.filter((card) => card.status === "remind");
 
   return (
-    <section className="flex w-[500px] flex-col items-center">
+    <section className="flex w-full flex-col items-center">
       <div className="flex w-full justify-between">
         <h1 className={style.subTitle}>Today's Reminder</h1>
         <IoFilterOutline className=" text-lg" />

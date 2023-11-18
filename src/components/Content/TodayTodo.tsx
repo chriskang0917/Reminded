@@ -11,7 +11,7 @@ export const TodayTodo = observer(() => {
 
   return (
     <>
-      <section className="flex w-[500px] flex-col items-center">
+      <section className="flex w-full flex-col items-center">
         <h1 className={style.mainTitle}>Today's Task</h1>
         <Divider />
         <div className="mt-4 grid w-full gap-3">
