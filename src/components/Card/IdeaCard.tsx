@@ -22,6 +22,7 @@ export const IdeaCard = ({ card }: IdeaCardProps) => {
           <input
             className="inline-block w-full bg-transparent outline-none"
             type="text"
+            name={card.status}
             defaultValue={card.content}
             ref={inputRef}
           />
