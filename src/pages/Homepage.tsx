@@ -6,7 +6,7 @@ import {
   TodayIdea,
   TodayReminder,
   TodayTodo,
-} from "../components/Content";
+} from "../components/Section";
 import { cardStore } from "../store/cardStore";
 
 const Homepage = observer(() => {

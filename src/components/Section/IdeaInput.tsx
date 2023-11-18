@@ -12,12 +12,11 @@ import { cardStore } from "../../store/cardStore";
 
 const tabs = [
   { label: "靈感", id: "idea" },
-  { label: "todo", id: "todo" },
+  { label: "待辦", id: "todo" },
 ];
 
 export const IdeaInput = observer(() => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const tagRef = useRef<HTMLInputElement>(null);
 
   const [input, setInput] = useState<string>("");
   const [tagInput, setTagInput] = useState<string>("");
@@ -27,30 +26,29 @@ export const IdeaInput = observer(() => {
     if (!input) return;
     cardStore.addCard(selectedTab, input, [tagInput]);
     setInput("");
+    setTagInput("");
+  };
+
+  const handleTab = (key: string) => {
+    key === "idea" ? setSelectedTab("todo") : setSelectedTab("idea");
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape") inputRef.current?.blur();
+    if (e.key === "Enter") handleAddCard();
+    if (e.key === "i" && e.metaKey && e.shiftKey) handleTab(selectedTab);
+    if (e.key === "i" && e.metaKey) inputRef.current?.focus();
   };
 
   useEffect(() => {
-    const handleTab = (key: string) => {
-      key === "idea" ? setSelectedTab("todo") : setSelectedTab("idea");
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") inputRef.current?.blur();
-      if (e.key === "Enter") {
-        handleAddCard();
-      }
-      if (e.key === "i" && e.metaKey && e.shiftKey) handleTab(selectedTab);
-      if (e.key === "i" && e.metaKey) inputRef.current?.focus();
-    };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [input, selectedTab]);
+  }, [selectedTab]);
 
   const getFilteredTags = (tagInput: string) => {
-    const tags = cardStore.getTags();
+    const tags = cardStore.getAllTags();
     const emptyTagPlaceholder = [`新增 ${tagInput}`];
     const filteredTags = tags.filter(
       (tag) =>
@@ -95,7 +93,6 @@ export const IdeaInput = observer(() => {
           variant="bordered"
           label="標籤"
           size="sm"
-          ref={tagRef}
           allowsCustomValue
           onInputChange={setTagInput}
         >

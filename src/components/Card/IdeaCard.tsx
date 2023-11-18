@@ -3,11 +3,7 @@ import { useRef } from "react";
 import { ICard } from "../../store/cardStore";
 import Editable from "../Editable";
 
-interface IdeaCardProps {
-  card: ICard;
-}
-
-export const IdeaCard = ({ card }: IdeaCardProps) => {
+export const IdeaCard = ({ card }: { card: ICard }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
