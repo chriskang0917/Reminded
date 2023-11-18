@@ -57,6 +57,10 @@ export class CardStore {
       reminderEndDate: null,
     });
   }
+
+  deleteCard(id: string) {
+    this.cards = this.cards.filter((card) => card.id !== id);
+  }
 }
 
 export const cardStore = new CardStore();
