@@ -9,7 +9,10 @@ import { observer } from "mobx-react-lite";
 import { Key, useEffect, useRef, useState } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { cardStore } from "../../store/cardStore";
-import { getObjectFilteredTags } from "../../utils/input";
+import {
+  getObjectFilteredTags,
+  isLastCharacterChinese,
+} from "../../utils/input";
 
 const tabs = [
   { label: "靈感", id: "idea" },
@@ -20,30 +23,47 @@ export const IdeaInput = observer(() => {
   const inputRef = useRef<HTMLInputElement>(null);
   const tagRef = useRef<HTMLInputElement>(null);
 
+  const inputValue = inputRef.current?.value || "";
+  const tagValue = tagRef.current?.value || "";
+
   const [selectedTab, setSelectedTab] = useState<"idea" | "todo">("idea");
   const [input, setInput] = useState<string>("");
   const [tagInput, setTagInput] = useState<string>("");
+  const [isChineseEditing, setIsChineseEditing] = useState<boolean>(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.toString().includes("新增")) return;
     setInput(e.target.value);
   };
 
   const handleTagSelectChange = (select: Key) => {
-    if (select.toString().includes("新增 ")) {
-      const result = select.toString().substring(3);
-      setTagInput(result);
-    }
+    setTagInput(select as string);
   };
 
   const handleAddCard = () => {
-    if (!inputRef.current?.value) return;
-    cardStore.addCard(selectedTab, inputRef.current?.value, [tagInput]);
+    if (inputValue === "") return;
+
+    if (
+      !isLastCharacterChinese(inputValue) &&
+      !isLastCharacterChinese(tagValue)
+    ) {
+      cardStore.addCard(selectedTab, inputValue, [tagInput]);
+      inputRef.current?.blur();
+      tagRef.current?.blur();
+      setInput("");
+      setTagInput("");
+      setIsChineseEditing(false);
+      return;
+    }
+
+    if (!isChineseEditing) return setIsChineseEditing(true);
+
+    cardStore.addCard(selectedTab, inputValue, [tagInput]);
     inputRef.current?.blur();
     tagRef.current?.blur();
 
     setInput("");
     setTagInput("");
+    setIsChineseEditing(false);
   };
 
   const handleTab = (key: string) => {
@@ -53,8 +73,11 @@ export const IdeaInput = observer(() => {
   const handleKeyDown = (
     e: KeyboardEvent | React.KeyboardEvent<HTMLInputElement>,
   ) => {
-    if (e.key === "Escape") inputRef.current?.blur();
     if (e.key === "Enter") handleAddCard();
+    if (e.key === "Escape") {
+      inputRef.current?.blur();
+      tagRef.current?.blur();
+    }
     if (e.key === "i" && e.metaKey) inputRef.current?.focus();
     if (e.key === "i" && e.metaKey && e.shiftKey) handleTab(selectedTab);
   };
@@ -64,7 +87,7 @@ export const IdeaInput = observer(() => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectedTab]);
+  }, [selectedTab, input, tagInput, isChineseEditing]);
 
   const filteredTags = getObjectFilteredTags(tagInput);
   const placeholder =
@@ -84,7 +107,12 @@ export const IdeaInput = observer(() => {
       >
         {(item) => <Tab key={item.id} title={item.label} />}
       </Tabs>
-      <div className="flex items-center gap-4">
+      <form
+        onSubmit={() => {
+          console.log("submit");
+        }}
+        className="flex items-center gap-4"
+      >
         <Input
           value={input}
           name={selectedTab}
@@ -113,7 +141,7 @@ export const IdeaInput = observer(() => {
             </AutocompleteItem>
           )}
         </Autocomplete>
-      </div>
+      </form>
     </section>
   );
 });

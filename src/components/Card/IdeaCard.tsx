@@ -1,4 +1,4 @@
-import { Card, CardBody } from "@nextui-org/react";
+import { Card, CardBody, Chip, Link } from "@nextui-org/react";
 import { useRef } from "react";
 import { ICard } from "../../store/cardStore";
 import Editable from "../Editable";
@@ -23,6 +23,24 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
             ref={inputRef}
           />
         </Editable>
+        <div className="flex gap-2">
+          {card.tags[0] !== "" ? (
+            card.tags.map((tag) => (
+              <Chip
+                size="sm"
+                key={tag}
+                className="mt-2 px-2"
+                onClose={() => {}}
+              >
+                {tag}
+              </Chip>
+            ))
+          ) : (
+            <Link className="mb-2 mt-3 underline" size="sm">
+              新增標籤
+            </Link>
+          )}
+        </div>
       </CardBody>
     </Card>
   );
