@@ -23,10 +23,13 @@ const Editable = observer(
       if (currentText !== text) cardStore.updateCardContent(id, currentText);
     }, [isEditing, childRef, currentText]);
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-      const { key: keyDown } = event;
+    const handleKeyDown = ({
+      key: keyDown,
+      metaKey,
+    }: React.KeyboardEvent<HTMLInputElement>) => {
       const keys = ["Escape", "Tab", "Enter"];
       if (keys.includes(keyDown)) setIsEditing(false);
+      if (keyDown === "Backspace" && metaKey) cardStore.deleteCard(id);
     };
 
     return (
