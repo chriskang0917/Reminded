@@ -11,7 +11,7 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
       <CardBody className="my-2 pl-3">
         <Editable
           text={card.content}
-          placeholder="Write something here"
+          placeholder="暫無內容..."
           childRef={inputRef}
           type="input"
         >
