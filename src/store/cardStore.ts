@@ -58,6 +58,20 @@ export class CardStore {
     });
   }
 
+  updateCardContent(id: string, content: string) {
+    const trimmedContent = content.trim();
+    this.cards = this.cards.map((card) => {
+      if (card.id === id) {
+        return {
+          ...card,
+          content: trimmedContent,
+          updatedTime: Date.now(),
+        };
+      }
+      return card;
+    });
+  }
+
   deleteCard(id: string) {
     this.cards = this.cards.filter((card) => card.id !== id);
   }

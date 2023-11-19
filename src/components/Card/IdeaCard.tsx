@@ -10,6 +10,7 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
     <Card fullWidth radius="sm">
       <CardBody className="my-2 pl-3">
         <Editable
+          id={card.id}
           text={card.content}
           placeholder="暫無內容..."
           childRef={inputRef}
