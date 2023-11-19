@@ -1,12 +1,8 @@
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 
-import {
-  IdeaInput,
-  TodayIdea,
-  TodayReminder,
-  TodayTodo,
-} from "../components/Section";
+import { IdeaInput } from "../components/Input";
+import { TodayIdea, TodayReminder, TodayTodo } from "../components/Section";
 import { cardStore } from "../store/cardStore";
 
 const Homepage = observer(() => {
