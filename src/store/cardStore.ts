@@ -75,6 +75,18 @@ export class CardStore {
   deleteCard(id: string) {
     this.cards = this.cards.filter((card) => card.id !== id);
   }
+
+  deleteTag(id: string, tag: string) {
+    this.cards = this.cards.map((card) => {
+      if (card.id === id) {
+        return {
+          ...card,
+          tags: card.tags.filter((item) => item !== tag),
+        };
+      }
+      return card;
+    });
+  }
 }
 
 export const cardStore = new CardStore();
