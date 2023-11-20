@@ -58,6 +58,18 @@ export class CardStore {
     });
   }
 
+  addTag(id: string, tag: string) {
+    this.cards = this.cards.map((card) => {
+      if (card.id === id) {
+        return {
+          ...card,
+          tags: [...card.tags, tag],
+        };
+      }
+      return card;
+    });
+  }
+
   updateCardContent(id: string, content: string) {
     const trimmedContent = content.trim();
     this.cards = this.cards.map((card) => {

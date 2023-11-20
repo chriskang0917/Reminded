@@ -4,12 +4,13 @@ export const getObjectFilteredTags = (tagInput: string) => {
   const tags = cardStore.getAllTags();
   const filteredTags = tags.filter((tag) => {
     const lowercaseTag = tag?.toLowerCase();
-    const lowercaseTagInput = tagInput.toLowerCase();
+    const lowercaseTagInput = tagInput?.toLowerCase();
     return lowercaseTag.includes(lowercaseTagInput) && tag.length > 0;
   });
-  if (filteredTags.length === 0) return [{ value: tagInput, label: tagInput }];
+  if (filteredTags.length === 0)
+    return [{ value: tagInput, label: tagInput, isExisted: false }];
   const objectifiedTags = filteredTags.map((tag) => {
-    return { value: tag, label: tag };
+    return { value: tag, label: tag, isExisted: true };
   });
 
   return objectifiedTags;
