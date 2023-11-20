@@ -26,7 +26,7 @@ const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
   };
 
   return (
-    <Dropdown key={setting.label} backdrop="blur">
+    <Dropdown key={setting.label} backdrop="opaque">
       <DropdownTrigger>
         {setting.label === "action" ? (
           <button onClick={onOpen}>{setting.icon}</button>
