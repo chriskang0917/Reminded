@@ -1,2 +1,2 @@
-export { IdeaCard } from "./IdeaCard/IdeaCard";
-export { TodoCard } from "./TodoCard/TodoCard";
+export { IdeaCard } from "./IdeaCard";
+export { TodoCard } from "./TodoCard";

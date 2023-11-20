@@ -1,38 +1,23 @@
-import { Card, CardBody, Divider, Spacer } from "@nextui-org/react";
+import { Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { useRef } from "react";
+import { IoFilterOutline } from "react-icons/io5";
 import { cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
-import Editable from "../Editable";
+import { TodoCard } from "../Card";
 
 export const TodayTodo = observer(() => {
-  const inputRef = useRef<HTMLInputElement>(null);
   const todoCards = cardStore.cards.filter((card) => card.status === "todo");
 
   return (
     <section className="flex w-full flex-col items-center">
-      <h1 className={style.mainTitle}>Today's Task</h1>
+      <div className="flex w-full items-center justify-between">
+        <h1 className={style.mainTitle}>Today's Task</h1>
+        <IoFilterOutline className="text-lg" />
+      </div>
       <Divider />
-      <div className="mt-4 grid w-full gap-3">
+      <div className="mt-5 grid w-full gap-3">
         {todoCards.map((card) => (
-          <Card key={card.id} fullWidth>
-            <CardBody className="my-2">
-              <Editable
-                id={card.id}
-                text={card.content}
-                placeholder="暫無內容..."
-                childRef={inputRef}
-              >
-                <input
-                  className="w-full bg-transparent outline-none"
-                  defaultValue={card.content}
-                  ref={inputRef}
-                  name={cardStore.selectedTab}
-                  placeholder="捕捉您的靈感..."
-                />
-              </Editable>
-            </CardBody>
-          </Card>
+          <TodoCard key={card.id} card={card} />
         ))}
       </div>
       <Spacer y={10} />
