@@ -41,7 +41,7 @@ export const TodoCard = ({ card }: CardToolProps) => {
         </Editable>
         <div className="flex w-24 items-center justify-between">
           {settingList.map((setting) => (
-            <TodoCardTool key={setting.label} setting={setting} />
+            <TodoCardTool key={setting.label} setting={setting} card={card} />
           ))}
         </div>
       </div>

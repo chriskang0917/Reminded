@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@nextui-org/react": "^2.2.9",
+    "date-fns": "^2.30.0",
     "firebase": "^10.6.0",
     "framer-motion": "^10.16.5",
     "fuse.js": "^7.0.0",
@@ -19,6 +20,7 @@
     "mobx-react-lite": "^4.0.5",
     "nanoid": "^5.0.3",
     "react": "^18.2.0",
+    "react-day-picker": "^8.9.1",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^4.12.0",

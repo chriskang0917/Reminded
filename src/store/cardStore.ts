@@ -12,9 +12,9 @@ export interface ICard {
   isImportant: boolean;
   createdTime: number;
   updatedTime: number;
-  dueDate: number | null; // null if not exist
-  reminderStartDate: number | null; // null if not exist
-  reminderEndDate: number | null; // null if not exist
+  dueDate: Date | undefined; // null if not exist
+  reminderStartDate: number | undefined; // null if not exist
+  reminderEndDate: number | undefined; // null if not exist
 }
 
 export class CardStore {
@@ -52,9 +52,9 @@ export class CardStore {
       isImportant: false,
       createdTime: Date.now(),
       updatedTime: Date.now(),
-      dueDate: null,
-      reminderStartDate: null,
-      reminderEndDate: null,
+      dueDate: undefined,
+      reminderStartDate: undefined,
+      reminderEndDate: undefined,
     });
   }
 
@@ -77,6 +77,19 @@ export class CardStore {
         return {
           ...card,
           content: trimmedContent,
+          updatedTime: Date.now(),
+        };
+      }
+      return card;
+    });
+  }
+
+  updateExecuteDate(id: string, date: Date | undefined) {
+    this.cards = this.cards.map((card) => {
+      if (card.id === id) {
+        return {
+          ...card,
+          dueDate: date,
           updatedTime: Date.now(),
         };
       }
