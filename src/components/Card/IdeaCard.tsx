@@ -1,28 +1,23 @@
-import {
-  Card,
-  CardBody,
-  Chip,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-  Link,
-} from "@nextui-org/react";
+import { Card, CardBody, useDisclosure } from "@nextui-org/react";
 import { useRef } from "react";
 import { GrTransaction } from "react-icons/gr";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { PiNoteBlankThin } from "react-icons/pi";
-import { ICard, cardStore } from "../../store/cardStore";
+import { ICard } from "../../store/cardStore";
 import Editable from "../Editable";
+import IdeaCardTags from "./IdeaCardTags";
+import IdeaCardTool from "./IdeaCardTool";
+import { IdeaToActionModal } from "./IdeaToActionModal";
+
+const settingIcons = [
+  { icon: <PiNoteBlankThin />, label: "note" },
+  { icon: <GrTransaction className="h-3" />, label: "action" },
+  { icon: <HiOutlineDotsVertical />, label: "more" },
+];
 
 export const IdeaCard = ({ card }: { card: ICard }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const settingIcons = [
-    <PiNoteBlankThin />,
-    <GrTransaction className="h-3" />,
-    <HiOutlineDotsVertical />,
-  ];
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
     <Card fullWidth radius="sm">
@@ -44,41 +39,22 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
             />
           </Editable>
           <div className="flex w-24 items-center justify-between">
-            {settingIcons.map((icon, index) => (
-              <Dropdown key={index} backdrop="blur">
-                <DropdownTrigger>
-                  <button>{icon}</button>
-                </DropdownTrigger>
-                {index === 2 && (
-                  <DropdownMenu>
-                    <DropdownItem>複製</DropdownItem>
-                    <DropdownItem>編輯標籤</DropdownItem>
-                    <DropdownItem className="text-danger" color="danger">
-                      刪除
-                    </DropdownItem>
-                  </DropdownMenu>
-                )}
-              </Dropdown>
+            {settingIcons.map((setting) => (
+              <IdeaCardTool
+                key={setting.label}
+                setting={setting}
+                onOpen={onOpen}
+              />
             ))}
+            <IdeaToActionModal
+              card={card}
+              isOpen={isOpen}
+              onOpenChange={onOpenChange}
+            />
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          {card.tags[0] !== "" ? (
-            card.tags.map((tag) => (
-              <Chip
-                size="sm"
-                key={tag}
-                className="mt-2 px-2"
-                onClose={() => cardStore.deleteTag(card.id, tag)}
-              >
-                {tag}
-              </Chip>
-            ))
-          ) : (
-            <Link className="mb-2 mt-3 underline" size="sm">
-              新增標籤
-            </Link>
-          )}
+        <div className="mt-2 flex w-[500px] flex-wrap items-center gap-x-2">
+          <IdeaCardTags card={card} />
         </div>
       </CardBody>
     </Card>
