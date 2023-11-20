@@ -39,7 +39,7 @@ export const TodoCard = ({ card }: CardToolProps) => {
             ref={inputRef}
           />
         </Editable>
-        <div className="flex w-24 items-center justify-between">
+        <div className="relative flex items-center justify-end gap-6">
           {settingList.map((setting) => (
             <TodoCardTool key={setting.label} setting={setting} card={card} />
           ))}

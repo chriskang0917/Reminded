@@ -1,4 +1,6 @@
+import { Button } from "@nextui-org/react";
 import { DayPicker } from "react-day-picker";
+import { cardStore } from "../../../store/cardStore";
 
 interface DatePickerProps {
   date: Date | undefined;
@@ -6,7 +8,18 @@ interface DatePickerProps {
 }
 
 function DatePicker({ date, setDate }: DatePickerProps) {
-  const datePickerFooter = <p>選擇預計的到期日</p>;
+  const handleRemoveDate = () => {
+    cardStore.updateExecuteDate("", undefined);
+    setDate(undefined);
+  };
+
+  const datePickerFooter = (
+    <div className="flex justify-center">
+      <Button size="sm" variant="light" onPress={handleRemoveDate}>
+        移除到期日
+      </Button>
+    </div>
+  );
 
   return (
     <DayPicker

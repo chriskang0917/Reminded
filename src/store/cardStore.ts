@@ -30,7 +30,11 @@ export class CardStore {
       const response = await fetch("http://localhost:3004/cards");
       const data = await response.json();
       runInAction(() => {
-        this.cards = data;
+        // this.cards = data;
+        this.cards = data.map((card: ICard) => ({
+          ...card,
+          dueDate: card.dueDate ? new Date(card.dueDate) : undefined,
+        }));
       });
     } catch (error) {
       console.log(error);

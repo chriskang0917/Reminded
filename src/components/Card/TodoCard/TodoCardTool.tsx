@@ -7,6 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
+import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import "react-day-picker/dist/style.css";
@@ -49,25 +50,43 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
     cardStore.updateExecuteDate(card.id, date);
   };
 
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return;
+    return format(date, "MMM dd");
+  };
+
+  const isDateLabel = setting.label === "date";
+
   return (
-    <div className="flex">
-      {selectedDate && (
-        <p className="text-[0.75rem]">{selectedDate?.toDateString()}</p>
+    <>
+      {isDateLabel && selectedDate && (
+        <Popover placement="bottom">
+          <PopoverTrigger>
+            <button>
+              <p className="text-[0.75rem] underline">
+                {formatDate(selectedDate)}
+              </p>
+            </button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <DatePicker date={selectedDate} setDate={handleDateChange} />
+          </PopoverContent>
+        </Popover>
       )}
-      <div className="w-10">
-        {setting.label === "date" && !selectedDate && (
-          <Popover placement="bottom">
-            <PopoverTrigger>
-              <button>{setting.icon}</button>
-            </PopoverTrigger>
-            <PopoverContent>
-              {!selectedDate && (
-                <DatePicker date={selectedDate} setDate={handleDateChange} />
-              )}
-            </PopoverContent>
-          </Popover>
-        )}
-        {setting.label !== "date" && (
+      {isDateLabel && !selectedDate && (
+        <Popover placement="bottom">
+          <PopoverTrigger>
+            <button>{setting.icon}</button>
+          </PopoverTrigger>
+          <PopoverContent>
+            {!selectedDate && (
+              <DatePicker date={selectedDate} setDate={handleDateChange} />
+            )}
+          </PopoverContent>
+        </Popover>
+      )}
+      {setting.label !== "date" && (
+        <div className="w-4">
           <Dropdown key={setting.label} backdrop="opaque">
             <DropdownTrigger>
               <button>{setting.icon}</button>
@@ -82,8 +101,8 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
               </DropdownMenu>
             )}
           </Dropdown>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </>
   );
 });
