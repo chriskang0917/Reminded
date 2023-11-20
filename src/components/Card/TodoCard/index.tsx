@@ -1,15 +1,16 @@
 import { useRef } from "react";
-import { GrTransaction } from "react-icons/gr";
+import { CiCalendarDate } from "react-icons/ci";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { PiNoteBlankThin } from "react-icons/pi";
+import { SlActionUndo } from "react-icons/sl";
 import { ICard } from "../../../store/cardStore";
 import Editable from "../../Editable";
 import BasicCard from "../BasicCard";
 import CardTags from "../CardTags";
+import { TodoCardTool } from "./TodoCardTool";
 
-const settingIcons = [
-  { icon: <PiNoteBlankThin />, label: "note" },
-  { icon: <GrTransaction className="h-3" />, label: "action" },
+const settingList = [
+  { icon: <CiCalendarDate />, label: "date" },
+  { icon: <SlActionUndo className="h-3" />, label: "action" },
   { icon: <HiOutlineDotsVertical />, label: "more" },
 ];
 
@@ -39,20 +40,9 @@ export const TodoCard = ({ card }: CardToolProps) => {
           />
         </Editable>
         <div className="flex w-24 items-center justify-between">
-          {/* {settingIcons.map((setting) => (
-            <CardTool
-              key={setting.label}
-              card={card}
-              setting={setting}
-              onOpen={onOpen}
-            />
+          {settingList.map((setting) => (
+            <TodoCardTool key={setting.label} setting={setting} />
           ))}
-          <IdeaToActionModal
-            card={card}
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-            onClose={onClose}
-          /> */}
         </div>
       </div>
       <div className="mt-2 flex w-[500px] flex-wrap items-center gap-x-2">
