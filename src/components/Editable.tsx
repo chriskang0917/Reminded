@@ -40,7 +40,9 @@ const Editable = observer(
           </div>
         ) : (
           <div onClick={() => setIsEditing(true)}>
-            <div>{text || placeholder || "請輸入您的內容..."}</div>
+            <div className="tracking-wide">
+              {text || placeholder || "請輸入您的內容..."}
+            </div>
           </div>
         )}
       </section>

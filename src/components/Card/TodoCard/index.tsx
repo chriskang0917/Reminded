@@ -31,7 +31,7 @@ export const TodoCard = ({ card }: CardToolProps) => {
           type="input"
         >
           <input
-            className="inline-block w-full bg-transparent outline-none"
+            className="inline-block w-full bg-transparent tracking-wide outline-none"
             type="text"
             name={card.status}
             defaultValue={card.content}
