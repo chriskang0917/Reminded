@@ -45,7 +45,7 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
           </Editable>
           <div className="flex w-24 items-center justify-between">
             {settingIcons.map((icon, index) => (
-              <Dropdown backdrop="blur">
+              <Dropdown key={index} backdrop="blur">
                 <DropdownTrigger>
                   <button>{icon}</button>
                 </DropdownTrigger>

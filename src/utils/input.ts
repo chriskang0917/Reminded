@@ -3,7 +3,7 @@ import { cardStore } from "../store/cardStore";
 export const getObjectFilteredTags = (tagInput: string) => {
   const tags = cardStore.getAllTags();
   const filteredTags = tags.filter((tag) => {
-    const lowercaseTag = tag.toLowerCase();
+    const lowercaseTag = tag?.toLowerCase();
     const lowercaseTagInput = tagInput.toLowerCase();
     return lowercaseTag.includes(lowercaseTagInput) && tag.length > 0;
   });
