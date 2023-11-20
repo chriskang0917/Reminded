@@ -17,7 +17,7 @@ const settingIcons = [
 
 export const IdeaCard = ({ card }: { card: ICard }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
   return (
     <Card fullWidth radius="sm">
@@ -42,6 +42,7 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
             {settingIcons.map((setting) => (
               <IdeaCardTool
                 key={setting.label}
+                card={card}
                 setting={setting}
                 onOpen={onOpen}
               />
@@ -50,6 +51,7 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
               card={card}
               isOpen={isOpen}
               onOpenChange={onOpenChange}
+              onClose={onClose}
             />
           </div>
         </div>
