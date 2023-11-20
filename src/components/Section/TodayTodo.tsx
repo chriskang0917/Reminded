@@ -6,7 +6,9 @@ import { style } from "../../utils/style";
 import { TodoCard } from "../Card";
 
 export const TodayTodo = observer(() => {
-  const todoCards = cardStore.cards.filter((card) => card.status === "todo");
+  const todoCards = cardStore.cards.filter(
+    (card) => card.status === "todo" && !card.isArchived,
+  );
 
   return (
     <section className="flex w-full flex-col items-center">

@@ -16,6 +16,19 @@ interface CardToolProps {
   onOpen?: () => void;
 }
 
+interface MenuList {
+  label: string;
+  color?:
+    | "default"
+    | "warning"
+    | "danger"
+    | "primary"
+    | "secondary"
+    | "success"
+    | undefined;
+  onClick?: () => void;
+}
+
 const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
   const handleDuplicate = () => {
     cardStore.addCard(card.status, card.content, card.tags);
@@ -24,6 +37,23 @@ const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
   const handleDelete = () => {
     cardStore.deleteCard(card.id);
   };
+
+  const handleArchive = () => {
+    cardStore.archiveCard(card.id);
+  };
+
+  const menuList: MenuList[] = [
+    {
+      label: "複製",
+      onClick: handleDuplicate,
+    },
+    { label: "封存", color: "warning", onClick: handleArchive },
+    {
+      label: "刪除",
+      color: "danger",
+      onClick: handleDelete,
+    },
+  ];
 
   return (
     <Dropdown key={setting.label} backdrop="opaque">
@@ -36,14 +66,15 @@ const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
       </DropdownTrigger>
       {setting.label === "more" && (
         <DropdownMenu aria-label="Setting">
-          <DropdownItem onClick={handleDuplicate}>複製</DropdownItem>
-          <DropdownItem
-            onClick={handleDelete}
-            className="text-danger"
-            color="danger"
-          >
-            刪除
-          </DropdownItem>
+          {menuList.map((menu) => (
+            <DropdownItem
+              onPress={menu.onClick}
+              key={menu.label}
+              color={menu.color}
+            >
+              {menu.label}
+            </DropdownItem>
+          ))}
         </DropdownMenu>
       )}
     </Dropdown>

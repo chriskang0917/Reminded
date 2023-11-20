@@ -1,15 +1,16 @@
 import { Button } from "@nextui-org/react";
 import { DayPicker } from "react-day-picker";
-import { cardStore } from "../../../store/cardStore";
+import { ICard, cardStore } from "../../../store/cardStore";
 
 interface DatePickerProps {
+  card: ICard;
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
 }
 
-function DatePicker({ date, setDate }: DatePickerProps) {
+function DatePicker({ card, date, setDate }: DatePickerProps) {
   const handleRemoveDate = () => {
-    cardStore.updateExecuteDate("", undefined);
+    cardStore.updateDueDate(card.id, undefined);
     setDate(undefined);
   };
 

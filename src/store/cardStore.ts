@@ -1,7 +1,13 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { nanoid } from "nanoid";
 
-type cardStatus = "idea" | "action" | "todo" | "remind" | "note" | "execute";
+export type cardStatus =
+  | "idea"
+  | "action"
+  | "todo"
+  | "remind"
+  | "note"
+  | "execute";
 
 export interface ICard {
   id: string;
@@ -88,12 +94,51 @@ export class CardStore {
     });
   }
 
-  updateExecuteDate(id: string, date: Date | undefined) {
+  updateCardStatus(id: string, status: cardStatus) {
+    this.cards = this.cards.map((card) => {
+      if (card.id === id) {
+        return {
+          ...card,
+          status,
+          updatedTime: Date.now(),
+        };
+      }
+      return card;
+    });
+  }
+
+  updateDueDate(id: string, date: Date | undefined) {
     this.cards = this.cards.map((card) => {
       if (card.id === id) {
         return {
           ...card,
           dueDate: date,
+          updatedTime: Date.now(),
+        };
+      }
+      return card;
+    });
+  }
+
+  archiveCard(id: string) {
+    this.cards = this.cards.map((card) => {
+      if (card.id === id) {
+        return {
+          ...card,
+          isArchived: true,
+          updatedTime: Date.now(),
+        };
+      }
+      return card;
+    });
+  }
+
+  completeCard(id: string) {
+    this.cards = this.cards.map((card) => {
+      if (card.id === id) {
+        return {
+          ...card,
+          isArchived: true,
           updatedTime: Date.now(),
         };
       }

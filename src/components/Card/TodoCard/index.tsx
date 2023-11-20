@@ -1,8 +1,9 @@
-import { useRef } from "react";
+import { Checkbox } from "@nextui-org/react";
+import { useRef, useState } from "react";
 import { CiCalendarDate } from "react-icons/ci";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { SlActionUndo } from "react-icons/sl";
-import { ICard } from "../../../store/cardStore";
+import { ICard, cardStore } from "../../../store/cardStore";
 import Editable from "../../Editable";
 import BasicCard from "../BasicCard";
 import CardTags from "../CardTags";
@@ -20,25 +21,40 @@ interface CardToolProps {
 
 export const TodoCard = ({ card }: CardToolProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isSelect, setIsSelect] = useState(false);
+
+  const handleComplete = () => {
+    setIsSelect(!isSelect);
+    cardStore.completeCard(card.id);
+  };
 
   return (
     <BasicCard>
       <div className="flex items-center justify-between">
-        <Editable
-          id={card.id}
-          text={card.content}
-          placeholder="暫無內容..."
-          childRef={inputRef}
-          type="input"
+        <Checkbox
+          size="sm"
+          radius="sm"
+          onValueChange={handleComplete}
+          isSelected={isSelect}
+          lineThrough
+          defaultSelected
         >
-          <input
-            className="inline-block w-[300px] bg-transparent tracking-wide outline-none"
-            type="text"
-            name={card.status}
-            defaultValue={card.content}
-            ref={inputRef}
-          />
-        </Editable>
+          <Editable
+            id={card.id}
+            text={card.content}
+            placeholder="暫無內容..."
+            childRef={inputRef}
+            type="input"
+          >
+            <input
+              className="inline-block w-[300px] bg-transparent tracking-wide outline-none"
+              type="text"
+              name={card.status}
+              defaultValue={card.content}
+              ref={inputRef}
+            />
+          </Editable>
+        </Checkbox>
         <div className="relative flex items-center justify-end gap-6">
           {settingList.map((setting) => (
             <TodoCardTool key={setting.label} setting={setting} card={card} />

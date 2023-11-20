@@ -6,7 +6,9 @@ import { style } from "../../utils/style";
 import { IdeaCard } from "../Card/IdeaCard";
 
 export const TodayIdea = observer(() => {
-  const ideaCards = cardStore.cards.filter((card) => card.status === "idea");
+  const ideaCards = cardStore.cards.filter(
+    (card) => card.status === "idea" && !card.isArchived,
+  );
 
   return (
     <section className="flex w-full flex-col items-center">
