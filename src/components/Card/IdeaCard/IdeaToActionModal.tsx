@@ -12,7 +12,7 @@ import {
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
-import { ICard, cardStore } from "../../store/cardStore";
+import { ICard, cardStore } from "../../../store/cardStore";
 
 const toolTipList = [
   {

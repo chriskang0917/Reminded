@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { ICard, cardStore } from "../../store/cardStore";
 
-const IdeaCardTags = observer(({ card }: { card: ICard }) => {
+const CardTags = observer(({ card }: { card: ICard }) => {
   const tagInputRef = useRef<HTMLInputElement>(null);
   const [isTagInputShow, setIsTagInputShow] = useState<boolean>(false);
 
@@ -54,4 +54,4 @@ const IdeaCardTags = observer(({ card }: { card: ICard }) => {
   );
 });
 
-export default IdeaCardTags;
+export default CardTags;

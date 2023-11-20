@@ -10,33 +10,32 @@ export const TodayTodo = observer(() => {
   const todoCards = cardStore.cards.filter((card) => card.status === "todo");
 
   return (
-    <>
-      <section className="flex w-full flex-col items-center">
-        <h1 className={style.mainTitle}>Today's Task</h1>
-        <Divider />
-        <div className="mt-4 grid w-full gap-3">
-          {todoCards.map((card) => (
-            <Card key={card.id} fullWidth>
-              <CardBody className="my-2">
-                <Editable
-                  text={card.content}
-                  placeholder="暫無內容..."
-                  childRef={inputRef}
-                >
-                  <input
-                    className="w-full bg-transparent outline-none"
-                    defaultValue={card.content}
-                    ref={inputRef}
-                    name={cardStore.selectedTab}
-                    placeholder="捕捉您的靈感..."
-                  />
-                </Editable>
-              </CardBody>
-            </Card>
-          ))}
-        </div>
-      </section>
+    <section className="flex w-full flex-col items-center">
+      <h1 className={style.mainTitle}>Today's Task</h1>
+      <Divider />
+      <div className="mt-4 grid w-full gap-3">
+        {todoCards.map((card) => (
+          <Card key={card.id} fullWidth>
+            <CardBody className="my-2">
+              <Editable
+                id={card.id}
+                text={card.content}
+                placeholder="暫無內容..."
+                childRef={inputRef}
+              >
+                <input
+                  className="w-full bg-transparent outline-none"
+                  defaultValue={card.content}
+                  ref={inputRef}
+                  name={cardStore.selectedTab}
+                  placeholder="捕捉您的靈感..."
+                />
+              </Editable>
+            </CardBody>
+          </Card>
+        ))}
+      </div>
       <Spacer y={10} />
-    </>
+    </section>
   );
 });

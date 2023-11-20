@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { IoFilterOutline } from "react-icons/io5";
 import { cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
-import { IdeaCard } from "../Card/IdeaCard";
+import { IdeaCard } from "../Card/IdeaCard/IdeaCard";
 
 export const TodayIdea = observer(() => {
   const ideaCards = cardStore.cards.filter((card) => card.status === "idea");
