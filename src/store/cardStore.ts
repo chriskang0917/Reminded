@@ -16,11 +16,11 @@ export interface ICard {
   status: cardStatus;
   isArchived: boolean;
   isImportant: boolean;
-  createdTime: number;
-  updatedTime: number;
-  dueDate: Date | undefined; // null if not exist
-  reminderStartDate: number | undefined; // null if not exist
-  reminderEndDate: number | undefined; // null if not exist
+  createdTime: string;
+  updatedTime: string;
+  dueDate: string | undefined;
+  reminderStartDate: number | undefined;
+  reminderEndDate: number | undefined;
 }
 
 export class CardStore {
@@ -38,10 +38,7 @@ export class CardStore {
       const response = await fetch("http://localhost:3004/cards");
       const data = await response.json();
       runInAction(() => {
-        this.cards = data.map((card: ICard) => ({
-          ...card,
-          dueDate: card.dueDate ? new Date(card.dueDate) : undefined,
-        }));
+        this.cards = data;
       });
     } catch (error) {
       console.log(error);
@@ -70,6 +67,9 @@ export class CardStore {
   }
 
   addCard(status: cardStatus, content: string, tags: string[]) {
+    const isTodo = status === "todo";
+    const currentDate = new Date().toISOString();
+
     this.cards.push({
       id: nanoid(),
       status,
@@ -77,9 +77,9 @@ export class CardStore {
       tags,
       isArchived: false,
       isImportant: false,
-      createdTime: Date.now(),
-      updatedTime: Date.now(),
-      dueDate: undefined,
+      createdTime: currentDate,
+      updatedTime: currentDate,
+      dueDate: isTodo ? currentDate : undefined,
       reminderStartDate: undefined,
       reminderEndDate: undefined,
     });
@@ -104,7 +104,7 @@ export class CardStore {
         return {
           ...card,
           content: trimmedContent,
-          updatedTime: Date.now(),
+          updatedTime: new Date().toISOString(),
         };
       }
       return card;
@@ -117,20 +117,20 @@ export class CardStore {
         return {
           ...card,
           status,
-          updatedTime: Date.now(),
+          updatedTime: new Date().toISOString(),
         };
       }
       return card;
     });
   }
 
-  updateDueDate(id: string, date: Date | undefined) {
+  updateDueDate(id: string, date: string | undefined) {
     this.cards = this.cards.map((card) => {
       if (card.id === id) {
         return {
           ...card,
           dueDate: date,
-          updatedTime: Date.now(),
+          updatedTime: new Date().toISOString(),
         };
       }
       return card;
@@ -155,7 +155,7 @@ export class CardStore {
         return {
           ...card,
           isArchived: true,
-          updatedTime: Date.now(),
+          updatedTime: new Date().toISOString(),
         };
       }
       return card;
@@ -168,7 +168,7 @@ export class CardStore {
         return {
           ...card,
           isArchived: true,
-          updatedTime: Date.now(),
+          updatedTime: new Date().toISOString(),
         };
       }
       return card;

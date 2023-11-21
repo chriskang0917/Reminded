@@ -1,10 +1,11 @@
 import { Button } from "@nextui-org/react";
+import { parseISO } from "date-fns";
 import { DayPicker } from "react-day-picker";
 import { ICard, cardStore } from "../../../store/cardStore";
 
 interface DatePickerProps {
   card: ICard;
-  date: Date | undefined;
+  date: string | undefined;
   setDate: (date: Date | undefined) => void;
 }
 
@@ -22,11 +23,13 @@ function DatePicker({ card, date, setDate }: DatePickerProps) {
     </div>
   );
 
+  const parsedDate = parseISO(date as string);
+
   return (
     <DayPicker
       className="bg-gray"
       mode="single"
-      selected={date}
+      selected={parsedDate}
       onSelect={setDate}
       footer={datePickerFooter}
     />

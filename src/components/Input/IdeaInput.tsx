@@ -97,8 +97,9 @@ export const IdeaInput = observer(() => {
           allowsCustomValue
           className="w-25"
           size="sm"
-          items={filteredTags}
+          defaultItems={filteredTags}
           ref={tagRef}
+          selectedKey={tagInput}
           onInputChange={(input) => setTagInput(input)}
           onSelectionChange={handleTagSelectChange}
         >
