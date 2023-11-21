@@ -3,7 +3,11 @@ import { useEffect } from "react";
 
 import { Toaster } from "react-hot-toast";
 import { IdeaInput } from "../components/Input";
-import { TodayIdea, TodayReminder, TodayTodo } from "../components/Section";
+import {
+  TodayIdea,
+  TodayReminder,
+  TodayTodo,
+} from "../components/SectionToday";
 import { cardStore } from "../store/cardStore";
 
 const Homepage = observer(() => {

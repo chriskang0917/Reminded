@@ -8,7 +8,7 @@ interface IAction {
 
 const ideaActionList: IAction[] = [
   { label: "This Week", path: "/idea/week" },
-  { label: "Explore", path: "/idea/explore" },
+  { label: "Search", path: "/idea/search" },
   { label: "Idea Pools", path: "/idea/pools" },
   { label: "Transformed", path: "/idea/transformed" },
   { label: "Archive", path: "/idea/archive" },
@@ -21,7 +21,7 @@ interface IButton {
   onClick?: () => void;
 }
 
-function IdeaBar() {
+export function IdeaBar() {
   const location = useLocation();
 
   const IdeaButton = ({ children, action, onClick }: IButton) => (
@@ -71,5 +71,3 @@ function IdeaBar() {
     </div>
   );
 }
-
-export default IdeaBar;

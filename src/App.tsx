@@ -3,7 +3,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import IdeaLayout from "./components/IdeaLayout";
 import RootLayout from "./components/RootLayout";
 import Homepage from "./pages/Homepage";
-import IdeaSearch from "./pages/IdeaPage/IdeaSearch";
+import IdeaSearchPage from "./pages/IdeaPage/IdeaSearchPage";
 import IdeaThisWeek from "./pages/IdeaPage/IdeaThisWeek";
 
 const router = createBrowserRouter([
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
         element: <IdeaLayout />,
         children: [
           { path: "week", element: <IdeaThisWeek /> },
-          { path: "search", element: <IdeaSearch /> },
+          { path: "search", element: <IdeaSearchPage /> },
         ],
       },
     ],
