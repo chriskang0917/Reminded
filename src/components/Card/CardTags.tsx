@@ -27,7 +27,7 @@ const CardTags = observer(({ card }: { card: ICard }) => {
             size="sm"
             key={tag}
             className="mt-2 px-2"
-            onClose={() => cardStore.deleteTag(card.id, tag)}
+            onClose={() => cardStore.deleteCardTag(card.id, tag)}
           >
             {tag}
           </Chip>

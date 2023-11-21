@@ -25,7 +25,9 @@ export interface ICard {
 
 export class CardStore {
   cards: ICard[] = [];
-  selectedTab: cardStatus = "idea";
+  favoriteIdeaTags: string[] = [];
+  favoriteActionTags: string[] = [];
+  favoriteTodoTags: string[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -36,7 +38,6 @@ export class CardStore {
       const response = await fetch("http://localhost:3004/cards");
       const data = await response.json();
       runInAction(() => {
-        // this.cards = data;
         this.cards = data.map((card: ICard) => ({
           ...card,
           dueDate: card.dueDate ? new Date(card.dueDate) : undefined,
@@ -47,9 +48,25 @@ export class CardStore {
     }
   }
 
+  async getUserSettings() {
+    try {
+      const response = await fetch("http://localhost:3004/user_setting");
+      const data = await response.json();
+      runInAction(() => {
+        this.favoriteIdeaTags = data.favoriteIdeaTags;
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   getAllTags() {
     const tags = this.cards.map((card) => card.tags).flat();
     return [...new Set(tags)];
+  }
+
+  getFilteredCardsWith(status: cardStatus) {
+    return this.cards.filter((card) => card.status === status);
   }
 
   addCard(status: cardStatus, content: string, tags: string[]) {
@@ -120,6 +137,18 @@ export class CardStore {
     });
   }
 
+  updateFavoriteTags(type: "idea" | "todo" | "action", tag: string) {
+    if (type === "idea") {
+      this.favoriteIdeaTags.push(tag);
+    }
+    if (type === "todo") {
+      this.favoriteTodoTags.push(tag);
+    }
+    if (type === "action") {
+      this.favoriteActionTags.push(tag);
+    }
+  }
+
   archiveCard(id: string) {
     this.cards = this.cards.map((card) => {
       if (card.id === id) {
@@ -150,7 +179,7 @@ export class CardStore {
     this.cards = this.cards.filter((card) => card.id !== id);
   }
 
-  deleteTag(id: string, tag: string) {
+  deleteCardTag(id: string, tag: string) {
     this.cards = this.cards.map((card) => {
       if (card.id === id) {
         return {
@@ -160,6 +189,24 @@ export class CardStore {
       }
       return card;
     });
+  }
+
+  deleteFavoriteTag(type: "idea" | "todo" | "action", tag: string) {
+    if (type === "idea") {
+      this.favoriteIdeaTags = this.favoriteIdeaTags.filter(
+        (item) => item !== tag,
+      );
+    }
+    if (type === "todo") {
+      this.favoriteTodoTags = this.favoriteTodoTags.filter(
+        (item) => item !== tag,
+      );
+    }
+    if (type === "action") {
+      this.favoriteActionTags = this.favoriteActionTags.filter(
+        (item) => item !== tag,
+      );
+    }
   }
 }
 

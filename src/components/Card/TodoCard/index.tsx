@@ -31,14 +31,15 @@ export const TodoCard = ({ card }: CardToolProps) => {
   return (
     <BasicCard>
       <div className="flex items-center justify-between">
-        <Checkbox
-          size="sm"
-          radius="sm"
-          onValueChange={handleComplete}
-          isSelected={isSelect}
-          lineThrough
-          defaultSelected
-        >
+        <div className="flex">
+          <Checkbox
+            size="sm"
+            radius="sm"
+            onValueChange={handleComplete}
+            isSelected={isSelect}
+            lineThrough
+            defaultSelected
+          ></Checkbox>
           <Editable
             id={card.id}
             text={card.content}
@@ -54,7 +55,7 @@ export const TodoCard = ({ card }: CardToolProps) => {
               ref={inputRef}
             />
           </Editable>
-        </Checkbox>
+        </div>
         <div className="relative flex items-center justify-end gap-6">
           {settingList.map((setting) => (
             <TodoCardTool key={setting.label} setting={setting} card={card} />

@@ -26,5 +26,8 @@
       "reminderStartDate": null,
       "reminderEndDate": null
     }
-  ]
+  ],
+  "user_setting": {
+    "favoriteIdeaTags": ["health"]
+  }
 }
