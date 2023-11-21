@@ -138,7 +138,11 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
           </DropdownTrigger>
           <DropdownMenu aria-label="Action">
             {actionList.map((action) => (
-              <DropdownItem color={action.color} onClick={action.onClick}>
+              <DropdownItem
+                key={action.label}
+                color={action.color}
+                onClick={action.onClick}
+              >
                 <span>轉換為 </span>
                 <strong>{action.label}</strong>
               </DropdownItem>
