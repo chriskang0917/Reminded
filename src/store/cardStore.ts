@@ -36,7 +36,6 @@ export class CardStore {
       const response = await fetch("http://localhost:3004/cards");
       const data = await response.json();
       runInAction(() => {
-        // this.cards = data;
         this.cards = data.map((card: ICard) => ({
           ...card,
           dueDate: card.dueDate ? new Date(card.dueDate) : undefined,
@@ -50,6 +49,10 @@ export class CardStore {
   getAllTags() {
     const tags = this.cards.map((card) => card.tags).flat();
     return [...new Set(tags)];
+  }
+
+  getFilteredCardsWith(status: cardStatus) {
+    return this.cards.filter((card) => card.status === status);
   }
 
   addCard(status: cardStatus, content: string, tags: string[]) {
