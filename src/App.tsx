@@ -1,8 +1,10 @@
 import { NextUIProvider } from "@nextui-org/react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import IdeaLayout from "./components/IdeaLayout";
 import RootLayout from "./components/RootLayout";
 import Homepage from "./pages/Homepage";
-import IdeaPage from "./pages/IdeaPage";
+import IdeaSearch from "./pages/IdeaPage/IdeaSearch";
+import IdeaThisWeek from "./pages/IdeaPage/IdeaThisWeek";
 
 const router = createBrowserRouter([
   {
@@ -15,12 +17,10 @@ const router = createBrowserRouter([
       },
       {
         path: "idea",
+        element: <IdeaLayout />,
         children: [
-          {
-            path: "",
-            element: <IdeaPage />,
-          },
-          { path: "search" },
+          { path: "week", element: <IdeaThisWeek /> },
+          { path: "search", element: <IdeaSearch /> },
         ],
       },
     ],

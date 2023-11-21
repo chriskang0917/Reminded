@@ -30,6 +30,7 @@ type color =
   | "secondary"
   | "success"
   | undefined;
+
 interface IList {
   label: string;
   color: color;
