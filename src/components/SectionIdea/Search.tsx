@@ -1,26 +1,18 @@
 import { Divider } from "@nextui-org/react";
 import cn from "classnames";
-import Fuse from "fuse.js";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import { cardStore } from "../../store/cardStore";
+import { getFusedResults } from "../../utils/input";
 import { style } from "../../utils/style";
 import { IdeaCard } from "../Card";
 import { IdeaSearchInput } from "../Input";
-
-const fuseOptions = {
-  includeMatches: true,
-  findAllMatches: true,
-  shouldSort: true,
-  keys: ["content", "tags"],
-};
 
 export const Search = observer(() => {
   const [searchText, setSearchText] = useState("");
 
   const ideaCards = cardStore.getFilteredCardsWith("idea");
-  const fuse = new Fuse(ideaCards, fuseOptions);
-  const results = fuse.search(searchText);
+  const results = getFusedResults(ideaCards, searchText);
 
   const handleSearch = (text: string) => {
     setSearchText(text);
