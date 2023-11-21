@@ -104,8 +104,7 @@ export const IdeaInput = observer(() => {
         >
           {(tag) => (
             <AutocompleteItem key={tag.label} textValue={tag.label}>
-              {!tag.isExisted && "新增 "}
-              {tag.label}
+              {!tag.isExisted ? `新增 ${tag.label}` : tag.label}
             </AutocompleteItem>
           )}
         </Autocomplete>
