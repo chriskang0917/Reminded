@@ -2,6 +2,7 @@ import { NextUIProvider } from "@nextui-org/react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./components/RootLayout";
 import Homepage from "./pages/Homepage";
+import IdeaPage from "./pages/IdeaPage";
 
 const router = createBrowserRouter([
   {
@@ -11,6 +12,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Homepage />,
+      },
+      {
+        path: "/idea",
+        element: <IdeaPage />,
       },
     ],
   },
