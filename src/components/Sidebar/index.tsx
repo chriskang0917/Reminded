@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const actionList = [
   { label: "今日", path: "/" },
   { label: "待辦", path: "/todo" },
-  { label: "行動", path: "/action" },
+  { label: "行動", path: "/action/all" },
   { label: "靈感", path: "/idea/week" },
 ];
 const settingList = ["用戶", "設定"];
