@@ -7,7 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import "react-day-picker/dist/style.css";
@@ -39,12 +39,12 @@ interface IList {
 
 export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    card.dueDate,
+    parseISO(card.dueDate as string),
   );
 
   const handleDateChange = (date: Date | undefined) => {
     setSelectedDate(date);
-    cardStore.updateDueDate(card.id, date);
+    cardStore.updateDueDate(card.id, date?.toISOString());
   };
 
   const handleDuplicate = () => {
@@ -110,7 +110,7 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
           <PopoverContent>
             <DatePicker
               card={card}
-              date={selectedDate}
+              date={selectedDate.toDateString()}
               setDate={handleDateChange}
             />
           </PopoverContent>
