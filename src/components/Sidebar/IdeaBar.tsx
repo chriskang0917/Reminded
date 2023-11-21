@@ -1,5 +1,9 @@
-import { Button, Divider, Spacer } from "@nextui-org/react";
+import { Button, Chip, Divider, Input, Spacer } from "@nextui-org/react";
+import { observer } from "mobx-react-lite";
+import { useEffect, useRef, useState } from "react";
+import { IoIosAddCircleOutline } from "react-icons/io";
 import { Link, useLocation } from "react-router-dom";
+import { cardStore } from "../../store/cardStore";
 
 interface IAction {
   label: string;
@@ -13,7 +17,6 @@ const ideaActionList: IAction[] = [
   { label: "Transformed", path: "/idea/transformed" },
   { label: "Archive", path: "/idea/archive" },
 ];
-const ideaFavoriteList = ["health", "work", "life"];
 
 interface IButton {
   children: React.ReactNode;
@@ -21,8 +24,22 @@ interface IButton {
   onClick?: () => void;
 }
 
-export function IdeaBar() {
+export const IdeaBar = observer(() => {
   const location = useLocation();
+  const tagInputRef = useRef<HTMLInputElement>(null);
+  const [isFavoriteOpen, setIsFavoriteOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isFavoriteOpen) tagInputRef.current?.focus();
+  }, [isFavoriteOpen]);
+
+  const handleTagSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const tag = tagInputRef.current?.value;
+    if (!tag) return;
+    cardStore.updateFavoriteTags("idea", tag);
+    setIsFavoriteOpen(false);
+  };
 
   const IdeaButton = ({ children, action, onClick }: IButton) => (
     <Link to={action.path}>
@@ -37,11 +54,22 @@ export function IdeaBar() {
     </Link>
   );
 
-  const FavoriteButton = ({ children }: { children: React.ReactNode }) => (
-    <Button className="flex items-center justify-center" size="sm">
-      {children}
-    </Button>
-  );
+  interface FavoriteTagChipProps {
+    children: React.ReactNode;
+    favorite: string;
+  }
+
+  const FavoriteTagChip = ({ children, favorite }: FavoriteTagChipProps) => {
+    const handleClose = () => {
+      cardStore.deleteFavoriteTag("idea", favorite);
+    };
+
+    return (
+      <Chip className="flex items-center justify-center" onClose={handleClose}>
+        {children}
+      </Chip>
+    );
+  };
 
   return (
     <div className="fixed left-0 top-0 ml-20 h-[100svh] w-32 bg-slate-200">
@@ -59,15 +87,35 @@ export function IdeaBar() {
         <div className="mt-10 flex flex-col items-center">
           <h2>Favorite</h2>
           <Divider className="my-4" />
-          <ul className="flex flex-col gap-4">
-            {ideaFavoriteList.map((favorite) => (
+          <ul className="flex flex-col items-center gap-4">
+            {cardStore.favoriteIdeaTags.map((favorite) => (
               <li key={favorite}>
-                <FavoriteButton>{favorite}</FavoriteButton>
+                <FavoriteTagChip favorite={favorite}>
+                  {favorite}
+                </FavoriteTagChip>
               </li>
             ))}
           </ul>
+          <div className="mt-4">
+            {isFavoriteOpen ? (
+              <form onSubmit={handleTagSubmit}>
+                <Input
+                  variant="faded"
+                  ref={tagInputRef}
+                  onBlur={() => setIsFavoriteOpen(false)}
+                >
+                  輸入
+                </Input>
+                <button type="submit"></button>
+              </form>
+            ) : (
+              <button onClick={() => setIsFavoriteOpen(true)}>
+                <IoIosAddCircleOutline />
+              </button>
+            )}
+          </div>
         </div>
       </nav>
     </div>
   );
-}
+});

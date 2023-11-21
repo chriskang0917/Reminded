@@ -42,7 +42,7 @@ export const Search = observer(() => {
         <p className={cn(style.infoTitle, "mt-2")}>{searchCounts}</p>
         <ul className="mt-5 grid w-full gap-3">
           {results.map((card) => (
-            <li>
+            <li key={card.item.id}>
               <IdeaCard card={card.item} />
             </li>
           ))}
