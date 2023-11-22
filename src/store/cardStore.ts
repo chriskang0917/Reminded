@@ -20,9 +20,9 @@ export interface ICard {
   isImportant: boolean;
   createdTime: string;
   updatedTime: string;
-  dueDate: string | undefined;
-  reminderStartDate: number | undefined;
-  reminderEndDate: number | undefined;
+  dueDate: string | null;
+  reminderStartDate: number | null;
+  reminderEndDate: number | null;
 }
 
 /* ===============================
@@ -89,7 +89,7 @@ export class CardStore {
     updateData.updateCardStatus(id, status);
   }
 
-  updateDueDate(id: string, date: string | undefined) {
+  updateDueDate(id: string, date: string | null) {
     const updateData = new UpdateCard();
     updateData.updateDueDate(id, date);
   }
@@ -189,9 +189,9 @@ class UpdateCard {
       isImportant: false,
       createdTime: currentDate,
       updatedTime: currentDate,
-      dueDate: isTodo ? currentDate : undefined,
-      reminderStartDate: undefined,
-      reminderEndDate: undefined,
+      dueDate: isTodo ? currentDate : null,
+      reminderStartDate: null,
+      reminderEndDate: null,
     };
 
     cardStore.cards.push(newCard);
@@ -236,7 +236,7 @@ class UpdateCard {
     });
   }
 
-  updateDueDate(id: string, date: string | undefined) {
+  updateDueDate(id: string, date: string | null) {
     cardStore.cards = cardStore.cards.map((card) => {
       if (card.id === id) {
         return {

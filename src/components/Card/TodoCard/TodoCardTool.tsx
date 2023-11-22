@@ -38,14 +38,12 @@ interface IList {
 }
 
 export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
-  const parsedDate = card.dueDate ? parseISO(card.dueDate) : undefined;
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    parsedDate,
-  );
+  const parsedDate = card.dueDate ? parseISO(card.dueDate) : null;
+  const [selectedDate, setSelectedDate] = useState<Date | null>(parsedDate);
 
-  const handleDateChange = (date: Date | undefined) => {
+  const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
-    cardStore.updateDueDate(card.id, date?.toISOString());
+    cardStore.updateDueDate(card.id, date?.toISOString() || null);
   };
 
   const handleDuplicate = () => {
