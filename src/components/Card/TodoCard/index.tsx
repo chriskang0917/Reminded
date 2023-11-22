@@ -35,6 +35,7 @@ export const TodoCard = ({ card }: CardToolProps) => {
           <Checkbox
             size="sm"
             radius="sm"
+            name="checkbox"
             onValueChange={handleComplete}
             isSelected={isSelect}
             lineThrough
