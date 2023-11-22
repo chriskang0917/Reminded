@@ -23,7 +23,7 @@ function DatePicker({ card, date, setDate }: DatePickerProps) {
     </div>
   );
 
-  const parsedDate = parseISO(date as string);
+  const parsedDate = date ? parseISO(date) : undefined;
 
   return (
     <DayPicker

@@ -38,8 +38,9 @@ interface IList {
 }
 
 export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
+  const parsedDate = card.dueDate ? parseISO(card.dueDate) : undefined;
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    parseISO(card.dueDate as string),
+    parsedDate,
   );
 
   const handleDateChange = (date: Date | undefined) => {

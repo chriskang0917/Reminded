@@ -11,7 +11,7 @@ export const TodayTodo = observer(() => {
     if (!card.dueDate) return false;
     const isTodo = card.status === "todo";
     const isArchived = card.isArchived;
-    const isToday = getIsToday(card.dueDate as string);
+    const isToday = getIsToday(card.dueDate);
     return isTodo && !isArchived && isToday;
   });
 
