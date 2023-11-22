@@ -7,7 +7,7 @@ export const getObjectFilteredTags = (tagInput: string) => {
   const filteredTags = tags.filter((tag) => {
     const lowercaseTag = tag?.toLowerCase();
     const lowercaseTagInput = tagInput?.toLowerCase();
-    return lowercaseTag.includes(lowercaseTagInput) && tag.length > 0;
+    return lowercaseTag?.includes(lowercaseTagInput) && tag !== "";
   });
   if (filteredTags.length === 0)
     return [{ value: tagInput, label: tagInput, isExisted: false }];
