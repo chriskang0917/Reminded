@@ -23,6 +23,181 @@ export interface ICard {
   reminderEndDate: number | undefined;
 }
 
+async function _getCards() {
+  try {
+    const response = await fetch("http://localhost:3004/cards");
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function _getUserSettings() {
+  try {
+    const response = await fetch("http://localhost:3004/user_setting");
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function _getAllTags() {
+  const tags = cardStore.cards.map((card) => card.tags).flat();
+  return [...new Set(tags)];
+}
+
+function _getFilteredCardsWith(status: cardStatus) {
+  return cardStore.cards.filter((card) => card.status === status);
+}
+
+function _addCard(status: cardStatus, content: string, tags: string[]) {
+  const isTodo = status === "todo";
+  const currentDate = new Date().toISOString();
+  const newCard = {
+    id: nanoid(),
+    status,
+    content,
+    tags,
+    isArchived: false,
+    isImportant: false,
+    createdTime: currentDate,
+    updatedTime: currentDate,
+    dueDate: isTodo ? currentDate : undefined,
+    reminderStartDate: undefined,
+    reminderEndDate: undefined,
+  };
+
+  cardStore.cards.push(newCard);
+}
+
+function _addCardTag(id: string, tag: string) {
+  cardStore.cards = cardStore.cards.map((card) => {
+    if (card.id === id) {
+      return {
+        ...card,
+        tags: [...card.tags, tag],
+      };
+    }
+    return card;
+  });
+}
+
+function _updateCardContent(id: string, content: string) {
+  const trimmedContent = content.trim();
+  cardStore.cards = cardStore.cards.map((card) => {
+    if (card.id === id) {
+      return {
+        ...card,
+        content: trimmedContent,
+        updatedTime: new Date().toISOString(),
+      };
+    }
+    return card;
+  });
+}
+
+function _updateCardStatus(id: string, status: cardStatus) {
+  cardStore.cards = cardStore.cards.map((card) => {
+    if (card.id === id) {
+      return {
+        ...card,
+        status,
+        updatedTime: new Date().toISOString(),
+      };
+    }
+    return card;
+  });
+}
+
+function _updateDueDate(id: string, date: string | undefined) {
+  cardStore.cards = cardStore.cards.map((card) => {
+    if (card.id === id) {
+      return {
+        ...card,
+        dueDate: date,
+        updatedTime: new Date().toISOString(),
+      };
+    }
+    return card;
+  });
+}
+
+function _updateFavoriteTags(type: "idea" | "todo" | "action", tag: string) {
+  if (type === "idea") {
+    cardStore.favoriteIdeaTags.push(tag);
+  }
+  if (type === "todo") {
+    cardStore.favoriteTodoTags.push(tag);
+  }
+  if (type === "action") {
+    cardStore.favoriteActionTags.push(tag);
+  }
+}
+
+function _archiveCard(id: string) {
+  cardStore.cards = cardStore.cards.map((card) => {
+    if (card.id === id) {
+      return {
+        ...card,
+        isArchived: true,
+        updatedTime: new Date().toISOString(),
+      };
+    }
+    return card;
+  });
+}
+
+function _completeCard(id: string) {
+  cardStore.cards = cardStore.cards.map((card) => {
+    if (card.id === id) {
+      return {
+        ...card,
+        isArchived: true,
+        updatedTime: new Date().toISOString(),
+      };
+    }
+    return card;
+  });
+}
+
+function _deleteCard(id: string) {
+  cardStore.cards = cardStore.cards.filter((card) => card.id !== id);
+}
+
+function _deleteCardTag(id: string, tag: string) {
+  cardStore.cards = cardStore.cards.map((card) => {
+    if (card.id === id) {
+      return {
+        ...card,
+        tags: card.tags.filter((item) => item !== tag),
+      };
+    }
+    return card;
+  });
+}
+
+function _deleteFavoriteTag(type: "idea" | "todo" | "action", tag: string) {
+  if (type === "idea") {
+    cardStore.favoriteIdeaTags = cardStore.favoriteIdeaTags.filter(
+      (item) => item !== tag,
+    );
+  }
+  if (type === "todo") {
+    cardStore.favoriteTodoTags = cardStore.favoriteTodoTags.filter(
+      (item) => item !== tag,
+    );
+  }
+  if (type === "action") {
+    cardStore.favoriteActionTags = cardStore.favoriteActionTags.filter(
+      (item) => item !== tag,
+    );
+  }
+}
+
+/* ===============================
+==========  CardStore  ===========
+=============================== */
+
 export class CardStore {
   cards: ICard[] = [];
   favoriteIdeaTags: string[] = [];
@@ -34,179 +209,71 @@ export class CardStore {
   }
 
   async getCards() {
-    try {
-      const response = await fetch("http://localhost:3004/cards");
-      const data = await response.json();
-      runInAction(() => {
-        this.cards = data;
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    const cards = await _getCards();
+    runInAction(() => {
+      this.cards = cards;
+    });
   }
 
   async getUserSettings() {
-    try {
-      const response = await fetch("http://localhost:3004/user_setting");
-      const data = await response.json();
-      runInAction(() => {
-        this.favoriteIdeaTags = data.favoriteIdeaTags;
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    const userSetting = await _getUserSettings();
+    runInAction(() => {
+      this.favoriteIdeaTags = userSetting.favoriteIdeaTags;
+      this.favoriteActionTags = userSetting.favoriteActionTags;
+      this.favoriteTodoTags = userSetting.favoriteTodoTags;
+    });
   }
 
   getAllTags() {
-    const tags = this.cards.map((card) => card.tags).flat();
-    return [...new Set(tags)];
+    return _getAllTags();
   }
 
   getFilteredCardsWith(status: cardStatus) {
-    return this.cards.filter((card) => card.status === status);
+    return _getFilteredCardsWith(status);
   }
 
   addCard(status: cardStatus, content: string, tags: string[]) {
-    const isTodo = status === "todo";
-    const currentDate = new Date().toISOString();
-
-    this.cards.push({
-      id: nanoid(),
-      status,
-      content,
-      tags,
-      isArchived: false,
-      isImportant: false,
-      createdTime: currentDate,
-      updatedTime: currentDate,
-      dueDate: isTodo ? currentDate : undefined,
-      reminderStartDate: undefined,
-      reminderEndDate: undefined,
-    });
+    return _addCard(status, content, tags);
   }
 
-  addTag(id: string, tag: string) {
-    this.cards = this.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          tags: [...card.tags, tag],
-        };
-      }
-      return card;
-    });
+  addCardTag(id: string, tag: string) {
+    return _addCardTag(id, tag);
   }
 
   updateCardContent(id: string, content: string) {
-    const trimmedContent = content.trim();
-    this.cards = this.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          content: trimmedContent,
-          updatedTime: new Date().toISOString(),
-        };
-      }
-      return card;
-    });
+    return _updateCardContent(id, content);
   }
 
   updateCardStatus(id: string, status: cardStatus) {
-    this.cards = this.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          status,
-          updatedTime: new Date().toISOString(),
-        };
-      }
-      return card;
-    });
+    return _updateCardStatus(id, status);
   }
 
   updateDueDate(id: string, date: string | undefined) {
-    this.cards = this.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          dueDate: date,
-          updatedTime: new Date().toISOString(),
-        };
-      }
-      return card;
-    });
+    return _updateDueDate(id, date);
   }
 
   updateFavoriteTags(type: "idea" | "todo" | "action", tag: string) {
-    if (type === "idea") {
-      this.favoriteIdeaTags.push(tag);
-    }
-    if (type === "todo") {
-      this.favoriteTodoTags.push(tag);
-    }
-    if (type === "action") {
-      this.favoriteActionTags.push(tag);
-    }
+    return _updateFavoriteTags(type, tag);
   }
 
   archiveCard(id: string) {
-    this.cards = this.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          isArchived: true,
-          updatedTime: new Date().toISOString(),
-        };
-      }
-      return card;
-    });
+    return _archiveCard(id);
   }
 
   completeCard(id: string) {
-    this.cards = this.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          isArchived: true,
-          updatedTime: new Date().toISOString(),
-        };
-      }
-      return card;
-    });
+    return _completeCard(id);
   }
 
   deleteCard(id: string) {
-    this.cards = this.cards.filter((card) => card.id !== id);
+    return _deleteCard(id);
   }
 
   deleteCardTag(id: string, tag: string) {
-    this.cards = this.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          tags: card.tags.filter((item) => item !== tag),
-        };
-      }
-      return card;
-    });
+    return _deleteCardTag(id, tag);
   }
 
   deleteFavoriteTag(type: "idea" | "todo" | "action", tag: string) {
-    if (type === "idea") {
-      this.favoriteIdeaTags = this.favoriteIdeaTags.filter(
-        (item) => item !== tag,
-      );
-    }
-    if (type === "todo") {
-      this.favoriteTodoTags = this.favoriteTodoTags.filter(
-        (item) => item !== tag,
-      );
-    }
-    if (type === "action") {
-      this.favoriteActionTags = this.favoriteActionTags.filter(
-        (item) => item !== tag,
-      );
-    }
+    return _deleteFavoriteTag(type, tag);
   }
 }
 
