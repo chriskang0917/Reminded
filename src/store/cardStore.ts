@@ -1,5 +1,7 @@
+import { doc, onSnapshot } from "firebase/firestore";
 import { makeAutoObservable, runInAction } from "mobx";
 import { nanoid } from "nanoid";
+import { db } from "../config/firebase";
 
 export type cardStatus =
   | "idea"
@@ -23,19 +25,104 @@ export interface ICard {
   reminderEndDate: number | undefined;
 }
 
-async function _getCards() {
+/* ===============================
+==========  CardStore  ===========
+=============================== */
+
+export class CardStore {
+  userId: string = "oaT4NJfE22Atv4VskZQk";
+  cards: ICard[] = [];
+  favoriteIdeaTags: string[] = [];
+  favoriteActionTags: string[] = [];
+  favoriteTodoTags: string[] = [];
+
+  constructor() {
+    makeAutoObservable(this);
+  }
+
+  async getCards() {
+    return await _getCardWithFireStore();
+  }
+
+  async getUserSettings() {
+    return await _getUserSettings();
+  }
+
+  getAllTags() {
+    return _getAllTags();
+  }
+
+  getFilteredCardsWith(status: cardStatus) {
+    return _getFilteredCardsWith(status);
+  }
+
+  addCard(status: cardStatus, content: string, tags: string[]) {
+    return _addCard(status, content, tags);
+  }
+
+  addCardTag(id: string, tag: string) {
+    return _addCardTag(id, tag);
+  }
+
+  updateCardContent(id: string, content: string) {
+    return _updateCardContent(id, content);
+  }
+
+  updateCardStatus(id: string, status: cardStatus) {
+    return _updateCardStatus(id, status);
+  }
+
+  updateDueDate(id: string, date: string | undefined) {
+    return _updateDueDate(id, date);
+  }
+
+  updateFavoriteTags(type: "idea" | "todo" | "action", tag: string) {
+    return _updateFavoriteTags(type, tag);
+  }
+
+  archiveCard(id: string) {
+    return _archiveCard(id);
+  }
+
+  completeCard(id: string) {
+    return _completeCard(id);
+  }
+
+  deleteCard(id: string) {
+    return _deleteCard(id);
+  }
+
+  deleteCardTag(id: string, tag: string) {
+    return _deleteCardTag(id, tag);
+  }
+
+  deleteFavoriteTag(type: "idea" | "todo" | "action", tag: string) {
+    return _deleteFavoriteTag(type, tag);
+  }
+}
+
+async function _getCardWithFireStore() {
   try {
-    const response = await fetch("http://localhost:3004/cards");
-    return await response.json();
+    const cardsRef = doc(db, "cards", cardStore.userId);
+    return onSnapshot(cardsRef, (doc) => {
+      runInAction(() => {
+        if (doc.exists()) cardStore.cards = doc.data()?.cards || [];
+      });
+    });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
 async function _getUserSettings() {
   try {
     const response = await fetch("http://localhost:3004/user_setting");
-    return await response.json();
+    const userSetting = await response.json();
+    runInAction(() => {
+      cardStore.favoriteIdeaTags = userSetting.favoriteIdeaTags;
+      cardStore.favoriteActionTags = userSetting.favoriteActionTags;
+      cardStore.favoriteTodoTags = userSetting.favoriteTodoTags;
+    });
   } catch (error) {
     console.log(error);
   }
@@ -191,89 +278,6 @@ function _deleteFavoriteTag(type: "idea" | "todo" | "action", tag: string) {
     cardStore.favoriteActionTags = cardStore.favoriteActionTags.filter(
       (item) => item !== tag,
     );
-  }
-}
-
-/* ===============================
-==========  CardStore  ===========
-=============================== */
-
-export class CardStore {
-  cards: ICard[] = [];
-  favoriteIdeaTags: string[] = [];
-  favoriteActionTags: string[] = [];
-  favoriteTodoTags: string[] = [];
-
-  constructor() {
-    makeAutoObservable(this);
-  }
-
-  async getCards() {
-    const cards = await _getCards();
-    runInAction(() => {
-      this.cards = cards;
-    });
-  }
-
-  async getUserSettings() {
-    const userSetting = await _getUserSettings();
-    runInAction(() => {
-      this.favoriteIdeaTags = userSetting.favoriteIdeaTags;
-      this.favoriteActionTags = userSetting.favoriteActionTags;
-      this.favoriteTodoTags = userSetting.favoriteTodoTags;
-    });
-  }
-
-  getAllTags() {
-    return _getAllTags();
-  }
-
-  getFilteredCardsWith(status: cardStatus) {
-    return _getFilteredCardsWith(status);
-  }
-
-  addCard(status: cardStatus, content: string, tags: string[]) {
-    return _addCard(status, content, tags);
-  }
-
-  addCardTag(id: string, tag: string) {
-    return _addCardTag(id, tag);
-  }
-
-  updateCardContent(id: string, content: string) {
-    return _updateCardContent(id, content);
-  }
-
-  updateCardStatus(id: string, status: cardStatus) {
-    return _updateCardStatus(id, status);
-  }
-
-  updateDueDate(id: string, date: string | undefined) {
-    return _updateDueDate(id, date);
-  }
-
-  updateFavoriteTags(type: "idea" | "todo" | "action", tag: string) {
-    return _updateFavoriteTags(type, tag);
-  }
-
-  archiveCard(id: string) {
-    return _archiveCard(id);
-  }
-
-  completeCard(id: string) {
-    return _completeCard(id);
-  }
-
-  deleteCard(id: string) {
-    return _deleteCard(id);
-  }
-
-  deleteCardTag(id: string, tag: string) {
-    return _deleteCardTag(id, tag);
-  }
-
-  deleteFavoriteTag(type: "idea" | "todo" | "action", tag: string) {
-    return _deleteFavoriteTag(type, tag);
   }
 }
 
