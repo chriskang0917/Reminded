@@ -34,6 +34,7 @@ export const IdeaInput = observer(() => {
 
     if (input === "") return;
     cardStore.addCard(selectedTab, input, [tagInput]);
+    cardStore.uploadCardsToFireStore();
     inputRef.current?.blur();
     tagRef.current?.blur();
     setInput("");

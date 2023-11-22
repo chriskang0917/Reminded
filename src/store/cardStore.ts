@@ -1,4 +1,4 @@
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { makeAutoObservable, runInAction } from "mobx";
 import { nanoid } from "nanoid";
 import { db } from "../config/firebase";
@@ -40,15 +40,19 @@ export class CardStore {
     makeAutoObservable(this);
   }
 
-  async getCards() {
-    return await _getCardWithFireStore();
+  async getCardsWithFireStore() {
+    return await _getCardsWithFireStore();
   }
 
   async getUserSettings() {
     return await _getUserSettings();
   }
 
-  getAllTags() {
+  async uploadCardsToFireStore() {
+    return await _uploadCardsToFireStore();
+  }
+
+  get getAllTags() {
     return _getAllTags();
   }
 
@@ -101,7 +105,7 @@ export class CardStore {
   }
 }
 
-async function _getCardWithFireStore() {
+async function _getCardsWithFireStore() {
   try {
     const cardsRef = doc(db, "cards", cardStore.userId);
     return onSnapshot(cardsRef, (doc) => {
@@ -125,6 +129,16 @@ async function _getUserSettings() {
     });
   } catch (error) {
     console.log(error);
+  }
+}
+
+async function _uploadCardsToFireStore() {
+  try {
+    const cardsRef = doc(db, "cards", cardStore.userId);
+    await setDoc(cardsRef, { cards: cardStore.cards });
+    console.log(cardStore.cards);
+  } catch (error) {
+    console.error(error);
   }
 }
 

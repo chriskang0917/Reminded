@@ -39,7 +39,7 @@ const router = createBrowserRouter([
 
 function App() {
   useEffect(() => {
-    cardStore.getCards();
+    cardStore.getCardsWithFireStore();
     cardStore.getUserSettings();
   }, []);
 

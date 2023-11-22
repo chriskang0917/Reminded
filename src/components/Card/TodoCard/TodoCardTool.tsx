@@ -141,6 +141,7 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
           <DropdownMenu aria-label="Action">
             {actionList.map((action) => (
               <DropdownItem
+                textValue={action.label || ""}
                 key={action.label}
                 color={action.color}
                 onClick={action.onClick}
@@ -162,6 +163,7 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
               <DropdownMenu aria-label="Setting">
                 {menuList.map((menu) => (
                   <DropdownItem
+                    textValue={menu.label || ""}
                     key={menu.label}
                     color={menu.color}
                     onClick={menu.onClick}
