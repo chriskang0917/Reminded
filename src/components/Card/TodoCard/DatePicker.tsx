@@ -5,14 +5,14 @@ import { ICard, cardStore } from "../../../store/cardStore";
 
 interface DatePickerProps {
   card: ICard;
-  date: string | undefined;
-  setDate: (date: Date | undefined) => void;
+  date: string | null;
+  setDate: (date: Date | null) => void;
 }
 
 function DatePicker({ card, date, setDate }: DatePickerProps) {
   const handleRemoveDate = () => {
-    cardStore.updateDueDate(card.id, undefined);
-    setDate(undefined);
+    cardStore.updateDueDate(card.id, null);
+    setDate(null);
   };
 
   const datePickerFooter = (
@@ -23,14 +23,14 @@ function DatePicker({ card, date, setDate }: DatePickerProps) {
     </div>
   );
 
-  const parsedDate = parseISO(date as string);
+  const parsedDate = date ? parseISO(date) : undefined;
 
   return (
     <DayPicker
       className="bg-gray"
       mode="single"
       selected={parsedDate}
-      onSelect={setDate}
+      onSelect={setDate as (date: Date | undefined) => void}
       footer={datePickerFooter}
     />
   );

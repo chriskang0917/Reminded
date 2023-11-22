@@ -34,6 +34,7 @@ export const IdeaInput = observer(() => {
 
     if (input === "") return;
     cardStore.addCard(selectedTab, input, [tagInput]);
+    cardStore.uploadCardsToFireStore();
     inputRef.current?.blur();
     tagRef.current?.blur();
     setInput("");
@@ -93,19 +94,18 @@ export const IdeaInput = observer(() => {
         <Autocomplete
           label="標籤"
           variant="bordered"
-          inputValue={tagInput}
+          inputValue={tagInput || ""}
+          selectedKey={tagInput}
           allowsCustomValue
           className="w-25"
           size="sm"
-          defaultItems={filteredTags}
-          ref={tagRef}
-          selectedKey={tagInput}
+          items={filteredTags}
           onInputChange={(input) => setTagInput(input)}
           onSelectionChange={handleTagSelectChange}
         >
           {(tag) => (
             <AutocompleteItem key={tag.label} textValue={tag.label}>
-              {!tag.isExisted ? `新增 ${tag.label}` : tag.label}
+              {!tag.isExisted ? `新增 ${tag.label || ""}` : tag.label}
             </AutocompleteItem>
           )}
         </Autocomplete>
