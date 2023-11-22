@@ -7,6 +7,7 @@ import RootLayout from "./components/Layout/RootLayout";
 import ActionPage from "./pages/ActionPage";
 import Homepage from "./pages/Homepage";
 import IdeaPage from "./pages/IdeaPage";
+import LoginPage from "./pages/Login";
 import { cardStore } from "./store/cardStore";
 
 const router = createBrowserRouter([
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
         children: [{ path: ":type", element: <ActionPage /> }],
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
   },
 ]);
 
