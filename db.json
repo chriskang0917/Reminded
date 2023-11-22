@@ -28,6 +28,8 @@
     }
   ],
   "user_setting": {
-    "favoriteIdeaTags": ["health"]
+    "favoriteIdeaTags": ["health"],
+    "favoriteTodoTags": ["health"],
+    "favoriteActionTags": ["health"]
   }
 }

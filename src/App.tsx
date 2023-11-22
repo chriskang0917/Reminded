@@ -4,10 +4,9 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ActionLayout from "./components/Layout/ActionLayout";
 import IdeaLayout from "./components/Layout/IdeaLayout";
 import RootLayout from "./components/Layout/RootLayout";
-import ActionPage from "./pages/ActionPage/ActionPage";
+import ActionPage from "./pages/ActionPage";
 import Homepage from "./pages/Homepage";
-import IdeaSearchPage from "./pages/IdeaPage/IdeaSearchPage";
-import IdeaThisWeek from "./pages/IdeaPage/IdeaThisWeek";
+import IdeaPage from "./pages/IdeaPage";
 import { cardStore } from "./store/cardStore";
 
 const router = createBrowserRouter([
@@ -23,10 +22,7 @@ const router = createBrowserRouter([
       {
         path: "idea",
         element: <IdeaLayout />,
-        children: [
-          { path: "week", element: <IdeaThisWeek /> },
-          { path: "search", element: <IdeaSearchPage /> },
-        ],
+        children: [{ path: ":type", element: <IdeaPage /> }],
       },
       {
         path: "action",

@@ -1,1 +1,1 @@
-export { Search } from "./Search";
+export { IdeaSearch as Search } from "./IdeaSearch";
