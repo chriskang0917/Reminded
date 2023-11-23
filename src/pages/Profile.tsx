@@ -2,12 +2,14 @@ import { Avatar, Button, Card, CardBody, CardHeader } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
 import { authStore } from "../store/authStore";
+import { cookie } from "../utils/cookie";
 
 const ProfilePage = observer(() => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
     authStore.logout();
+    cookie.deleteCookie("uid");
     navigate("/login");
   };
 
