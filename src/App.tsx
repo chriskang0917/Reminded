@@ -5,9 +5,10 @@ import ActionLayout from "./components/Layout/ActionLayout";
 import IdeaLayout from "./components/Layout/IdeaLayout";
 import RootLayout from "./components/Layout/RootLayout";
 import ActionPage from "./pages/ActionPage";
-import Homepage from "./pages/TodayPage";
+import ErrorPage from "./pages/ErrorPage";
 import IdeaPage from "./pages/IdeaPage";
 import LoginPage from "./pages/LoginPage";
+import Homepage from "./pages/TodayPage";
 import { authStore } from "./store/authStore";
 import { cardStore } from "./store/cardStore";
 
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
@@ -30,6 +32,14 @@ const router = createBrowserRouter([
         path: "action",
         element: <ActionLayout />,
         children: [{ path: ":type", element: <ActionPage /> }],
+      },
+      {
+        path: "profile",
+        element: <section>Profile</section>,
+      },
+      {
+        path: "setting",
+        element: <section>Profile</section>,
       },
     ],
   },

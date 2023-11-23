@@ -73,7 +73,7 @@ export const ActionBar = observer(() => {
 
   return (
     <div className="fixed left-0 top-0 ml-20 h-[100svh] w-32 bg-slate-200">
-      <nav>
+      <aside>
         <ul className="flex flex-col items-center justify-center gap-4 pt-4">
           {ideaActionList.map((action) => (
             <li key={action.label}>
@@ -115,7 +115,7 @@ export const ActionBar = observer(() => {
             )}
           </div>
         </div>
-      </nav>
+      </aside>
     </div>
   );
 });

@@ -7,7 +7,10 @@ const actionList = [
   { label: "行動", path: "/action/all" },
   { label: "靈感", path: "/idea/week" },
 ];
-const settingList = ["用戶", "設定"];
+const settingList = [
+  { label: "用戶", path: "/profile" },
+  { label: "設定", path: "/setting" },
+];
 
 function Sidebar() {
   const SidebarButton = ({ children }: { children: React.ReactNode }) => (
@@ -29,8 +32,10 @@ function Sidebar() {
       </ul>
       <ul className="mb-6 flex flex-col gap-4">
         {settingList.map((setting) => (
-          <li key={setting}>
-            <SidebarButton>{setting}</SidebarButton>
+          <li key={setting.label}>
+            <Link to={setting.path}>
+              <SidebarButton>{setting.label}</SidebarButton>
+            </Link>
           </li>
         ))}
       </ul>
