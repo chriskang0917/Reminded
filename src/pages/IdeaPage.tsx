@@ -1,27 +1,30 @@
 import { useParams } from "react-router-dom";
+import {
+  IdeaAction,
+  IdeaArchive,
+  IdeaPools,
+  IdeaWeek,
+} from "../components/SectionIdea";
 import { IdeaSearch } from "../components/SectionIdea/IdeaSearch";
 
-const renderIdeaPage = (type: string | undefined) => {
-  switch (type) {
-    case "all":
-      return <section>All</section>;
+const renderIdeaPage = (route: string | undefined) => {
+  switch (route) {
+    case "week":
+      return <IdeaWeek />;
     case "search":
       return <IdeaSearch />;
-    case "overdue":
-      return <section>Overdue</section>;
-    case "executed":
-      return <section>Executed</section>;
+    case "pools":
+      return <IdeaPools />;
+    case "action":
+      return <IdeaAction />;
     case "archive":
-      return <section>Archive</section>;
-    default:
-      return <section>404</section>;
+      return <IdeaArchive />;
   }
 };
 
 function IdeaPage() {
-  const { type } = useParams();
-
-  return <section>{renderIdeaPage(type)}</section>;
+  const { route } = useParams();
+  return <section>{renderIdeaPage(route)}</section>;
 }
 
 export default IdeaPage;

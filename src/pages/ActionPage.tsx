@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import { ActionSearch } from "../components/SectionAction";
 
-const renderActionPage = (type: string | undefined) => {
-  switch (type) {
+const renderActionPage = (route: string | undefined) => {
+  switch (route) {
     case "all":
       return <section>All</section>;
     case "search":
@@ -19,9 +19,9 @@ const renderActionPage = (type: string | undefined) => {
 };
 
 function ActionPage() {
-  const { type } = useParams();
+  const { route } = useParams();
 
-  return <section>{renderActionPage(type)}</section>;
+  return <section>{renderActionPage(route)}</section>;
 }
 
 export default ActionPage;

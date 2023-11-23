@@ -27,12 +27,12 @@ const router = createBrowserRouter([
       {
         path: "idea",
         element: <IdeaLayout />,
-        children: [{ path: ":type", element: <IdeaPage /> }],
+        children: [{ path: ":route", element: <IdeaPage /> }],
       },
       {
         path: "action",
         element: <ActionLayout />,
-        children: [{ path: ":type", element: <ActionPage /> }],
+        children: [{ path: ":route", element: <ActionPage /> }],
       },
       {
         path: "profile",
