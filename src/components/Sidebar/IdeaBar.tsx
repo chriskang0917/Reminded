@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { Link, useLocation } from "react-router-dom";
-import { cardStore } from "../../store/cardStore";
+import { authStore } from "../../store/authStore";
 
 interface IAction {
   label: string;
@@ -37,7 +37,7 @@ export const IdeaBar = observer(() => {
     e.preventDefault();
     const tag = tagInputRef.current?.value;
     if (!tag) return;
-    cardStore.updateFavoriteTags("idea", tag);
+    // cardStore.updateFavoriteTags("idea", tag);
     setIsFavoriteOpen(false);
   };
 
@@ -60,7 +60,8 @@ export const IdeaBar = observer(() => {
 
   const FavoriteTagChip = ({ children, favorite }: FavoriteTagChipProps) => {
     const handleClose = () => {
-      cardStore.deleteFavoriteTag("idea", favorite);
+      console.log(favorite);
+      // cardStore.deleteFavoriteTag("idea", favorite);
     };
 
     return (
@@ -87,7 +88,7 @@ export const IdeaBar = observer(() => {
           <h2>Favorite</h2>
           <Divider className="my-4" />
           <ul className="flex flex-col items-center gap-4">
-            {cardStore.favoriteIdeaTags.map((favorite) => (
+            {authStore.favoriteIdeaTags.map((favorite) => (
               <li key={favorite}>
                 <FavoriteTagChip favorite={favorite}>
                   {favorite}

@@ -54,8 +54,7 @@ function App() {
   useEffect(() => {
     const init = async () => {
       await authStore.init();
-      await cardStore.getCardsWithFireStore();
-      await cardStore.getUserSettings();
+      await cardStore.init();
     };
     init();
   }, []);

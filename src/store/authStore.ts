@@ -25,15 +25,20 @@ interface AuthService {
 class EmailAuthService implements AuthService {
   async init() {
     const uid = cookie.getCookie("uid");
+    if (uid) return;
     const profileRef = doc(db, "users", uid);
-    await getDoc(profileRef).then((doc) => {
-      if (doc.exists()) {
-        runInAction(() => {
-          authStore.name = doc.data()?.name;
-          authStore.email = doc.data()?.email;
-        });
-      }
-    });
+    await getDoc(profileRef)
+      .then((doc) => {
+        if (doc.exists()) {
+          runInAction(() => {
+            authStore.name = doc.data()?.name;
+            authStore.email = doc.data()?.email;
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   register(
@@ -102,7 +107,10 @@ class EmailAuthService implements AuthService {
       .then(() => {
         cookie.deleteCookie("uid");
         toast.success("登出成功");
-        runInAction(() => (authStore.uid = null));
+        runInAction(() => {
+          authStore.isLogin = false;
+          authStore.uid = null;
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -136,6 +144,9 @@ class AuthStore {
   public uid: string | null = null;
   public name: string | null = null;
   public email: string | null = null;
+  public favoriteIdeaTags: string[] = [];
+  public favoriteActionTags: string[] = [];
+  public favoriteTodoTags: string[] = [];
 
   constructor(authService: AuthService) {
     makeAutoObservable(this);

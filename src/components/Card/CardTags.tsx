@@ -15,7 +15,9 @@ const CardTags = observer(({ card }: { card: ICard }) => {
   const handleTagSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!tagInputRef.current) return;
-    cardStore.addCardTag(card.id, tagInputRef.current?.value as string);
+    const newTag = tagInputRef.current?.value;
+    const updatedTags = [...card.tags, newTag];
+    cardStore.updateCardTags(card.id, updatedTags);
     setIsTagInputShow(false);
   };
 
