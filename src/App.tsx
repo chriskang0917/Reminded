@@ -7,6 +7,8 @@ import RootLayout from "./components/Layout/RootLayout";
 import ActionPage from "./pages/ActionPage";
 import Homepage from "./pages/Homepage";
 import IdeaPage from "./pages/IdeaPage";
+import LoginPage from "./pages/Login";
+import { authStore } from "./store/authStore";
 import { cardStore } from "./store/cardStore";
 
 const router = createBrowserRouter([
@@ -31,10 +33,15 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
 ]);
 
 function App() {
   useEffect(() => {
+    authStore.init();
     cardStore.getCardsWithFireStore();
     cardStore.getUserSettings();
   }, []);
