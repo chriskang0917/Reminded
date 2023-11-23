@@ -8,6 +8,7 @@ import ActionPage from "./pages/ActionPage";
 import ErrorPage from "./pages/ErrorPage";
 import IdeaPage from "./pages/IdeaPage";
 import LoginPage from "./pages/LoginPage";
+import ProfilePage from "./pages/Profile";
 import Homepage from "./pages/TodayPage";
 import { authStore } from "./store/authStore";
 import { cardStore } from "./store/cardStore";
@@ -35,7 +36,7 @@ const router = createBrowserRouter([
       },
       {
         path: "profile",
-        element: <section>Profile</section>,
+        element: <ProfilePage />,
       },
       {
         path: "setting",
