@@ -52,9 +52,12 @@ const router = createBrowserRouter([
 
 function App() {
   useEffect(() => {
-    authStore.init();
-    cardStore.getCardsWithFireStore();
-    cardStore.getUserSettings();
+    const init = async () => {
+      await authStore.init();
+      await cardStore.getCardsWithFireStore();
+      await cardStore.getUserSettings();
+    };
+    init();
   }, []);
 
   return (

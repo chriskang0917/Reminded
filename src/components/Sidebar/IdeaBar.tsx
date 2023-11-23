@@ -1,4 +1,4 @@
-import { Button, Chip, Divider, Input, Spacer } from "@nextui-org/react";
+import { Chip, Divider, Input, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
@@ -43,14 +43,13 @@ export const IdeaBar = observer(() => {
 
   const IdeaButton = ({ children, action, onClick }: IButton) => (
     <Link to={action.path}>
-      <Button
-        className="flex items-center justify-center"
-        size="md"
-        isDisabled={location.pathname === action.path}
+      <button
+        className="flex items-center justify-center bg-zinc-400"
+        disabled={location.pathname === action.path}
         onClick={onClick}
       >
         {children}
-      </Button>
+      </button>
     </Link>
   );
 

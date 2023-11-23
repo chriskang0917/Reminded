@@ -3,7 +3,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { makeAutoObservable, runInAction } from "mobx";
 import toast from "react-hot-toast";
 import { auth, db } from "../config/firebase";
@@ -23,10 +23,16 @@ interface AuthService {
 }
 
 class EmailAuthService implements AuthService {
-  init() {
+  async init() {
     const uid = cookie.getCookie("uid");
-    runInAction(() => {
-      if (uid) authStore.uid = uid;
+    const profileRef = doc(db, "users", uid);
+    await getDoc(profileRef).then((doc) => {
+      if (doc.exists()) {
+        runInAction(() => {
+          authStore.name = doc.data()?.name;
+          authStore.email = doc.data()?.email;
+        });
+      }
     });
   }
 
@@ -136,7 +142,7 @@ class AuthStore {
     this.authService = authService;
   }
 
-  init() {
+  async init() {
     this.authService.init();
   }
 

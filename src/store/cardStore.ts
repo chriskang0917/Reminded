@@ -1,7 +1,8 @@
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 import { makeAutoObservable, runInAction, toJS } from "mobx";
 import { nanoid } from "nanoid";
 import { db } from "../config/firebase";
+import { authStore } from "./authStore";
 
 export type cardStatus =
   | "idea"
@@ -128,10 +129,13 @@ export class CardStore {
 class GetData {
   async getCardsWithFireStore() {
     try {
-      const cardsRef = doc(db, "cards", cardStore.userId);
+      if (!authStore.uid) return;
+      const cardsRef = doc(db, "cards", authStore.uid);
       return onSnapshot(cardsRef, (doc) => {
+        const data = doc.data();
+        localStorage.setItem("cards", JSON.stringify(data?.cards || []));
         runInAction(() => {
-          if (doc.exists()) cardStore.cards = doc.data()?.cards || [];
+          if (doc.exists()) cardStore.cards = data?.cards || [];
         });
       });
     } catch (error) {
@@ -141,12 +145,19 @@ class GetData {
 
   async getUserSettings() {
     try {
-      const response = await fetch("http://localhost:3004/user_setting");
-      const userSetting = await response.json();
-      runInAction(() => {
-        cardStore.favoriteIdeaTags = userSetting.favoriteIdeaTags;
-        cardStore.favoriteActionTags = userSetting.favoriteActionTags;
-        cardStore.favoriteTodoTags = userSetting.favoriteTodoTags;
+      // const response = await fetch("http://localhost:3004/user_setting");
+      // const userSetting = await response.json();
+      if (!authStore.uid) return;
+      const userSettingRef = doc(db, "user_settings", authStore.uid);
+      await getDoc(userSettingRef).then((doc) => {
+        if (doc.exists()) {
+          const data = doc.data();
+          runInAction(() => {
+            cardStore.favoriteIdeaTags = data?.favoriteIdeaTags || [];
+            cardStore.favoriteActionTags = data?.favoriteActionTags || [];
+            cardStore.favoriteTodoTags = data?.favoriteTodoTags || [];
+          });
+        }
       });
     } catch (error) {
       console.log(error);
@@ -167,7 +178,8 @@ class GetData {
 class UploadData {
   async uploadCardsToFireStore() {
     try {
-      const cardsRef = doc(db, "cards", cardStore.userId);
+      if (!authStore.uid) return;
+      const cardsRef = doc(db, "cards", authStore.uid);
       const clonedCards = toJS(cardStore.getCards);
       await setDoc(cardsRef, { cards: clonedCards });
     } catch (error) {
