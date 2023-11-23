@@ -5,9 +5,9 @@ import ActionLayout from "./components/Layout/ActionLayout";
 import IdeaLayout from "./components/Layout/IdeaLayout";
 import RootLayout from "./components/Layout/RootLayout";
 import ActionPage from "./pages/ActionPage";
-import Homepage from "./pages/Homepage";
+import Homepage from "./pages/HomePage";
 import IdeaPage from "./pages/IdeaPage";
-import LoginPage from "./pages/Login";
+import LoginPage from "./pages/LoginPage";
 import { authStore } from "./store/authStore";
 import { cardStore } from "./store/cardStore";
 

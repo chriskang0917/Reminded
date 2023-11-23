@@ -7,7 +7,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { makeAutoObservable, runInAction } from "mobx";
 import toast from "react-hot-toast";
 import { auth, db } from "../config/firebase";
-import { cookie } from "../utils/auth";
+import { cookie } from "../utils/cookie";
 
 interface IProfile {
   email: string;
@@ -39,18 +39,32 @@ class EmailAuthService implements AuthService {
       .then((userCredential) => {
         const user = userCredential.user;
         cookie.setCookie("uid", user?.uid, 30);
+
         toast.success("註冊成功");
         if (callback) callback("success");
+
         runInAction(() => (authStore.uid = user?.uid));
+      })
+      .then(() => {
+        if (!authStore.uid) return;
+        const profileRef = doc(db, "users", authStore.uid);
+        authStore.name = `User_${Math.floor(Math.random() * 10000)}`;
+        setDoc(profileRef, {
+          name: authStore.name,
+          uid: authStore.uid,
+          email,
+        });
       })
       .catch((error) => {
         const errorCode = error.code || "";
         const errorMessage = error.message;
-        if (callback) callback("error");
-        console.log(errorCode, errorMessage);
+
         if (errorCode === "auth/email-already-in-use") {
           toast.error("此信箱已被註冊");
         }
+
+        console.log(errorCode, errorMessage);
+        if (callback) callback("error");
       });
   }
 
@@ -65,6 +79,7 @@ class EmailAuthService implements AuthService {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
+
         toast.error("登入失敗");
         console.log(errorCode, errorMessage);
       });

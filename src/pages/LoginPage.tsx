@@ -22,12 +22,13 @@ import { authStore } from "../store/authStore";
 const DEFAULT_EMAIL = "test@gmail.com";
 
 const LoginPage = observer(() => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [loginState, setLoginState] = useState({
     newUserName: "",
     email: DEFAULT_EMAIL,
     password: "",
     isLoginPage: true,
+    isSettingName: false,
   });
 
   const onLoginSubmit = () => {
@@ -42,7 +43,10 @@ const LoginPage = observer(() => {
       if (result === "error") return;
       onOpen();
     };
-
+    setLoginState((prevState) => ({
+      ...prevState,
+      isSettingName: true,
+    }));
     authStore.register(loginState.email, loginState.password, registerCallback);
   };
 
@@ -62,7 +66,15 @@ const LoginPage = observer(() => {
     }));
   };
 
-  const handleNameSubmit = (onClose: () => void) => {
+  const handleNameClose = () => {
+    onClose();
+    setLoginState((prevState) => ({
+      ...prevState,
+      isSettingName: false,
+    }));
+  };
+
+  const handleNameSubmit = () => {
     if (!loginState.newUserName) {
       return toast.error("請輸入暱稱");
     }
@@ -70,10 +82,15 @@ const LoginPage = observer(() => {
       name: loginState.newUserName,
       email: loginState.email,
     });
+    setLoginState((prevState) => ({
+      ...prevState,
+      isSettingName: false,
+    }));
     onClose();
   };
 
-  if (authStore.uid) return <Navigate to="/" replace />;
+  if (authStore.uid && !loginState.isSettingName)
+    return <Navigate to="/" replace />;
 
   return (
     <main className="flex h-[100svh] items-center justify-center">
@@ -134,7 +151,7 @@ const LoginPage = observer(() => {
       </Card>
       <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
-          {(onClose) => (
+          {() => (
             <>
               <ModalHeader className="flex justify-center">
                 <h1>註冊成功！ 輸入你想使用的暱稱</h1>
@@ -149,13 +166,14 @@ const LoginPage = observer(() => {
                 />
               </ModalBody>
               <ModalFooter className="flex justify-center">
-                <Button color="warning" variant="ghost" onPress={onClose}>
+                <Button
+                  color="warning"
+                  variant="ghost"
+                  onPress={handleNameClose}
+                >
                   略過
                 </Button>
-                <Button
-                  color="success"
-                  onPress={() => handleNameSubmit(onClose)}
-                >
+                <Button color="success" onPress={handleNameSubmit}>
                   確認
                 </Button>
               </ModalFooter>
