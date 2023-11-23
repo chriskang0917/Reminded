@@ -2,6 +2,7 @@ import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { makeAutoObservable, runInAction, toJS } from "mobx";
 import { nanoid } from "nanoid";
 import { db } from "../config/firebase";
+import { authStore } from "./authStore";
 
 export type cardStatus =
   | "idea"
@@ -29,109 +30,33 @@ export interface ICard {
 ==========  CardStore  ===========
 =============================== */
 
-export class CardStore {
-  userId: string = "oaT4NJfE22Atv4VskZQk";
-  cards: ICard[] = [];
-  favoriteIdeaTags: string[] = [];
-  favoriteActionTags: string[] = [];
-  favoriteTodoTags: string[] = [];
-
-  constructor() {
-    makeAutoObservable(this);
-  }
-
-  async getCardsWithFireStore() {
-    const getData = new GetData();
-    getData.getCardsWithFireStore();
-  }
-
-  async getUserSettings() {
-    const getData = new GetData();
-    getData.getUserSettings();
-  }
-
-  async uploadCardsToFireStore() {
-    const uploadData = new UploadData();
-    uploadData.uploadCardsToFireStore();
-  }
-
-  get getAllTags() {
-    const getData = new GetData();
-    return getData.getAllTags();
-  }
-
-  get getCards() {
-    return this.cards;
-  }
-
-  getFilteredCardsWith(status: cardStatus) {
-    const getData = new GetData();
-    return getData.getFilteredCardsWith(status);
-  }
-
-  addCard(status: cardStatus, content: string, tags: string[]) {
-    const addData = new UpdateCard();
-    addData.addCard(status, content, tags);
-  }
-
-  addCardTag(id: string, tag: string) {
-    const addData = new UpdateCard();
-    addData.addCardTag(id, tag);
-  }
-
-  updateCardContent(id: string, content: string) {
-    const updateData = new UpdateCard();
-    updateData.updateCardContent(id, content);
-  }
-
-  updateCardStatus(id: string, status: cardStatus) {
-    const updateData = new UpdateCard();
-    updateData.updateCardStatus(id, status);
-  }
-
-  updateDueDate(id: string, date: string | null) {
-    const updateData = new UpdateCard();
-    updateData.updateDueDate(id, date);
-  }
-
-  updateFavoriteTags(type: "idea" | "todo" | "action", tag: string) {
-    const updateData = new UpdateCard();
-    updateData.updateFavoriteTags(type, tag);
-  }
-
-  archiveCard(id: string) {
-    const updateData = new UpdateCard();
-    updateData.archiveCard(id);
-  }
-
-  completeCard(id: string) {
-    const updateData = new UpdateCard();
-    updateData.completeCard(id);
-  }
-
-  deleteCard(id: string) {
-    const updateData = new UpdateCard();
-    updateData.deleteCard(id);
-  }
-
-  deleteCardTag(id: string, tag: string) {
-    const updateData = new UpdateCard();
-    updateData.deleteCardTag(id, tag);
-  }
-
-  deleteFavoriteTag(type: "idea" | "todo" | "action", tag: string) {
-    const updateData = new UpdateCard();
-    updateData.deleteFavoriteTag(type, tag);
-  }
+interface ICardService {
+  getAllTags: string[];
+  getCards: ICard[];
+  init: () => void;
+  uploadCardsToFireStore: () => void;
+  getFilteredCardsWith: (status: cardStatus) => ICard[];
+  addCard: (status: cardStatus, content: string, tags: string[]) => void;
+  addCardTag: (id: string, tag: string) => void;
+  updateCardContent: (id: string, content: string) => void;
+  updateCardStatus: (id: string, status: cardStatus) => void;
+  updateDueDate: (id: string, date: string | null) => void;
+  archiveCard: (id: string) => void;
+  completeCard: (id: string) => void;
+  deleteCard: (id: string) => void;
+  deleteCardTag: (id: string, tag: string) => void;
 }
 
-class GetData {
-  async getCardsWithFireStore() {
+class CardService implements ICardService {
+  init() {
     try {
-      const cardsRef = doc(db, "cards", cardStore.userId);
+      if (!authStore.uid) return;
+      const cardsRef = doc(db, "cards", authStore.uid);
       return onSnapshot(cardsRef, (doc) => {
+        const data = doc.data();
+        localStorage.setItem("cards", JSON.stringify(data?.cards || []));
         runInAction(() => {
-          if (doc.exists()) cardStore.cards = doc.data()?.cards || [];
+          if (doc.exists()) cardStore.cards = data?.cards || [];
         });
       });
     } catch (error) {
@@ -139,44 +64,31 @@ class GetData {
     }
   }
 
-  async getUserSettings() {
-    try {
-      const response = await fetch("http://localhost:3004/user_setting");
-      const userSetting = await response.json();
-      runInAction(() => {
-        cardStore.favoriteIdeaTags = userSetting.favoriteIdeaTags;
-        cardStore.favoriteActionTags = userSetting.favoriteActionTags;
-        cardStore.favoriteTodoTags = userSetting.favoriteTodoTags;
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  getAllTags() {
-    const tags = cardStore.cards.map((card) => card.tags).flat() || [];
-    if (!tags) return [];
-    return [...new Set(tags)];
-  }
-
-  getFilteredCardsWith(status: cardStatus) {
-    return cardStore.cards.filter((card) => card.status === status);
-  }
-}
-
-class UploadData {
   async uploadCardsToFireStore() {
     try {
-      const cardsRef = doc(db, "cards", cardStore.userId);
+      if (!authStore.uid) return;
+      const cardsRef = doc(db, "cards", authStore.uid);
       const clonedCards = toJS(cardStore.getCards);
       await setDoc(cardsRef, { cards: clonedCards });
     } catch (error) {
       console.error(error);
     }
   }
-}
 
-class UpdateCard {
+  get getAllTags() {
+    const tags = cardStore.cards.map((card) => card.tags).flat() || [];
+    if (!tags) return [];
+    return [...new Set(tags)];
+  }
+
+  get getCards() {
+    return cardStore.cards;
+  }
+
+  getFilteredCardsWith(status: cardStatus) {
+    return cardStore.cards.filter((card) => card.status === status);
+  }
+
   addCard(status: cardStatus, content: string, tags: string[]) {
     const isTodo = status === "todo";
     const currentDate = new Date().toISOString();
@@ -193,7 +105,6 @@ class UpdateCard {
       reminderStartDate: null,
       reminderEndDate: null,
     };
-
     cardStore.cards.push(newCard);
   }
 
@@ -249,18 +160,6 @@ class UpdateCard {
     });
   }
 
-  updateFavoriteTags(type: "idea" | "todo" | "action", tag: string) {
-    if (type === "idea") {
-      cardStore.favoriteIdeaTags.push(tag);
-    }
-    if (type === "todo") {
-      cardStore.favoriteTodoTags.push(tag);
-    }
-    if (type === "action") {
-      cardStore.favoriteActionTags.push(tag);
-    }
-  }
-
   archiveCard(id: string) {
     cardStore.cards = cardStore.cards.map((card) => {
       if (card.id === id) {
@@ -302,27 +201,76 @@ class UpdateCard {
       return card;
     });
   }
+}
 
-  deleteFavoriteTag(type: "idea" | "todo" | "action", tag: string) {
-    if (type === "idea") {
-      cardStore.favoriteIdeaTags = cardStore.favoriteIdeaTags.filter(
-        (item) => item !== tag,
-      );
-    }
-    if (type === "todo") {
-      cardStore.favoriteTodoTags = cardStore.favoriteTodoTags.filter(
-        (item) => item !== tag,
-      );
-    }
-    if (type === "action") {
-      cardStore.favoriteActionTags = cardStore.favoriteActionTags.filter(
-        (item) => item !== tag,
-      );
-    }
+class CardStore {
+  private cardService: CardService;
+  cards: ICard[] = [];
+
+  constructor(cardService: CardService) {
+    makeAutoObservable(this);
+    this.cardService = cardService;
+  }
+
+  async init() {
+    this.cardService.init();
+  }
+
+  async uploadCardsToFireStore() {
+    this.cardService.uploadCardsToFireStore();
+  }
+
+  get getAllTags() {
+    return this.cardService.getAllTags;
+  }
+
+  get getCards() {
+    return this.cardService.getCards;
+  }
+
+  getFilteredCardsWith(status: cardStatus) {
+    return this.cardService.getFilteredCardsWith(status);
+  }
+
+  addCard(status: cardStatus, content: string, tags: string[]) {
+    this.cardService.addCard(status, content, tags);
+  }
+
+  addCardTag(id: string, tag: string) {
+    this.cardService.addCardTag(id, tag);
+  }
+
+  updateCardContent(id: string, content: string) {
+    this.cardService.updateCardContent(id, content);
+  }
+
+  updateCardStatus(id: string, status: cardStatus) {
+    this.cardService.updateCardStatus(id, status);
+  }
+
+  updateDueDate(id: string, date: string | null) {
+    this.cardService.updateDueDate(id, date);
+  }
+
+  archiveCard(id: string) {
+    this.cardService.archiveCard(id);
+  }
+
+  completeCard(id: string) {
+    this.cardService.completeCard(id);
+  }
+
+  deleteCard(id: string) {
+    this.cardService.deleteCard(id);
+  }
+
+  deleteCardTag(id: string, tag: string) {
+    this.cardService.deleteCardTag(id, tag);
   }
 }
 
-export const cardStore = new CardStore();
+const cardService = new CardService();
+export const cardStore = new CardStore(cardService);
 
 // interface UserSettings {
 //   user_id: {

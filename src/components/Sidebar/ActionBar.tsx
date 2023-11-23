@@ -1,9 +1,9 @@
-import { Button, Chip, Divider, Input, Spacer } from "@nextui-org/react";
+import { Chip, Divider, Input, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { Link, useLocation } from "react-router-dom";
-import { cardStore } from "../../store/cardStore";
+import { authStore } from "../../store/authStore";
 
 interface IAction {
   label: string;
@@ -37,20 +37,18 @@ export const ActionBar = observer(() => {
     e.preventDefault();
     const tag = tagInputRef.current?.value;
     if (!tag) return;
-    cardStore.updateFavoriteTags("action", tag);
     setIsFavoriteOpen(false);
   };
 
   const IdeaButton = ({ children, action, onClick }: IButton) => (
     <Link to={action.path}>
-      <Button
-        className="flex items-center justify-center"
-        size="md"
-        isDisabled={location.pathname === action.path}
+      <button
+        className="flex items-center justify-center bg-zinc-400"
+        disabled={location.pathname === action.path}
         onClick={onClick}
       >
         {children}
-      </Button>
+      </button>
     </Link>
   );
 
@@ -61,7 +59,7 @@ export const ActionBar = observer(() => {
 
   const FavoriteTagChip = ({ children, favorite }: FavoriteTagChipProps) => {
     const handleClose = () => {
-      cardStore.deleteFavoriteTag("action", favorite);
+      console.log(favorite);
     };
 
     return (
@@ -73,7 +71,7 @@ export const ActionBar = observer(() => {
 
   return (
     <div className="fixed left-0 top-0 ml-20 h-[100svh] w-32 bg-slate-200">
-      <nav>
+      <aside>
         <ul className="flex flex-col items-center justify-center gap-4 pt-4">
           {ideaActionList.map((action) => (
             <li key={action.label}>
@@ -88,7 +86,7 @@ export const ActionBar = observer(() => {
           <h2>Favorite</h2>
           <Divider className="my-4" />
           <ul className="flex flex-col items-center gap-4">
-            {cardStore.favoriteActionTags.map((favorite) => (
+            {authStore.favoriteActionTags.map((favorite) => (
               <li key={favorite}>
                 <FavoriteTagChip favorite={favorite}>
                   {favorite}
@@ -115,7 +113,7 @@ export const ActionBar = observer(() => {
             )}
           </div>
         </div>
-      </nav>
+      </aside>
     </div>
   );
 });

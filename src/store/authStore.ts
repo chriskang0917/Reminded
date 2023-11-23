@@ -3,7 +3,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { makeAutoObservable, runInAction } from "mobx";
 import toast from "react-hot-toast";
 import { auth, db } from "../config/firebase";
@@ -23,11 +23,22 @@ interface AuthService {
 }
 
 class EmailAuthService implements AuthService {
-  init() {
+  async init() {
     const uid = cookie.getCookie("uid");
-    runInAction(() => {
-      if (uid) authStore.uid = uid;
-    });
+    if (uid) return;
+    const profileRef = doc(db, "users", uid);
+    await getDoc(profileRef)
+      .then((doc) => {
+        if (doc.exists()) {
+          runInAction(() => {
+            authStore.name = doc.data()?.name;
+            authStore.email = doc.data()?.email;
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   register(
@@ -43,7 +54,10 @@ class EmailAuthService implements AuthService {
         toast.success("註冊成功");
         if (callback) callback("success");
 
-        runInAction(() => (authStore.uid = user?.uid));
+        runInAction(() => {
+          authStore.uid = user?.uid;
+          authStore.isLogin = true;
+        });
       })
       .then(() => {
         if (!authStore.uid) return;
@@ -74,7 +88,10 @@ class EmailAuthService implements AuthService {
         const user = userCredential.user;
         toast.success("登入成功");
         cookie.setCookie("uid", user?.uid, 30);
-        runInAction(() => (authStore.uid = user?.uid));
+        runInAction(() => {
+          authStore.uid = user?.uid;
+          authStore.isLogin = true;
+        });
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -90,7 +107,10 @@ class EmailAuthService implements AuthService {
       .then(() => {
         cookie.deleteCookie("uid");
         toast.success("登出成功");
-        runInAction(() => (authStore.uid = null));
+        runInAction(() => {
+          authStore.isLogin = false;
+          authStore.uid = null;
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -120,16 +140,20 @@ class EmailAuthService implements AuthService {
 
 class AuthStore {
   private authService: AuthService;
+  public isLogin = false;
   public uid: string | null = null;
   public name: string | null = null;
   public email: string | null = null;
+  public favoriteIdeaTags: string[] = [];
+  public favoriteActionTags: string[] = [];
+  public favoriteTodoTags: string[] = [];
 
   constructor(authService: AuthService) {
     makeAutoObservable(this);
     this.authService = authService;
   }
 
-  init() {
+  async init() {
     this.authService.init();
   }
 

@@ -5,9 +5,11 @@ import ActionLayout from "./components/Layout/ActionLayout";
 import IdeaLayout from "./components/Layout/IdeaLayout";
 import RootLayout from "./components/Layout/RootLayout";
 import ActionPage from "./pages/ActionPage";
-import Homepage from "./pages/HomePage";
+import ErrorPage from "./pages/ErrorPage";
 import IdeaPage from "./pages/IdeaPage";
 import LoginPage from "./pages/LoginPage";
+import ProfilePage from "./pages/Profile";
+import Homepage from "./pages/TodayPage";
 import { authStore } from "./store/authStore";
 import { cardStore } from "./store/cardStore";
 
@@ -15,6 +17,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
@@ -31,6 +34,14 @@ const router = createBrowserRouter([
         element: <ActionLayout />,
         children: [{ path: ":type", element: <ActionPage /> }],
       },
+      {
+        path: "profile",
+        element: <ProfilePage />,
+      },
+      {
+        path: "setting",
+        element: <section>Profile</section>,
+      },
     ],
   },
   {
@@ -41,9 +52,11 @@ const router = createBrowserRouter([
 
 function App() {
   useEffect(() => {
-    authStore.init();
-    cardStore.getCardsWithFireStore();
-    cardStore.getUserSettings();
+    const init = async () => {
+      await authStore.init();
+      await cardStore.init();
+    };
+    init();
   }, []);
 
   return (
