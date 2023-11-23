@@ -7,7 +7,7 @@ import {
   Input,
   Link,
 } from "@nextui-org/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { authStore } from "../store/authStore";
 

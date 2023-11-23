@@ -3,27 +3,43 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import toast from "react-hot-toast";
 import { auth } from "../config/firebase";
+import { cookie } from "../utils/auth";
 
 interface AuthService {
+  init: () => void;
   register: (email: string, password: string) => void;
   login: (email: string, password: string) => void;
   logout: () => void;
 }
 
 class EmailAuthService implements AuthService {
+  init() {
+    const uid = cookie.getCookie("uid");
+    runInAction(() => {
+      if (uid) authStore.uid = uid;
+    });
+  }
+
   register(email: string, password: string) {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log(user);
+        cookie.setCookie("uid", user?.uid, 30);
+        toast.success("註冊成功");
+        runInAction(() => {
+          authStore.uid = user?.uid;
+        });
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
+        if (errorCode === "auth/email-already-in-use") {
+          toast.error("此信箱已被註冊");
+        }
       });
   }
 
@@ -31,8 +47,11 @@ class EmailAuthService implements AuthService {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log(user);
         toast.success("登入成功");
+        cookie.setCookie("uid", user?.uid, 30);
+        runInAction(() => {
+          authStore.uid = user?.uid;
+        });
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -55,12 +74,16 @@ class EmailAuthService implements AuthService {
 
 class AuthStore {
   private authService: AuthService;
-  token: string | null = null;
+  uid: string | null = null;
 
   constructor(authService: AuthService) {
     makeAutoObservable(this);
-    this.token = localStorage.getItem("token");
+    this.uid = localStorage.getItem("uid");
     this.authService = authService;
+  }
+
+  init() {
+    this.authService.init();
   }
 
   register(email: string, password: string) {
