@@ -6,34 +6,60 @@ import {
   CardHeader,
   Input,
   Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
 } from "@nextui-org/react";
-import { useEffect, useState } from "react";
-import { Toaster } from "react-hot-toast";
+import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { authStore } from "../store/authStore";
 
-const DEFAULT_AUTH = {
-  email: "test@gmail.com",
-  password: "123456",
-};
+const DEFAULT_EMAIL = "test@gmail.com";
 
 const LoginPage = () => {
-  const [isLoginPage, setIsLoginPage] = useState<boolean>(true);
-  const [auth, setAuth] = useState<{ email: string; password: string }>({
-    email: DEFAULT_AUTH.email,
-    password: DEFAULT_AUTH.password,
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [loginState, setLoginState] = useState({
+    newUserName: "",
+    email: DEFAULT_EMAIL,
+    password: "",
+    isLoginPage: false,
   });
 
-  const onSubmit = () => {
-    if (isLoginPage) authStore.login(auth.email, auth.password);
-    if (!isLoginPage) authStore.register(auth.email, auth.password);
+  console.log(isOpen);
+
+  const onLoginSubmit = () => {
+    if (loginState.isLoginPage) {
+      return authStore.login(loginState.email, loginState.password);
+    }
+    if (!loginState.email || !loginState.password) {
+      return toast.error("請輸入完整的帳號密碼");
+    }
+
+    const registerCallback = (result?: string) => {
+      if (result === "success") return onOpen();
+    };
+
+    authStore.register(loginState.email, loginState.password, registerCallback);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLoginPressSubmit = () => {
+    onLoginSubmit();
+  };
+
+  const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit();
+    onLoginSubmit();
   };
 
-  const handlePressSubmit = () => onSubmit();
+  const handleSwitchPage = () => {
+    setLoginState((prevState) => ({
+      ...prevState,
+      isLoginPage: !prevState.isLoginPage,
+    }));
+  };
 
   return (
     <main className="flex h-[100svh] items-center justify-center">
@@ -44,38 +70,82 @@ const LoginPage = () => {
           <p>現在，就開始捕捉你的靈感。</p>
         </CardHeader>
         <CardBody className="">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleLoginSubmit}>
             <div className="mx-auto flex w-5/6 flex-col gap-4">
               <Input
-                value={auth.email}
+                value={loginState.email}
                 placeholder="輸入你的帳號"
                 type="email"
                 label="Email"
                 isClearable
-                onClear={() => setAuth({ ...auth, email: "" })}
-                onValueChange={(value) => setAuth({ ...auth, email: value })}
+                onClear={() => setLoginState({ ...loginState, email: "" })}
+                onValueChange={(value) =>
+                  setLoginState({ ...loginState, email: value })
+                }
               />
               <Input
                 placeholder="輸入你的密碼"
                 type="password"
                 label="Password"
                 isClearable
-                onClear={() => setAuth({ ...auth, password: "" })}
-                onValueChange={(value) => setAuth({ ...auth, password: value })}
+                onClear={() => setLoginState({ ...loginState, password: "" })}
+                onValueChange={(value) =>
+                  setLoginState({ ...loginState, password: value })
+                }
               />
               <button type="submit"></button>
             </div>
           </form>
         </CardBody>
         <CardFooter className="my-4 flex flex-col">
-          <Button className="mx-auto mb-4 w-5/6" onPress={handlePressSubmit}>
-            {isLoginPage ? "登入" : "註冊"}
+          <Button
+            className="mx-auto mb-4 w-5/6"
+            onPress={handleLoginPressSubmit}
+          >
+            {loginState.isLoginPage ? "登入" : "註冊"}
           </Button>
-          <Link underline="hover" onPress={() => setIsLoginPage(!isLoginPage)}>
-            {!isLoginPage ? "返回登入" : "開始註冊"}
-          </Link>
+          <div>
+            <span className=" font-light text-slate-700">
+              {loginState.isLoginPage ? "還沒有帳號嗎？ " : "已經有帳號了嗎？ "}
+            </span>
+            <Link
+              className="cursor-pointer"
+              underline="hover"
+              onPress={handleSwitchPage}
+            >
+              {!loginState.isLoginPage ? "返回登入" : "開始註冊"}
+            </Link>
+          </div>
         </CardFooter>
       </Card>
+      <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex justify-center">
+                <h1>註冊成功！ 輸入你想使用的暱稱</h1>
+              </ModalHeader>
+              <ModalBody>
+                <Input
+                  value={loginState.newUserName}
+                  onValueChange={(newUserName) =>
+                    setLoginState({ ...loginState, newUserName })
+                  }
+                  placeholder="輸入你的暱稱"
+                />
+              </ModalBody>
+              <ModalFooter className="flex justify-center">
+                <Button color="warning" variant="ghost" onPress={onClose}>
+                  略過
+                </Button>
+                <Button color="success" onPress={onClose}>
+                  確認
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </main>
   );
 };

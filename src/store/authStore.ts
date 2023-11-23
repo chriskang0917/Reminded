@@ -10,7 +10,7 @@ import { cookie } from "../utils/auth";
 
 interface AuthService {
   init: () => void;
-  register: (email: string, password: string) => void;
+  register: (email: string, password: string, callback?: () => void) => void;
   login: (email: string, password: string) => void;
   logout: () => void;
 }
@@ -23,19 +23,25 @@ class EmailAuthService implements AuthService {
     });
   }
 
-  register(email: string, password: string) {
+  register(
+    email: string,
+    password: string,
+    callback?: (message?: string) => void,
+  ) {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
         cookie.setCookie("uid", user?.uid, 30);
         toast.success("註冊成功");
+        if (callback) callback("success");
         runInAction(() => {
           authStore.uid = user?.uid;
         });
       })
       .catch((error) => {
-        const errorCode = error.code;
+        const errorCode = error.code || "";
         const errorMessage = error.message;
+        if (callback) callback("error");
         console.log(errorCode, errorMessage);
         if (errorCode === "auth/email-already-in-use") {
           toast.error("此信箱已被註冊");
@@ -64,7 +70,11 @@ class EmailAuthService implements AuthService {
   logout() {
     signOut(auth)
       .then(() => {
-        console.log("logout");
+        cookie.deleteCookie("uid");
+        toast.success("登出成功");
+        runInAction(() => {
+          authStore.uid = null;
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -86,8 +96,8 @@ class AuthStore {
     this.authService.init();
   }
 
-  register(email: string, password: string) {
-    this.authService.register(email, password);
+  register(email: string, password: string, callback?: () => void) {
+    this.authService.register(email, password, callback);
   }
 
   login(email: string, password: string) {
