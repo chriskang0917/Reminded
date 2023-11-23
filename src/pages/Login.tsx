@@ -13,22 +13,22 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
+import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { Navigate } from "react-router-dom";
 import { authStore } from "../store/authStore";
 
 const DEFAULT_EMAIL = "test@gmail.com";
 
-const LoginPage = () => {
+const LoginPage = observer(() => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [loginState, setLoginState] = useState({
     newUserName: "",
     email: DEFAULT_EMAIL,
     password: "",
-    isLoginPage: false,
+    isLoginPage: true,
   });
-
-  console.log(isOpen);
 
   const onLoginSubmit = () => {
     if (loginState.isLoginPage) {
@@ -39,7 +39,8 @@ const LoginPage = () => {
     }
 
     const registerCallback = (result?: string) => {
-      if (result === "success") return onOpen();
+      if (result === "error") return;
+      onOpen();
     };
 
     authStore.register(loginState.email, loginState.password, registerCallback);
@@ -60,6 +61,19 @@ const LoginPage = () => {
       isLoginPage: !prevState.isLoginPage,
     }));
   };
+
+  const handleNameSubmit = (onClose: () => void) => {
+    if (!loginState.newUserName) {
+      return toast.error("請輸入暱稱");
+    }
+    authStore.updateProfile({
+      name: loginState.newUserName,
+      email: loginState.email,
+    });
+    onClose();
+  };
+
+  if (authStore.uid) return <Navigate to="/" replace />;
 
   return (
     <main className="flex h-[100svh] items-center justify-center">
@@ -138,7 +152,10 @@ const LoginPage = () => {
                 <Button color="warning" variant="ghost" onPress={onClose}>
                   略過
                 </Button>
-                <Button color="success" onPress={onClose}>
+                <Button
+                  color="success"
+                  onPress={() => handleNameSubmit(onClose)}
+                >
                   確認
                 </Button>
               </ModalFooter>
@@ -148,6 +165,6 @@ const LoginPage = () => {
       </Modal>
     </main>
   );
-};
+});
 
 export default LoginPage;

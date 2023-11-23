@@ -3,16 +3,23 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { makeAutoObservable, runInAction } from "mobx";
 import toast from "react-hot-toast";
-import { auth } from "../config/firebase";
+import { auth, db } from "../config/firebase";
 import { cookie } from "../utils/auth";
+
+interface IProfile {
+  email: string;
+  name: string;
+}
 
 interface AuthService {
   init: () => void;
   register: (email: string, password: string, callback?: () => void) => void;
   login: (email: string, password: string) => void;
   logout: () => void;
+  updateProfile: (profile: IProfile) => void;
 }
 
 class EmailAuthService implements AuthService {
@@ -34,9 +41,7 @@ class EmailAuthService implements AuthService {
         cookie.setCookie("uid", user?.uid, 30);
         toast.success("註冊成功");
         if (callback) callback("success");
-        runInAction(() => {
-          authStore.uid = user?.uid;
-        });
+        runInAction(() => (authStore.uid = user?.uid));
       })
       .catch((error) => {
         const errorCode = error.code || "";
@@ -55,9 +60,7 @@ class EmailAuthService implements AuthService {
         const user = userCredential.user;
         toast.success("登入成功");
         cookie.setCookie("uid", user?.uid, 30);
-        runInAction(() => {
-          authStore.uid = user?.uid;
-        });
+        runInAction(() => (authStore.uid = user?.uid));
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -72,23 +75,42 @@ class EmailAuthService implements AuthService {
       .then(() => {
         cookie.deleteCookie("uid");
         toast.success("登出成功");
-        runInAction(() => {
-          authStore.uid = null;
-        });
+        runInAction(() => (authStore.uid = null));
       })
       .catch((error) => {
         console.log(error);
       });
   }
+
+  async updateProfile({ name, email }: IProfile) {
+    if (!authStore.uid) return;
+    const profileRef = doc(db, "users", authStore.uid);
+    try {
+      await setDoc(profileRef, {
+        uid: authStore.uid,
+        email,
+        name,
+      });
+      toast.success("更新成功");
+      runInAction(() => {
+        authStore.name = name;
+        authStore.email = email;
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("更新失敗");
+    }
+  }
 }
 
 class AuthStore {
   private authService: AuthService;
-  uid: string | null = null;
+  public uid: string | null = null;
+  public name: string | null = null;
+  public email: string | null = null;
 
   constructor(authService: AuthService) {
     makeAutoObservable(this);
-    this.uid = localStorage.getItem("uid");
     this.authService = authService;
   }
 
@@ -106,6 +128,10 @@ class AuthStore {
 
   logout() {
     this.authService.logout();
+  }
+
+  updateProfile(profile: IProfile) {
+    this.authService.updateProfile(profile);
   }
 }
 
