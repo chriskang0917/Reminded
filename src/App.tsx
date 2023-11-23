@@ -5,7 +5,7 @@ import ActionLayout from "./components/Layout/ActionLayout";
 import IdeaLayout from "./components/Layout/IdeaLayout";
 import RootLayout from "./components/Layout/RootLayout";
 import ActionPage from "./pages/ActionPage";
-import Homepage from "./pages/HomePage";
+import Homepage from "./pages/TodayPage";
 import IdeaPage from "./pages/IdeaPage";
 import LoginPage from "./pages/LoginPage";
 import { authStore } from "./store/authStore";

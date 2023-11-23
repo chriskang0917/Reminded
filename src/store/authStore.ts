@@ -43,7 +43,10 @@ class EmailAuthService implements AuthService {
         toast.success("註冊成功");
         if (callback) callback("success");
 
-        runInAction(() => (authStore.uid = user?.uid));
+        runInAction(() => {
+          authStore.uid = user?.uid;
+          authStore.isLogin = true;
+        });
       })
       .then(() => {
         if (!authStore.uid) return;
@@ -74,7 +77,10 @@ class EmailAuthService implements AuthService {
         const user = userCredential.user;
         toast.success("登入成功");
         cookie.setCookie("uid", user?.uid, 30);
-        runInAction(() => (authStore.uid = user?.uid));
+        runInAction(() => {
+          authStore.uid = user?.uid;
+          authStore.isLogin = true;
+        });
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -120,6 +126,7 @@ class EmailAuthService implements AuthService {
 
 class AuthStore {
   private authService: AuthService;
+  public isLogin = false;
   public uid: string | null = null;
   public name: string | null = null;
   public email: string | null = null;

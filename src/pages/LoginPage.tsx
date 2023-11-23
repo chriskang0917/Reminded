@@ -89,8 +89,13 @@ const LoginPage = observer(() => {
     onClose();
   };
 
-  if (authStore.uid && !loginState.isSettingName)
-    return <Navigate to="/" replace />;
+  const isRedirect = [
+    authStore.uid !== "",
+    !loginState.isSettingName,
+    authStore.isLogin,
+  ].every((boolean) => boolean === true);
+
+  if (isRedirect) return <Navigate to="/" replace />;
 
   return (
     <main className="flex h-[100svh] items-center justify-center">
