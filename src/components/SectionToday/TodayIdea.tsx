@@ -2,7 +2,7 @@ import { Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { IoFilterOutline } from "react-icons/io5";
 import { cardStore } from "../../store/cardStore";
-import { getIsToday } from "../../utils/card";
+import { filterCard } from "../../utils/card";
 import { style } from "../../utils/style";
 import { IdeaCard } from "../Card/IdeaCard";
 
@@ -11,7 +11,7 @@ export const TodayIdea = observer(() => {
     if (!card.createdTime) return false;
     const isIdea = card.status === "idea";
     const isArchived = card.isArchived;
-    const isToday = getIsToday(card.createdTime);
+    const isToday = filterCard.getIsToday(card.createdTime);
     return isIdea && !isArchived && isToday;
   });
 

@@ -2,7 +2,7 @@ import { Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { IoFilterOutline } from "react-icons/io5";
 import { cardStore } from "../../store/cardStore";
-import { getIsToday } from "../../utils/card";
+import { filterCard } from "../../utils/card";
 import { style } from "../../utils/style";
 import { TodoCard } from "../Card";
 
@@ -11,7 +11,7 @@ export const TodayTodo = observer(() => {
     if (!card.dueDate) return false;
     const isTodo = card.status === "todo";
     const isArchived = card.isArchived;
-    const isToday = getIsToday(card.dueDate);
+    const isToday = filterCard.getIsToday(card.dueDate);
     return isTodo && !isArchived && isToday;
   });
 
