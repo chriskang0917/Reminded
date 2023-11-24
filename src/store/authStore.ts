@@ -3,7 +3,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { makeAutoObservable, runInAction } from "mobx";
 import toast from "react-hot-toast";
 import { auth, db } from "../config/firebase";
@@ -15,7 +15,8 @@ interface IProfile {
 }
 
 interface AuthService {
-  init: () => void;
+  initAuthState: () => void;
+  initState: () => void;
   register: (email: string, password: string, callback?: () => void) => void;
   login: (email: string, password: string) => void;
   logout: () => void;
@@ -23,25 +24,38 @@ interface AuthService {
 }
 
 class EmailAuthService implements AuthService {
-  async init() {
-    const uid = cookie.getCookie("uid");
-    if (!uid) return runInAction(() => (authStore.isLogin = false));
+  private cookieExpireDay = 10;
 
-    const profileRef = doc(db, "users", uid);
-    await getDoc(profileRef)
-      .then((doc) => {
-        if (doc.exists()) {
-          runInAction(() => {
-            authStore.name = doc.data()?.name;
-            authStore.email = doc.data()?.email;
-            authStore.uid = doc.data()?.uid;
-            authStore.isLogin = true;
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  initAuthState() {
+    if (!cookie.getCookie("uid")) return;
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        runInAction(() => {
+          authStore.uid = user.uid;
+          authStore.isLogin = true;
+        });
+      } else {
+        runInAction(() => {
+          authStore.isLogin = false;
+        });
+      }
+    });
+  }
+
+  initState() {
+    if (!authStore.uid) return;
+    onSnapshot(doc(db, "users", authStore.uid), (doc) => {
+      try {
+        if (!doc.exists()) throw new Error("profile_not_exist");
+        runInAction(() => {
+          authStore.name = doc.data()?.name;
+          authStore.email = doc.data()?.email;
+          authStore.uid = doc.data()?.uid;
+        });
+      } catch (error) {
+        console.log("init_state_error", error);
+      }
+    });
   }
 
   register(
@@ -50,10 +64,8 @@ class EmailAuthService implements AuthService {
     callback?: (message?: string) => void,
   ) {
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        cookie.setCookie("uid", user?.uid, 30);
-
+      .then(({ user }) => {
+        cookie.setCookie("uid", user?.uid, this.cookieExpireDay);
         toast.success("註冊成功");
         if (callback) callback("success");
 
@@ -65,7 +77,9 @@ class EmailAuthService implements AuthService {
       .then(() => {
         if (!authStore.uid) return;
         const profileRef = doc(db, "users", authStore.uid);
-        authStore.name = `User_${Math.floor(Math.random() * 10000)}`;
+        const randomName = `User_${Math.floor(Math.random() * 10000)}`;
+        authStore.name = randomName;
+
         setDoc(profileRef, {
           name: authStore.name,
           uid: authStore.uid,
@@ -87,12 +101,13 @@ class EmailAuthService implements AuthService {
 
   login(email: string, password: string) {
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
+      .then(({ user }) => {
         toast.success("登入成功");
-        cookie.setCookie("uid", user?.uid, 30);
+        cookie.setCookie("uid", user?.uid, this.cookieExpireDay);
+
         runInAction(() => {
           authStore.uid = user?.uid;
+          authStore.email = user?.email;
           authStore.isLogin = true;
         });
       })
@@ -106,37 +121,33 @@ class EmailAuthService implements AuthService {
   }
 
   logout() {
+    cookie.deleteCookie("uid");
+    runInAction(() => {
+      authStore.uid = null;
+      authStore.isLogin = false;
+    });
+
     signOut(auth)
-      .then(() => {
-        cookie.deleteCookie("uid");
-        toast.success("登出成功");
-        runInAction(() => {
-          authStore.isLogin = false;
-          authStore.uid = null;
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then(() => toast.success("登出成功"))
+      .catch((error) => console.log(error));
   }
 
   async updateProfile({ name, email }: IProfile) {
-    if (!authStore.uid) return;
-    const profileRef = doc(db, "users", authStore.uid);
+    const uid = authStore.uid;
+    if (!uid) return;
+
     try {
-      await setDoc(profileRef, {
-        uid: authStore.uid,
-        email,
-        name,
-      });
+      const profileRef = doc(db, "users", uid);
+      await setDoc(profileRef, { uid, email, name });
+
       toast.success("更新成功");
       runInAction(() => {
         authStore.name = name;
         authStore.email = email;
       });
     } catch (error) {
-      console.error(error);
       toast.error("更新失敗");
+      console.error(error);
     }
   }
 }
@@ -156,8 +167,12 @@ class AuthStore {
     this.authService = authService;
   }
 
-  async init() {
-    this.authService.init();
+  initAuthState() {
+    this.authService.initAuthState();
+  }
+
+  async initState() {
+    this.authService.initState();
   }
 
   register(email: string, password: string, callback?: () => void) {

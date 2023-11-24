@@ -65,7 +65,7 @@ interface ICardService {
 }
 
 interface IFirebaseService {
-  init: () => void;
+  initCards: () => void;
   updateCardToFirebase: (cardId: string, card: IUpdateCard) => void;
   addCardToFireStore: (card: ICard) => void;
 }
@@ -222,7 +222,7 @@ class CardService implements ICardService {
 }
 
 class FirebaseService implements IFirebaseService {
-  async init() {
+  async initCards() {
     try {
       const uid = cookie.getCookie("uid");
       const localCards = JSON.parse(localStorage.getItem("cards") || "");
@@ -280,8 +280,8 @@ class CardStore {
     this.firebaseService = firebaseService;
   }
 
-  async init() {
-    this.firebaseService.init();
+  async initCards() {
+    this.firebaseService.initCards();
   }
 
   async updateCardToFirebase(cardId: string, updateCard: IUpdateCard) {

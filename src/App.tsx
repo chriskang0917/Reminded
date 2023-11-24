@@ -1,4 +1,5 @@
 import { NextUIProvider } from "@nextui-org/react";
+import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
@@ -51,13 +52,11 @@ const router = createBrowserRouter([
   },
 ]);
 
-function App() {
+const App = observer(() => {
   useEffect(() => {
-    const init = async () => {
-      await authStore.init();
-      await cardStore.init();
-    };
-    init();
+    if (!authStore.uid) return authStore.initAuthState();
+    authStore.initState();
+    cardStore.initCards();
   }, [authStore.uid]);
 
   return (
@@ -66,6 +65,6 @@ function App() {
       <RouterProvider router={router}></RouterProvider>
     </NextUIProvider>
   );
-}
+});
 
 export default App;

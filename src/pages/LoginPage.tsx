@@ -15,7 +15,7 @@ import {
 } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Navigate } from "react-router-dom";
 import { authStore } from "../store/authStore";
 
@@ -90,7 +90,7 @@ const LoginPage = observer(() => {
   };
 
   const isRedirect = [
-    authStore.uid !== "",
+    authStore.uid,
     !loginState.isSettingName,
     authStore.isLogin,
   ].every((boolean) => boolean);
