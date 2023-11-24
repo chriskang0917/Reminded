@@ -1,5 +1,6 @@
 import { NextUIProvider } from "@nextui-org/react";
 import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ActionLayout from "./components/Layout/ActionLayout";
 import IdeaLayout from "./components/Layout/IdeaLayout";
@@ -57,10 +58,11 @@ function App() {
       await cardStore.init();
     };
     init();
-  }, []);
+  }, [authStore.uid]);
 
   return (
     <NextUIProvider>
+      <Toaster position="top-center" />
       <RouterProvider router={router}></RouterProvider>
     </NextUIProvider>
   );

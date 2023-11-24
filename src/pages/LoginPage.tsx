@@ -99,7 +99,6 @@ const LoginPage = observer(() => {
 
   return (
     <main className="flex h-[100svh] items-center justify-center">
-      <Toaster position="top-center" />
       <Card className="h-[400px] w-3/5 max-w-[500px]">
         <CardHeader className="flex w-full flex-col items-center">
           <h1 className="my-2 text-center text-2xl font-bold">Reminded</h1>
@@ -154,7 +153,12 @@ const LoginPage = observer(() => {
           </div>
         </CardFooter>
       </Card>
-      <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal
+        backdrop="blur"
+        isDismissable={false}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      >
         <ModalContent>
           {() => (
             <>
