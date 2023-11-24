@@ -40,6 +40,7 @@ const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
 
   const handleArchive = () => {
     cardStore.archiveCard(card.id);
+    cardStore.updateCardToFirebase(card.id, { isArchived: true });
   };
 
   const menuList: MenuList[] = [
