@@ -1,3 +1,4 @@
+import { addDays, isSameISOWeek, parseISO } from "date-fns";
 import {
   collection,
   doc,
@@ -9,6 +10,7 @@ import {
 import { makeAutoObservable, runInAction } from "mobx";
 import { nanoid } from "nanoid";
 import { db } from "../config/firebase";
+import { WeekStartsOn } from "../utils/cardUtils";
 import { cookie } from "../utils/cookie";
 import { authStore } from "./authStore";
 
@@ -50,6 +52,7 @@ interface ICardService {
   getAllTags: string[];
   getCards: ICard[];
   getFilteredCardsWith: (status: cardStatus) => ICard[];
+  getThisWeekCardsWith: (weekStartsOn: WeekStartsOn) => ICard[];
   addCard: (status: cardStatus, content: string, tags: string[]) => void;
   addCardTag: (id: string, tag: string) => void;
   updateCardContent: (id: string, content: string) => void;
@@ -109,6 +112,13 @@ class CardService implements ICardService {
 
   getFilteredCardsWith(status: cardStatus) {
     return cardStore.cards.filter((card) => card.status === status);
+  }
+
+  getThisWeekCardsWith(weekStartsOn: WeekStartsOn) {
+    return cardStore.cards.filter((card) => {
+      const adjustedDate = addDays(parseISO(card.createdTime), -weekStartsOn);
+      isSameISOWeek(new Date(), adjustedDate);
+    });
   }
 
   addCard(status: cardStatus, content: string, tags: string[]) {
@@ -288,6 +298,10 @@ class CardStore {
 
   get getCards() {
     return this.cardService.getCards;
+  }
+
+  getThisWeekCardsWith(weekStartsOn: WeekStartsOn) {
+    return this.cardService.getThisWeekCardsWith(weekStartsOn);
   }
 
   getFilteredCardsWith(status: cardStatus) {

@@ -11,7 +11,7 @@ export const enum WeekStartsOn {
   Saturday = 6,
 }
 
-export const filterCard = {
+export const cardUtils = {
   getIsToday(date: string) {
     const dateFormat = "yyyy-MM-dd";
     const dueDate = parseISO(date);
@@ -22,7 +22,7 @@ export const filterCard = {
   getThisWeekCardsWith(weekStartsOn: WeekStartsOn) {
     return cardStore.cards.filter((card) => {
       const adjustedDate = addDays(parseISO(card.createdTime), -weekStartsOn);
-      isSameISOWeek(new Date(), adjustedDate);
+      return isSameISOWeek(new Date(), adjustedDate);
     });
   },
 };
