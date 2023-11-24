@@ -93,7 +93,7 @@ const LoginPage = observer(() => {
     authStore.uid !== "",
     !loginState.isSettingName,
     authStore.isLogin,
-  ].every((boolean) => boolean === true);
+  ].every((boolean) => boolean);
 
   if (isRedirect) return <Navigate to="/" replace />;
 

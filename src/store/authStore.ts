@@ -25,7 +25,8 @@ interface AuthService {
 class EmailAuthService implements AuthService {
   async init() {
     const uid = cookie.getCookie("uid");
-    if (uid) return;
+    if (!uid) return runInAction(() => (authStore.isLogin = false));
+
     const profileRef = doc(db, "users", uid);
     await getDoc(profileRef)
       .then((doc) => {
@@ -33,6 +34,8 @@ class EmailAuthService implements AuthService {
           runInAction(() => {
             authStore.name = doc.data()?.name;
             authStore.email = doc.data()?.email;
+            authStore.uid = doc.data()?.uid;
+            authStore.isLogin = true;
           });
         }
       })
@@ -140,7 +143,7 @@ class EmailAuthService implements AuthService {
 
 class AuthStore {
   private authService: AuthService;
-  public isLogin = false;
+  public isLogin = true;
   public uid: string | null = null;
   public name: string | null = null;
   public email: string | null = null;
