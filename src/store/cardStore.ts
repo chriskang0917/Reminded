@@ -26,15 +26,9 @@ export interface ICard {
   reminderEndDate: number | null;
 }
 
-/* ===============================
-==========  CardStore  ===========
-=============================== */
-
 interface ICardService {
   getAllTags: string[];
   getCards: ICard[];
-  init: () => void;
-  uploadCardsToFireStore: () => void;
   getFilteredCardsWith: (status: cardStatus) => ICard[];
   addCard: (status: cardStatus, content: string, tags: string[]) => void;
   addCardTag: (id: string, tag: string) => void;
@@ -47,34 +41,41 @@ interface ICardService {
   deleteCardTag: (id: string, tag: string) => void;
 }
 
+interface IFirebaseService {
+  init: () => void;
+  uploadCardsToFireStore: () => void;
+}
+
+/* ===============================
+==========  Implement  ===========
+=============================== */
+
+class NewCard implements ICard {
+  id: string;
+  content: string;
+  tags: string[];
+  status: cardStatus;
+  isArchived: boolean = false;
+  isImportant: boolean = false;
+  createdTime: string;
+  updatedTime: string;
+  dueDate: string | null;
+  reminderStartDate: number | null = null;
+  reminderEndDate: number | null = null;
+
+  constructor(content: string, tags: string[], status: cardStatus) {
+    const currentDate = new Date().toISOString();
+    this.id = nanoid();
+    this.content = content;
+    this.tags = tags;
+    this.status = status;
+    this.createdTime = currentDate;
+    this.updatedTime = currentDate;
+    this.dueDate = status === "todo" ? currentDate : null;
+  }
+}
+
 class CardService implements ICardService {
-  init() {
-    try {
-      if (!authStore.uid) return;
-      const cardsRef = doc(db, "cards", authStore.uid);
-      return onSnapshot(cardsRef, (doc) => {
-        const data = doc.data();
-        localStorage.setItem("cards", JSON.stringify(data?.cards || []));
-        runInAction(() => {
-          if (doc.exists()) cardStore.cards = data?.cards || [];
-        });
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async uploadCardsToFireStore() {
-    try {
-      if (!authStore.uid) return;
-      const cardsRef = doc(db, "cards", authStore.uid);
-      const clonedCards = toJS(cardStore.getCards);
-      await setDoc(cardsRef, { cards: clonedCards });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   get getAllTags() {
     const tags = cardStore.cards.map((card) => card.tags).flat() || [];
     if (!tags) return [];
@@ -90,21 +91,7 @@ class CardService implements ICardService {
   }
 
   addCard(status: cardStatus, content: string, tags: string[]) {
-    const isTodo = status === "todo";
-    const currentDate = new Date().toISOString();
-    const newCard = {
-      id: nanoid(),
-      status,
-      content,
-      tags,
-      isArchived: false,
-      isImportant: false,
-      createdTime: currentDate,
-      updatedTime: currentDate,
-      dueDate: isTodo ? currentDate : null,
-      reminderStartDate: null,
-      reminderEndDate: null,
-    };
+    const newCard = new NewCard(content, tags, status);
     cardStore.cards.push(newCard);
   }
 
@@ -203,21 +190,57 @@ class CardService implements ICardService {
   }
 }
 
-class CardStore {
-  private cardService: CardService;
-  cards: ICard[] = [];
-
-  constructor(cardService: CardService) {
-    makeAutoObservable(this);
-    this.cardService = cardService;
-  }
-
-  async init() {
-    this.cardService.init();
+class FirebaseService implements IFirebaseService {
+  init() {
+    try {
+      if (!authStore.uid) return;
+      const cardsRef = doc(db, "user_cards", authStore.uid);
+      console.log(authStore.uid);
+      return onSnapshot(cardsRef, (doc) => {
+        const data = doc.data();
+        localStorage.setItem("cards", JSON.stringify(data?.cards || []));
+        runInAction(() => {
+          if (doc.exists()) cardStore.cards = data?.cards || [];
+        });
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async uploadCardsToFireStore() {
-    this.cardService.uploadCardsToFireStore();
+    try {
+      if (!authStore.uid) return;
+      const cardsRef = doc(db, "cards", authStore.uid);
+      const clonedCards = toJS(cardStore.getCards);
+      await setDoc(cardsRef, { cards: clonedCards });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+}
+
+/* ===============================
+==========  CardStore  ===========
+=============================== */
+
+class CardStore {
+  private cardService: CardService;
+  private firebaseService: FirebaseService;
+  cards: ICard[] = [];
+
+  constructor(cardService: CardService, firebaseService: FirebaseService) {
+    makeAutoObservable(this);
+    this.cardService = cardService;
+    this.firebaseService = firebaseService;
+  }
+
+  async init() {
+    this.firebaseService.init();
+  }
+
+  async uploadCardsToFireStore() {
+    this.firebaseService.uploadCardsToFireStore();
   }
 
   get getAllTags() {
@@ -270,7 +293,8 @@ class CardStore {
 }
 
 const cardService = new CardService();
-export const cardStore = new CardStore(cardService);
+const firebaseService = new FirebaseService();
+export const cardStore = new CardStore(cardService, firebaseService);
 
 // interface UserSettings {
 //   user_id: {
