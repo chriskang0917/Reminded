@@ -1,7 +1,15 @@
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
-import { makeAutoObservable, runInAction, toJS } from "mobx";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
+import { makeAutoObservable, runInAction } from "mobx";
 import { nanoid } from "nanoid";
 import { db } from "../config/firebase";
+import { cookie } from "../utils/cookie";
 import { authStore } from "./authStore";
 
 export type cardStatus =
@@ -26,6 +34,18 @@ export interface ICard {
   reminderEndDate: number | null;
 }
 
+export interface IUpdateCard {
+  content?: string;
+  tags?: string[];
+  status?: cardStatus;
+  isArchived?: boolean;
+  isImportant?: boolean;
+  updatedTime?: string;
+  dueDate?: string | null;
+  reminderStartDate?: number | null;
+  reminderEndDate?: number | null;
+}
+
 interface ICardService {
   getAllTags: string[];
   getCards: ICard[];
@@ -43,14 +63,15 @@ interface ICardService {
 
 interface IFirebaseService {
   init: () => void;
-  uploadCardsToFireStore: () => void;
+  updateCardToFirebase: (cardId: string, card: IUpdateCard) => void;
+  addCardToFireStore: (card: ICard) => void;
 }
 
 /* ===============================
 ==========  Implement  ===========
 =============================== */
 
-class NewCard implements ICard {
+export class NewCard implements ICard {
   id: string;
   content: string;
   tags: string[];
@@ -67,7 +88,7 @@ class NewCard implements ICard {
     const currentDate = new Date().toISOString();
     this.id = nanoid();
     this.content = content;
-    this.tags = tags;
+    this.tags = tags || [];
     this.status = status;
     this.createdTime = currentDate;
     this.updatedTime = currentDate;
@@ -191,29 +212,43 @@ class CardService implements ICardService {
 }
 
 class FirebaseService implements IFirebaseService {
-  init() {
+  async init() {
     try {
-      if (!authStore.uid) return;
-      const cardsRef = doc(db, "user_cards", authStore.uid);
-      console.log(authStore.uid);
-      return onSnapshot(cardsRef, (doc) => {
-        const data = doc.data();
-        localStorage.setItem("cards", JSON.stringify(data?.cards || []));
-        runInAction(() => {
-          if (doc.exists()) cardStore.cards = data?.cards || [];
-        });
+      const uid = cookie.getCookie("uid");
+      const localCards = JSON.parse(localStorage.getItem("cards") || "");
+
+      if (!uid) return;
+      if (localCards) runInAction(() => (cardStore.cards = localCards));
+
+      const cardsRef = collection(db, "user_cards", uid, "cards");
+      const q = query(cardsRef, where("isArchived", "==", false));
+
+      return onSnapshot(q, (querySnapshot) => {
+        const cards: ICard[] = [];
+        querySnapshot.forEach((doc) => cards.push(doc.data() as ICard));
+        localStorage.setItem("cards", JSON.stringify(cards || []));
+        runInAction(() => (cardStore.cards = cards || []));
       });
     } catch (error) {
       console.error(error);
     }
   }
 
-  async uploadCardsToFireStore() {
+  async updateCardToFirebase(cardId: string, updateCard: IUpdateCard) {
     try {
       if (!authStore.uid) return;
-      const cardsRef = doc(db, "cards", authStore.uid);
-      const clonedCards = toJS(cardStore.getCards);
-      await setDoc(cardsRef, { cards: clonedCards });
+      const cardsRef = doc(db, "user_cards", authStore.uid, "cards", cardId);
+      await setDoc(cardsRef, { ...updateCard }, { merge: true });
+    } catch (error) {
+      console.error("update_card_error", error);
+    }
+  }
+
+  async addCardToFireStore(card: ICard) {
+    try {
+      if (!authStore.uid) return;
+      const cardsRef = doc(db, "user_cards", authStore.uid, "cards", card.id);
+      await setDoc(cardsRef, Object.assign({}, card), { merge: true });
     } catch (error) {
       console.error(error);
     }
@@ -239,8 +274,12 @@ class CardStore {
     this.firebaseService.init();
   }
 
-  async uploadCardsToFireStore() {
-    this.firebaseService.uploadCardsToFireStore();
+  async updateCardToFirebase(cardId: string, updateCard: IUpdateCard) {
+    this.firebaseService.updateCardToFirebase(cardId, updateCard);
+  }
+
+  async addCardToFireStore(card: ICard) {
+    this.firebaseService.addCardToFireStore(card);
   }
 
   get getAllTags() {
