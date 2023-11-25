@@ -1,6 +1,7 @@
 import { addDays, isSameISOWeek, parseISO } from "date-fns";
 import {
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
   query,
@@ -11,7 +12,6 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { nanoid } from "nanoid";
 import { db } from "../config/firebase";
 import { WeekStartsOn } from "../utils/cardUtils";
-import { cookie } from "../utils/cookie";
 import { authStore } from "./authStore";
 
 export type cardStatus =
@@ -28,6 +28,7 @@ export interface ICard {
   tags: string[];
   status: cardStatus;
   isArchived: boolean;
+  isTransformed: boolean;
   isImportant: boolean;
   createdTime: string;
   updatedTime: string;
@@ -53,7 +54,7 @@ interface ICardService {
   getCards: ICard[];
   getFilteredCardsWith: (status: cardStatus) => ICard[];
   getThisWeekCardsWith: (weekStartsOn: WeekStartsOn) => ICard[];
-  addCard: (status: cardStatus, content: string, tags: string[]) => void;
+  addCard: (newCard: NewCard) => void;
   addCardTag: (id: string, tag: string) => void;
   updateCardContent: (id: string, content: string) => void;
   updateCardStatus: (id: string, status: cardStatus) => void;
@@ -65,9 +66,10 @@ interface ICardService {
 }
 
 interface IFirebaseService {
-  initCards: () => void;
+  initActiveCards: () => void;
   updateCardToFirebase: (cardId: string, card: IUpdateCard) => void;
   addCardToFireStore: (card: ICard) => void;
+  getArchivedCards: () => void;
 }
 
 /* ===============================
@@ -80,6 +82,7 @@ export class NewCard implements ICard {
   tags: string[];
   status: cardStatus;
   isArchived: boolean = false;
+  isTransformed: boolean = false;
   isImportant: boolean = false;
   createdTime: string;
   updatedTime: string;
@@ -121,8 +124,7 @@ class CardService implements ICardService {
     });
   }
 
-  addCard(status: cardStatus, content: string, tags: string[]) {
-    const newCard = new NewCard(content, tags, status);
+  addCard(newCard: NewCard) {
     cardStore.cards.push(newCard);
   }
 
@@ -222,13 +224,17 @@ class CardService implements ICardService {
 }
 
 class FirebaseService implements IFirebaseService {
-  async initCards() {
-    try {
-      const uid = cookie.getCookie("uid");
-      const localCards = JSON.parse(localStorage.getItem("cards") || "");
+  getLocalCards() {
+    const localCards = JSON.parse(localStorage.getItem("cards") || "");
+    if (localCards) runInAction(() => (cardStore.cards = localCards));
+  }
 
+  async initActiveCards() {
+    try {
+      const uid = authStore.uid;
       if (!uid) return;
-      if (localCards) runInAction(() => (cardStore.cards = localCards));
+
+      this.getLocalCards();
 
       const cardsRef = collection(db, "user_cards", uid, "cards");
       const q = query(cardsRef, where("isArchived", "==", false));
@@ -238,6 +244,24 @@ class FirebaseService implements IFirebaseService {
         querySnapshot.forEach((doc) => cards.push(doc.data() as ICard));
         localStorage.setItem("cards", JSON.stringify(cards || []));
         runInAction(() => (cardStore.cards = cards || []));
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async getArchivedCards() {
+    try {
+      const uid = authStore.uid;
+      if (!uid) return;
+
+      const cardsRef = collection(db, "user_cards", uid, "cards");
+      const q = query(cardsRef, where("isArchived", "==", true));
+
+      return onSnapshot(q, (querySnapshot) => {
+        const archivedCards: ICard[] = [];
+        querySnapshot.forEach((doc) => archivedCards.push(doc.data() as ICard));
+        runInAction(() => (cardStore.archivedCards = archivedCards || []));
       });
     } catch (error) {
       console.error(error);
@@ -263,6 +287,16 @@ class FirebaseService implements IFirebaseService {
       console.error(error);
     }
   }
+
+  async deleteCardFromFireStore(cardId: string) {
+    try {
+      if (!authStore.uid) return;
+      const cardsRef = doc(db, "user_cards", authStore.uid, "cards", cardId);
+      await deleteDoc(cardsRef);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
 
 /* ===============================
@@ -273,6 +307,7 @@ class CardStore {
   private cardService: CardService;
   private firebaseService: FirebaseService;
   cards: ICard[] = [];
+  archivedCards: ICard[] = [];
 
   constructor(cardService: CardService, firebaseService: FirebaseService) {
     makeAutoObservable(this);
@@ -280,8 +315,12 @@ class CardStore {
     this.firebaseService = firebaseService;
   }
 
-  async initCards() {
-    this.firebaseService.initCards();
+  initActiveCards() {
+    this.firebaseService.initActiveCards();
+  }
+
+  getArchivedCards() {
+    this.firebaseService.getArchivedCards();
   }
 
   async updateCardToFirebase(cardId: string, updateCard: IUpdateCard) {
@@ -290,6 +329,10 @@ class CardStore {
 
   async addCardToFireStore(card: ICard) {
     this.firebaseService.addCardToFireStore(card);
+  }
+
+  async deleteCardFromFireStore(cardId: string) {
+    this.firebaseService.deleteCardFromFireStore(cardId);
   }
 
   get getAllTags() {
@@ -308,8 +351,8 @@ class CardStore {
     return this.cardService.getFilteredCardsWith(status);
   }
 
-  addCard(status: cardStatus, content: string, tags: string[]) {
-    this.cardService.addCard(status, content, tags);
+  addCard(newCard: NewCard) {
+    this.cardService.addCard(newCard);
   }
 
   addCardTag(id: string, tag: string) {

@@ -5,7 +5,7 @@ import {
   DropdownTrigger,
 } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { ICard, cardStore } from "../../../store/cardStore";
+import { ICard, NewCard, cardStore } from "../../../store/cardStore";
 
 interface CardToolProps {
   card: ICard;
@@ -31,11 +31,13 @@ interface MenuList {
 
 const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
   const handleDuplicate = () => {
-    cardStore.addCard(card.status, card.content, card.tags);
+    const newCard = new NewCard(card.content, card.tags, card.status);
+    cardStore.addCard(newCard);
   };
 
   const handleDelete = () => {
     cardStore.deleteCard(card.id);
+    cardStore.deleteCardFromFireStore(card.id);
   };
 
   const handleArchive = () => {

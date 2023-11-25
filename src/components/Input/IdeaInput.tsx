@@ -34,7 +34,7 @@ export const IdeaInput = observer(() => {
 
     if (input === "") return;
     const newCard = new NewCard(input, [tagInput], selectedTab);
-    cardStore.addCard(selectedTab, input, [tagInput]);
+    cardStore.addCard(newCard);
     cardStore.addCardToFireStore(newCard);
     inputRef.current?.blur();
     tagRef.current?.blur();

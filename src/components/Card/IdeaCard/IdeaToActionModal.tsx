@@ -12,7 +12,7 @@ import {
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
-import { ICard, cardStore } from "../../../store/cardStore";
+import { ICard, NewCard, cardStore } from "../../../store/cardStore";
 
 const toolTipList = [
   {
@@ -43,19 +43,8 @@ interface ButtonProps {
     | "solid"
     | "light"
     | undefined;
+  onPress?: () => void;
 }
-
-const buttonsList: ButtonProps[] = [
-  {
-    label: "封存",
-    color: "warning",
-    variant: "ghost",
-  },
-  {
-    label: "轉換",
-    color: "primary",
-  },
-];
 
 const modalHeader = "以動詞開頭，轉換你的行動...";
 const modalExample = (
@@ -82,6 +71,36 @@ export const IdeaToActionModal = observer(
       inputRef.current?.select();
     }, [isOpen]);
 
+    const buttonsList: ButtonProps[] = [
+      {
+        label: "封存",
+        color: "warning",
+        variant: "ghost",
+        onPress: () => {
+          toast.success("封存成功");
+          const newCard = new NewCard(card.content, card.tags, "action");
+          cardStore.archiveCard(card.id);
+          cardStore.updateCardToFirebase(card.id, { isArchived: true });
+
+          cardStore.addCard(newCard);
+          cardStore.addCardToFireStore(newCard);
+          onClose();
+        },
+      },
+      {
+        label: "轉換",
+        color: "primary",
+        onPress: () => {
+          toast.success("轉換成功");
+          const newCard = new NewCard(card.content, card.tags, "action");
+          cardStore.updateCardToFirebase(card.id, { status: "action" });
+          cardStore.addCard(newCard);
+          cardStore.addCardToFireStore(newCard);
+          onClose();
+        },
+      },
+    ];
+
     const handleDelete = () => {
       onClose();
       cardStore.deleteCard(card.id);
@@ -91,14 +110,16 @@ export const IdeaToActionModal = observer(
       e.preventDefault();
       const content = inputRef.current?.value || "";
       if (!content) return toast.error("請輸入內容");
-      cardStore.addCard("action", content, card.tags);
+      const newCard = new NewCard(content, card.tags, "action");
+      cardStore.addCard(newCard);
+      cardStore.addCardToFireStore(newCard);
       onClose();
     };
 
     return (
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
-          {(onClose) => (
+          {() => (
             <>
               <ModalHeader className="flex items-center gap-2">
                 <h1>轉換你的靈感</h1>
@@ -138,7 +159,7 @@ export const IdeaToActionModal = observer(
                       size="sm"
                       variant={button.variant}
                       color={button.color}
-                      onPress={onClose}
+                      onPress={button.onPress}
                     >
                       {button.label}
                     </Button>

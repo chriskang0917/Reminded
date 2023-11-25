@@ -11,7 +11,12 @@ import { format, parseISO } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import "react-day-picker/dist/style.css";
-import { ICard, cardStatus, cardStore } from "../../../store/cardStore";
+import {
+  ICard,
+  NewCard,
+  cardStatus,
+  cardStore,
+} from "../../../store/cardStore";
 import DatePicker from "./DatePicker";
 
 interface CardToolProps {
@@ -47,7 +52,8 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
   };
 
   const handleDuplicate = () => {
-    cardStore.addCard(card.status, card.content, card.tags);
+    const newCard = new NewCard(card.content, card.tags, card.status);
+    cardStore.addCard(newCard);
   };
 
   const handleArchive = () => {

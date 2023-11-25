@@ -1,25 +1,27 @@
+import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
+import { cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
+import { IdeaCard } from "../Card";
+import { useEffect } from "react";
 
 const Title = "已封存靈感";
 
 export const IdeaArchive = observer(() => {
+  useEffect(() => cardStore.getArchivedCards(), []);
+
   return (
     <section className="ml-52">
       <div className="mx-auto mt-10 flex max-w-[500px] flex-col items-center">
         <h1 className={style.mainTitle}>{Title}</h1>
-        {/* <p className={style.infoTitle}>{ideaCountsText}</p>
-        <IdeaSearchInput searchText={text} onSearch={onSearch} />
-        <h2 className={style.subTitle}>Results</h2>
         <Divider />
-        <p className={cn(style.infoTitle, "mt-2")}>{searchCountsText}</p>
         <ul className="mt-5 grid w-full gap-3">
-          {results.map((card) => (
-            <li key={card.item.id}>
-              <IdeaCard card={card.item} />
+          {cardStore.archivedCards.map((card) => (
+            <li key={card.id}>
+              <IdeaCard card={card} />
             </li>
           ))}
-        </ul> */}
+        </ul>
       </div>
     </section>
   );
