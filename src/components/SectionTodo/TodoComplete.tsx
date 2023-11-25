@@ -7,7 +7,9 @@ import { TodoCard } from "../Card";
 const Title = "已完成";
 
 export const TodoComplete = observer(() => {
-  const cardsOfThisWeek = cardUtils.getThisWeekCardsWith(WeekStartsOn.Sunday);
+  const cardsOfThisWeek = cardUtils.getThisWeekIdeaCardsWith(
+    WeekStartsOn.Sunday,
+  );
   const todoCardOfThisWeek = cardsOfThisWeek.filter(
     (card) => card.status === "todo",
   );

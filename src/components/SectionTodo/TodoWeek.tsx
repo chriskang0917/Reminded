@@ -7,7 +7,9 @@ import { TodoCard } from "../Card";
 const Title = "本週待辦";
 
 export const TodoWeek = observer(() => {
-  const cardsOfThisWeek = cardUtils.getThisWeekCardsWith(WeekStartsOn.Sunday);
+  const cardsOfThisWeek = cardUtils.getThisWeekTodoCardsWith(
+    WeekStartsOn.Sunday,
+  );
   const todoCardOfThisWeek = cardsOfThisWeek.filter(
     (card) => card.status === "todo",
   );

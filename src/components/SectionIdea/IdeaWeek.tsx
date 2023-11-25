@@ -7,7 +7,9 @@ import { IdeaCard } from "../Card";
 const Title = "本週靈感";
 
 export const IdeaWeek = observer(() => {
-  const cardsOfThisWeek = cardUtils.getThisWeekCardsWith(WeekStartsOn.Sunday);
+  const cardsOfThisWeek = cardUtils.getThisWeekIdeaCardsWith(
+    WeekStartsOn.Sunday,
+  );
   const IdeaCardOfThisWeek = cardsOfThisWeek.filter(
     (card) => card.status === "idea",
   );

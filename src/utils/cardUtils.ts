@@ -19,9 +19,16 @@ export const cardUtils = {
 
     return format(dueDate, dateFormat) === today;
   },
-  getThisWeekCardsWith(weekStartsOn: WeekStartsOn) {
+  getThisWeekIdeaCardsWith(weekStartsOn: WeekStartsOn) {
     return cardStore.cards.filter((card) => {
       const adjustedDate = addDays(parseISO(card.createdTime), -weekStartsOn);
+      return isSameISOWeek(new Date(), adjustedDate);
+    });
+  },
+  getThisWeekTodoCardsWith(weekStartsOn: WeekStartsOn) {
+    return cardStore.cards.filter((card) => {
+      if (!card.dueDate) return false;
+      const adjustedDate = addDays(parseISO(card.dueDate), -weekStartsOn);
       return isSameISOWeek(new Date(), adjustedDate);
     });
   },

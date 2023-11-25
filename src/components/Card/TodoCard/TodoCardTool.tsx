@@ -48,7 +48,9 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
-    cardStore.updateDueDate(card.id, date?.toISOString() || null);
+    const dueDate = date?.toISOString() || null;
+    cardStore.updateCard(card.id, { dueDate });
+    cardStore.updateCardToFirebase(card.id, { dueDate });
   };
 
   const handleDuplicate = () => {
