@@ -1,10 +1,12 @@
 import { addDays, isSameISOWeek, parseISO } from "date-fns";
 import {
+  FieldValue,
   collection,
   deleteDoc,
   doc,
   onSnapshot,
   query,
+  serverTimestamp,
   setDoc,
   where,
 } from "firebase/firestore";
@@ -32,6 +34,7 @@ export interface ICard {
   isImportant: boolean;
   createdTime: string;
   updatedTime: string;
+  serverTimestamp: FieldValue;
   dueDate: string | null;
   reminderStartDate: number | null;
   reminderEndDate: number | null;
@@ -55,7 +58,7 @@ interface ICardService {
   getCards: ICard[];
   getFilteredCardsWith: (status: cardStatus) => ICard[];
   getThisWeekCardsWith: (weekStartsOn: WeekStartsOn) => ICard[];
-  addCard: (newCard: NewCard) => void;
+  addCard: (newCard: NewCard, updateCard?: IUpdateCard) => void;
   addCardTag: (id: string, tag: string) => void;
   updateCardContent: (id: string, content: string) => void;
   updateCardStatus: (id: string, status: cardStatus) => void;
@@ -85,6 +88,7 @@ export class NewCard implements ICard {
   isArchived: boolean = false;
   isTransformed: boolean = false;
   isImportant: boolean = false;
+  serverTimestamp: FieldValue;
   createdTime: string;
   updatedTime: string;
   dueDate: string | null;
@@ -97,6 +101,7 @@ export class NewCard implements ICard {
     this.content = content;
     this.tags = tags[0] ? tags : [];
     this.status = status;
+    this.serverTimestamp = serverTimestamp();
     this.createdTime = currentDate;
     this.updatedTime = currentDate;
     this.dueDate = status === "todo" ? currentDate : null;
@@ -125,8 +130,8 @@ class CardService implements ICardService {
     });
   }
 
-  addCard(newCard: NewCard) {
-    cardStore.cards.unshift(newCard);
+  addCard(newCard: NewCard, updateCard?: IUpdateCard) {
+    cardStore.cards.unshift({ ...newCard, ...updateCard });
   }
 
   updateCard(id: string, updateCard: IUpdateCard) {
@@ -246,7 +251,8 @@ class FirebaseService implements IFirebaseService {
       this.getLocalCards();
 
       const cardsRef = collection(db, "user_cards", uid, "cards");
-      const q = query(cardsRef, where("isArchived", "==", false));
+      const queryArchived = where("isArchived", "==", false);
+      const q = query(cardsRef, queryArchived);
 
       return onSnapshot(q, (querySnapshot) => {
         const cards: ICard[] = [];
@@ -360,8 +366,8 @@ class CardStore {
     return this.cardService.getFilteredCardsWith(status);
   }
 
-  addCard(newCard: NewCard) {
-    this.cardService.addCard(newCard);
+  addCard(newCard: NewCard, updateCard?: IUpdateCard) {
+    this.cardService.addCard(newCard, updateCard);
   }
 
   addCardTag(id: string, tag: string) {

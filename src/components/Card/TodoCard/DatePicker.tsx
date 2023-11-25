@@ -15,7 +15,7 @@ function DatePicker({ card, date, setDate }: DatePickerProps) {
     setDate(null);
   };
 
-  const datePickerFooter = (
+  const DatePickerFooter = (
     <div className="flex justify-center">
       <Button size="sm" variant="light" onPress={handleRemoveDate}>
         移除到期日
@@ -31,7 +31,7 @@ function DatePicker({ card, date, setDate }: DatePickerProps) {
       mode="single"
       selected={parsedDate}
       onSelect={setDate as (date: Date | undefined) => void}
-      footer={datePickerFooter}
+      footer={DatePickerFooter}
     />
   );
 }
