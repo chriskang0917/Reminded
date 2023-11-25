@@ -93,6 +93,7 @@ export const IdeaToActionModal = observer(
         onPress: () => {
           toast.success("轉換成功");
           const newCard = new NewCard(card.content, card.tags, "action");
+          cardStore.updateCard(card.id, { isTransformed: true });
           cardStore.updateCardToFirebase(card.id, { status: "action" });
           cardStore.addCard(newCard);
           cardStore.addCardToFireStore(newCard);

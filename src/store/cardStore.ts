@@ -42,6 +42,7 @@ export interface IUpdateCard {
   tags?: string[];
   status?: cardStatus;
   isArchived?: boolean;
+  isTransformed?: boolean;
   isImportant?: boolean;
   updatedTime?: string;
   dueDate?: string | null;
@@ -126,6 +127,18 @@ class CardService implements ICardService {
 
   addCard(newCard: NewCard) {
     cardStore.cards.push(newCard);
+  }
+
+  updateCard(id: string, updateCard: IUpdateCard) {
+    cardStore.cards = cardStore.cards.map((card) => {
+      if (card.id === id) {
+        return {
+          ...card,
+          ...updateCard,
+        };
+      }
+      return card;
+    });
   }
 
   addCardTag(id: string, tag: string) {
@@ -357,6 +370,10 @@ class CardStore {
 
   addCardTag(id: string, tag: string) {
     this.cardService.addCardTag(id, tag);
+  }
+
+  updateCard(id: string, updateCard: IUpdateCard) {
+    this.cardService.updateCard(id, updateCard);
   }
 
   updateCardContent(id: string, content: string) {
