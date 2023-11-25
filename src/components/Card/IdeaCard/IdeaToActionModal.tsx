@@ -14,16 +14,12 @@ import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { ICard, NewCard, cardStore } from "../../../store/cardStore";
 
-const toolTipList = [
-  {
-    label: "封存",
-    content: "轉換行動後封存靈感",
-  },
-  {
-    label: "轉換",
-    content: "轉換行動後保留靈感",
-  },
-];
+interface ActionModalProps {
+  card: ICard;
+  isOpen: boolean;
+  onOpenChange: () => void;
+  onClose: () => void;
+}
 
 interface ButtonProps {
   label: "刪除" | "關閉" | "封存" | "轉換";
@@ -43,23 +39,19 @@ interface ButtonProps {
     | "solid"
     | "light"
     | undefined;
-  onPress?: () => void;
+  onPress: () => void;
 }
 
-const modalHeader = "以動詞開頭，轉換你的行動...";
-const modalExample = (
-  <p className="text-sm text-slate-500">
-    <strong>範例</strong>：<strong>寫一篇</strong> 500 字的文章、
-    <strong>尋找</strong>公司附近的健身房...
-  </p>
-);
-
-interface ActionModalProps {
-  card: ICard;
-  isOpen: boolean;
-  onOpenChange: () => void;
-  onClose: () => void;
-}
+const toolTipList = [
+  {
+    label: "封存",
+    content: "轉換行動後封存靈感",
+  },
+  {
+    label: "轉換",
+    content: "轉換行動後保留靈感",
+  },
+];
 
 export const IdeaToActionModal = observer(
   ({ card, isOpen, onOpenChange, onClose }: ActionModalProps) => {
@@ -77,13 +69,21 @@ export const IdeaToActionModal = observer(
         color: "warning",
         variant: "ghost",
         onPress: () => {
-          toast.success("封存成功");
-          const newCard = new NewCard(card.content, card.tags, "action");
-          cardStore.archiveCard(card.id);
-          cardStore.updateCardToFirebase(card.id, { isArchived: true });
-
+          const ideaToActionInput = inputRef.current?.value || "";
+          if (!ideaToActionInput) return toast.error("請輸入內容");
+          const newCard = new NewCard(ideaToActionInput, card.tags, "action");
+          cardStore.updateCard(card.id, {
+            updatedTime: new Date().toISOString(),
+            isArchived: true,
+            isTransformed: true,
+          });
+          cardStore.updateCardToFirebase(card.id, {
+            isArchived: true,
+            isTransformed: true,
+          });
           cardStore.addCard(newCard);
           cardStore.addCardToFireStore(newCard);
+          toast.success("封存成功");
           onClose();
         },
       },
@@ -91,12 +91,20 @@ export const IdeaToActionModal = observer(
         label: "轉換",
         color: "primary",
         onPress: () => {
-          toast.success("轉換成功");
-          const newCard = new NewCard(card.content, card.tags, "action");
-          cardStore.updateCard(card.id, { isTransformed: true });
-          cardStore.updateCardToFirebase(card.id, { status: "action" });
+          const ideaToActionInput = inputRef.current?.value || "";
+          if (!ideaToActionInput) return toast.error("請輸入內容");
+          const newCard = new NewCard(ideaToActionInput, card.tags, "action");
+          cardStore.updateCard(card.id, {
+            updatedTime: new Date().toISOString(),
+            isTransformed: true,
+          });
+          cardStore.updateCardToFirebase(card.id, {
+            updatedTime: new Date().toISOString(),
+            isTransformed: true,
+          });
           cardStore.addCard(newCard);
           cardStore.addCardToFireStore(newCard);
+          toast.success("轉換成功");
           onClose();
         },
       },
@@ -109,13 +117,16 @@ export const IdeaToActionModal = observer(
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      const content = inputRef.current?.value || "";
-      if (!content) return toast.error("請輸入內容");
-      const newCard = new NewCard(content, card.tags, "action");
-      cardStore.addCard(newCard);
-      cardStore.addCardToFireStore(newCard);
-      onClose();
+      buttonsList[0].onPress();
     };
+
+    const modalHeader = "以動詞開頭，轉換你的行動...";
+    const modalExample = (
+      <p className="text-sm text-slate-500">
+        <strong>範例</strong>：<strong>寫一篇</strong> 500 字的文章、
+        <strong>尋找</strong>公司附近的健身房...
+      </p>
+    );
 
     return (
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
