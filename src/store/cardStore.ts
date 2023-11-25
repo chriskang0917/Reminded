@@ -126,17 +126,13 @@ class CardService implements ICardService {
   }
 
   addCard(newCard: NewCard) {
-    cardStore.cards.push(newCard);
+    cardStore.cards.unshift(newCard);
   }
 
   updateCard(id: string, updateCard: IUpdateCard) {
+    const updatedTime = new Date().toISOString();
     cardStore.cards = cardStore.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          ...updateCard,
-        };
-      }
+      if (card.id === id) return { ...card, ...updateCard, updatedTime };
       return card;
     });
   }

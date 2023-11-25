@@ -129,7 +129,7 @@ class EmailAuthService implements AuthService {
 
     signOut(auth)
       .then(() => toast.success("登出成功"))
-      .catch((error) => console.log(error));
+      .catch((error) => console.log("sign_out_error", error));
   }
 
   async updateProfile({ name, email }: IProfile) {

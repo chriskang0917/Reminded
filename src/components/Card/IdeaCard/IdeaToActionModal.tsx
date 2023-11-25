@@ -73,7 +73,6 @@ export const IdeaToActionModal = observer(
           if (!ideaToActionInput) return toast.error("請輸入內容");
           const newCard = new NewCard(ideaToActionInput, card.tags, "action");
           cardStore.updateCard(card.id, {
-            updatedTime: new Date().toISOString(),
             isArchived: true,
             isTransformed: true,
           });
@@ -94,14 +93,8 @@ export const IdeaToActionModal = observer(
           const ideaToActionInput = inputRef.current?.value || "";
           if (!ideaToActionInput) return toast.error("請輸入內容");
           const newCard = new NewCard(ideaToActionInput, card.tags, "action");
-          cardStore.updateCard(card.id, {
-            updatedTime: new Date().toISOString(),
-            isTransformed: true,
-          });
-          cardStore.updateCardToFirebase(card.id, {
-            updatedTime: new Date().toISOString(),
-            isTransformed: true,
-          });
+          cardStore.updateCard(card.id, { isTransformed: true });
+          cardStore.updateCardToFirebase(card.id, { isTransformed: true });
           cardStore.addCard(newCard);
           cardStore.addCardToFireStore(newCard);
           toast.success("轉換成功");
@@ -113,11 +106,12 @@ export const IdeaToActionModal = observer(
     const handleDelete = () => {
       onClose();
       cardStore.deleteCard(card.id);
+      cardStore.deleteCardFromFireStore(card.id);
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      buttonsList[0].onPress();
+      buttonsList[1].onPress();
     };
 
     const modalHeader = "以動詞開頭，轉換你的行動...";
@@ -165,17 +159,20 @@ export const IdeaToActionModal = observer(
                   刪除
                 </Button>
                 <div className="flex gap-2">
-                  {buttonsList.map((button) => (
-                    <Button
-                      key={button.label}
-                      size="sm"
-                      variant={button.variant}
-                      color={button.color}
-                      onPress={button.onPress}
-                    >
-                      {button.label}
-                    </Button>
-                  ))}
+                  {buttonsList.map((button) => {
+                    if (card.isArchived && button.label === "封存") return;
+                    return (
+                      <Button
+                        key={button.label}
+                        size="sm"
+                        variant={button.variant}
+                        color={button.color}
+                        onPress={button.onPress}
+                      >
+                        {button.label}
+                      </Button>
+                    );
+                  })}
                 </div>
               </ModalFooter>
             </>
