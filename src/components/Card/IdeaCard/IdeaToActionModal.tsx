@@ -150,7 +150,7 @@ export const IdeaToActionModal = observer(
                 <section>{modalExample}</section>
               </ModalBody>
               <ModalFooter className="flex justify-between">
-                <Button size="sm" color="danger" onClick={handleDelete}>
+                <Button size="sm" color="danger" onPress={handleDelete}>
                   刪除
                 </Button>
                 <div className="flex gap-2">

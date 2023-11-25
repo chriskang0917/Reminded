@@ -26,7 +26,7 @@ interface MenuList {
     | "secondary"
     | "success"
     | undefined;
-  onClick?: () => void;
+  onPress?: () => void;
 }
 
 const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
@@ -48,13 +48,13 @@ const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
   const menuList: MenuList[] = [
     {
       label: "複製",
-      onClick: handleDuplicate,
+      onPress: handleDuplicate,
     },
-    { label: "封存", color: "warning", onClick: handleArchive },
+    { label: "封存", color: "warning", onPress: handleArchive },
     {
       label: "刪除",
       color: "danger",
-      onClick: handleDelete,
+      onPress: handleDelete,
     },
   ];
 
@@ -71,7 +71,7 @@ const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
         <DropdownMenu aria-label="Setting">
           {menuList.map((menu) => (
             <DropdownItem
-              onPress={menu.onClick}
+              onPress={menu.onPress}
               key={menu.label}
               color={menu.color}
             >

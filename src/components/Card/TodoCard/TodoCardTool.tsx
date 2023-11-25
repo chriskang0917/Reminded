@@ -39,7 +39,7 @@ type color =
 interface IList {
   label: string;
   color: color;
-  onClick?: () => void;
+  onPress?: () => void;
 }
 
 export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
@@ -69,26 +69,26 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
   };
 
   const menuList: IList[] = [
-    { label: "複製", color: "default", onClick: handleDuplicate },
-    { label: "封存", color: "warning", onClick: handleArchive },
-    { label: "刪除", color: "danger", onClick: handleDelete },
+    { label: "複製", color: "default", onPress: handleDuplicate },
+    { label: "封存", color: "warning", onPress: handleArchive },
+    { label: "刪除", color: "danger", onPress: handleDelete },
   ];
 
   const actionList: IList[] = [
     {
       label: "行動",
       color: "default",
-      onClick: () => handleUpdateStatus("action"),
+      onPress: () => handleUpdateStatus("action"),
     },
     {
       label: "靈感",
       color: "default",
-      onClick: () => handleUpdateStatus("idea"),
+      onPress: () => handleUpdateStatus("idea"),
     },
     {
       label: "筆記",
       color: "success",
-      onClick: () => handleUpdateStatus("note"),
+      onPress: () => handleUpdateStatus("note"),
     },
   ];
 
@@ -148,7 +148,7 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
                 textValue={action.label || ""}
                 key={action.label}
                 color={action.color}
-                onClick={action.onClick}
+                onPress={action.onPress}
               >
                 <span>轉換為 </span>
                 <strong>{action.label}</strong>
@@ -170,7 +170,7 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
                     textValue={menu.label || ""}
                     key={menu.label}
                     color={menu.color}
-                    onClick={menu.onClick}
+                    onPress={menu.onPress}
                   >
                     {menu.label}
                   </DropdownItem>
