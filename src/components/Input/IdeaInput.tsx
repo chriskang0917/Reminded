@@ -33,7 +33,8 @@ export const IdeaInput = observer(() => {
     e.preventDefault();
 
     if (input === "") return;
-    const newCard = new NewCard(input, [tagInput], selectedTab);
+    const tagArray = tagInput ? [tagInput] : [];
+    const newCard = new NewCard(input, tagArray, selectedTab);
     cardStore.addCard(newCard);
     cardStore.addCardToFireStore(newCard);
     inputRef.current?.blur();

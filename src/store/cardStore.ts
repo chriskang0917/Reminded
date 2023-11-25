@@ -95,7 +95,7 @@ export class NewCard implements ICard {
     const currentDate = new Date().toISOString();
     this.id = nanoid();
     this.content = content;
-    this.tags = tags || [];
+    this.tags = tags[0] ? tags : [];
     this.status = status;
     this.createdTime = currentDate;
     this.updatedTime = currentDate;
