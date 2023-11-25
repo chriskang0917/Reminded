@@ -17,7 +17,7 @@ const CardTags = observer(({ card }: { card: ICard }) => {
     if (!tagInputRef.current) return;
     const newTag = tagInputRef.current?.value;
     const updatedTags = [...card.tags, newTag];
-    cardStore.updateCardTags(card.id, updatedTags);
+    cardStore.updateCard(card.id, { tags: updatedTags });
     setIsTagInputShow(false);
   };
 

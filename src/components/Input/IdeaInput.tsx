@@ -8,7 +8,7 @@ import {
 import { observer } from "mobx-react-lite";
 import { Key, useEffect, useRef, useState } from "react";
 import { IoIosAdd } from "react-icons/io";
-import { cardStore } from "../../store/cardStore";
+import { NewCard, cardStore } from "../../store/cardStore";
 import { getObjectFilteredTags } from "../../utils/input";
 
 const tabs = [
@@ -33,8 +33,10 @@ export const IdeaInput = observer(() => {
     e.preventDefault();
 
     if (input === "") return;
-    cardStore.addCard(selectedTab, input, [tagInput]);
-    cardStore.uploadCardsToFireStore();
+    const tagArray = tagInput ? [tagInput] : [];
+    const newCard = new NewCard(input, tagArray, selectedTab);
+    cardStore.addCard(newCard);
+    cardStore.addCardToFireStore(newCard);
     inputRef.current?.blur();
     tagRef.current?.blur();
     setInput("");

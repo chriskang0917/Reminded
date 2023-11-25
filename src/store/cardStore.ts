@@ -1,7 +1,17 @@
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
-import { makeAutoObservable, runInAction, toJS } from "mobx";
+import { addDays, isSameISOWeek, parseISO } from "date-fns";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
+import { makeAutoObservable, runInAction } from "mobx";
 import { nanoid } from "nanoid";
 import { db } from "../config/firebase";
+import { WeekStartsOn } from "../utils/cardUtils";
 import { authStore } from "./authStore";
 
 export type cardStatus =
@@ -18,6 +28,7 @@ export interface ICard {
   tags: string[];
   status: cardStatus;
   isArchived: boolean;
+  isTransformed: boolean;
   isImportant: boolean;
   createdTime: string;
   updatedTime: string;
@@ -26,17 +37,25 @@ export interface ICard {
   reminderEndDate: number | null;
 }
 
-/* ===============================
-==========  CardStore  ===========
-=============================== */
+export interface IUpdateCard {
+  content?: string;
+  tags?: string[];
+  status?: cardStatus;
+  isArchived?: boolean;
+  isTransformed?: boolean;
+  isImportant?: boolean;
+  updatedTime?: string;
+  dueDate?: string | null;
+  reminderStartDate?: number | null;
+  reminderEndDate?: number | null;
+}
 
 interface ICardService {
   getAllTags: string[];
   getCards: ICard[];
-  init: () => void;
-  uploadCardsToFireStore: () => void;
   getFilteredCardsWith: (status: cardStatus) => ICard[];
-  addCard: (status: cardStatus, content: string, tags: string[]) => void;
+  getThisWeekCardsWith: (weekStartsOn: WeekStartsOn) => ICard[];
+  addCard: (newCard: NewCard) => void;
   addCardTag: (id: string, tag: string) => void;
   updateCardContent: (id: string, content: string) => void;
   updateCardStatus: (id: string, status: cardStatus) => void;
@@ -47,34 +66,44 @@ interface ICardService {
   deleteCardTag: (id: string, tag: string) => void;
 }
 
+interface IFirebaseService {
+  initActiveCards: () => void;
+  updateCardToFirebase: (cardId: string, card: IUpdateCard) => void;
+  addCardToFireStore: (card: ICard) => void;
+  getArchivedCards: () => void;
+}
+
+/* ===============================
+==========  Implement  ===========
+=============================== */
+
+export class NewCard implements ICard {
+  id: string;
+  content: string;
+  tags: string[];
+  status: cardStatus;
+  isArchived: boolean = false;
+  isTransformed: boolean = false;
+  isImportant: boolean = false;
+  createdTime: string;
+  updatedTime: string;
+  dueDate: string | null;
+  reminderStartDate: number | null = null;
+  reminderEndDate: number | null = null;
+
+  constructor(content: string, tags: string[], status: cardStatus) {
+    const currentDate = new Date().toISOString();
+    this.id = nanoid();
+    this.content = content;
+    this.tags = tags[0] ? tags : [];
+    this.status = status;
+    this.createdTime = currentDate;
+    this.updatedTime = currentDate;
+    this.dueDate = status === "todo" ? currentDate : null;
+  }
+}
+
 class CardService implements ICardService {
-  init() {
-    try {
-      if (!authStore.uid) return;
-      const cardsRef = doc(db, "cards", authStore.uid);
-      return onSnapshot(cardsRef, (doc) => {
-        const data = doc.data();
-        localStorage.setItem("cards", JSON.stringify(data?.cards || []));
-        runInAction(() => {
-          if (doc.exists()) cardStore.cards = data?.cards || [];
-        });
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async uploadCardsToFireStore() {
-    try {
-      if (!authStore.uid) return;
-      const cardsRef = doc(db, "cards", authStore.uid);
-      const clonedCards = toJS(cardStore.getCards);
-      await setDoc(cardsRef, { cards: clonedCards });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   get getAllTags() {
     const tags = cardStore.cards.map((card) => card.tags).flat() || [];
     if (!tags) return [];
@@ -89,23 +118,23 @@ class CardService implements ICardService {
     return cardStore.cards.filter((card) => card.status === status);
   }
 
-  addCard(status: cardStatus, content: string, tags: string[]) {
-    const isTodo = status === "todo";
-    const currentDate = new Date().toISOString();
-    const newCard = {
-      id: nanoid(),
-      status,
-      content,
-      tags,
-      isArchived: false,
-      isImportant: false,
-      createdTime: currentDate,
-      updatedTime: currentDate,
-      dueDate: isTodo ? currentDate : null,
-      reminderStartDate: null,
-      reminderEndDate: null,
-    };
-    cardStore.cards.push(newCard);
+  getThisWeekCardsWith(weekStartsOn: WeekStartsOn) {
+    return cardStore.cards.filter((card) => {
+      const adjustedDate = addDays(parseISO(card.createdTime), -weekStartsOn);
+      isSameISOWeek(new Date(), adjustedDate);
+    });
+  }
+
+  addCard(newCard: NewCard) {
+    cardStore.cards.unshift(newCard);
+  }
+
+  updateCard(id: string, updateCard: IUpdateCard) {
+    const updatedTime = new Date().toISOString();
+    cardStore.cards = cardStore.cards.map((card) => {
+      if (card.id === id) return { ...card, ...updateCard, updatedTime };
+      return card;
+    });
   }
 
   addCardTag(id: string, tag: string) {
@@ -203,21 +232,116 @@ class CardService implements ICardService {
   }
 }
 
+class FirebaseService implements IFirebaseService {
+  getLocalCards() {
+    const localCards = JSON.parse(localStorage.getItem("cards") || "");
+    if (localCards) runInAction(() => (cardStore.cards = localCards));
+  }
+
+  async initActiveCards() {
+    try {
+      const uid = authStore.uid;
+      if (!uid) return;
+
+      this.getLocalCards();
+
+      const cardsRef = collection(db, "user_cards", uid, "cards");
+      const q = query(cardsRef, where("isArchived", "==", false));
+
+      return onSnapshot(q, (querySnapshot) => {
+        const cards: ICard[] = [];
+        querySnapshot.forEach((doc) => cards.push(doc.data() as ICard));
+        localStorage.setItem("cards", JSON.stringify(cards || []));
+        runInAction(() => (cardStore.cards = cards || []));
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async getArchivedCards() {
+    try {
+      const uid = authStore.uid;
+      if (!uid) return;
+
+      const cardsRef = collection(db, "user_cards", uid, "cards");
+      const q = query(cardsRef, where("isArchived", "==", true));
+
+      return onSnapshot(q, (querySnapshot) => {
+        const archivedCards: ICard[] = [];
+        querySnapshot.forEach((doc) => archivedCards.push(doc.data() as ICard));
+        runInAction(() => (cardStore.archivedCards = archivedCards || []));
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async updateCardToFirebase(cardId: string, updateCard: IUpdateCard) {
+    try {
+      if (!authStore.uid) return;
+      const cardsRef = doc(db, "user_cards", authStore.uid, "cards", cardId);
+      await setDoc(cardsRef, { ...updateCard }, { merge: true });
+    } catch (error) {
+      console.error("update_card_error", error);
+    }
+  }
+
+  async addCardToFireStore(card: ICard) {
+    try {
+      if (!authStore.uid) return;
+      const cardsRef = doc(db, "user_cards", authStore.uid, "cards", card.id);
+      await setDoc(cardsRef, Object.assign({}, card), { merge: true });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async deleteCardFromFireStore(cardId: string) {
+    try {
+      if (!authStore.uid) return;
+      const cardsRef = doc(db, "user_cards", authStore.uid, "cards", cardId);
+      await deleteDoc(cardsRef);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+}
+
+/* ===============================
+==========  CardStore  ===========
+=============================== */
+
 class CardStore {
   private cardService: CardService;
+  private firebaseService: FirebaseService;
   cards: ICard[] = [];
+  archivedCards: ICard[] = [];
 
-  constructor(cardService: CardService) {
+  constructor(cardService: CardService, firebaseService: FirebaseService) {
     makeAutoObservable(this);
     this.cardService = cardService;
+    this.firebaseService = firebaseService;
   }
 
-  async init() {
-    this.cardService.init();
+  initActiveCards() {
+    this.firebaseService.initActiveCards();
   }
 
-  async uploadCardsToFireStore() {
-    this.cardService.uploadCardsToFireStore();
+  getArchivedCards() {
+    this.firebaseService.getArchivedCards();
+  }
+
+  async updateCardToFirebase(cardId: string, updateCard: IUpdateCard) {
+    this.firebaseService.updateCardToFirebase(cardId, updateCard);
+  }
+
+  async addCardToFireStore(card: ICard) {
+    this.firebaseService.addCardToFireStore(card);
+  }
+
+  async deleteCardFromFireStore(cardId: string) {
+    this.firebaseService.deleteCardFromFireStore(cardId);
   }
 
   get getAllTags() {
@@ -228,16 +352,24 @@ class CardStore {
     return this.cardService.getCards;
   }
 
+  getThisWeekCardsWith(weekStartsOn: WeekStartsOn) {
+    return this.cardService.getThisWeekCardsWith(weekStartsOn);
+  }
+
   getFilteredCardsWith(status: cardStatus) {
     return this.cardService.getFilteredCardsWith(status);
   }
 
-  addCard(status: cardStatus, content: string, tags: string[]) {
-    this.cardService.addCard(status, content, tags);
+  addCard(newCard: NewCard) {
+    this.cardService.addCard(newCard);
   }
 
   addCardTag(id: string, tag: string) {
     this.cardService.addCardTag(id, tag);
+  }
+
+  updateCard(id: string, updateCard: IUpdateCard) {
+    this.cardService.updateCard(id, updateCard);
   }
 
   updateCardContent(id: string, content: string) {
@@ -270,7 +402,8 @@ class CardStore {
 }
 
 const cardService = new CardService();
-export const cardStore = new CardStore(cardService);
+const firebaseService = new FirebaseService();
+export const cardStore = new CardStore(cardService, firebaseService);
 
 // interface UserSettings {
 //   user_id: {

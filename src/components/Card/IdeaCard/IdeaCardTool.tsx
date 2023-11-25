@@ -5,7 +5,7 @@ import {
   DropdownTrigger,
 } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { ICard, cardStore } from "../../../store/cardStore";
+import { ICard, NewCard, cardStore } from "../../../store/cardStore";
 
 interface CardToolProps {
   card: ICard;
@@ -26,32 +26,35 @@ interface MenuList {
     | "secondary"
     | "success"
     | undefined;
-  onClick?: () => void;
+  onPress?: () => void;
 }
 
 const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
   const handleDuplicate = () => {
-    cardStore.addCard(card.status, card.content, card.tags);
+    const newCard = new NewCard(card.content, card.tags, card.status);
+    cardStore.addCard(newCard);
   };
 
   const handleDelete = () => {
     cardStore.deleteCard(card.id);
+    cardStore.deleteCardFromFireStore(card.id);
   };
 
   const handleArchive = () => {
-    cardStore.archiveCard(card.id);
+    cardStore.updateCard(card.id, { isArchived: true });
+    cardStore.updateCardToFirebase(card.id, { isArchived: true });
   };
 
   const menuList: MenuList[] = [
     {
       label: "複製",
-      onClick: handleDuplicate,
+      onPress: handleDuplicate,
     },
-    { label: "封存", color: "warning", onClick: handleArchive },
+    { label: "封存", color: "warning", onPress: handleArchive },
     {
       label: "刪除",
       color: "danger",
-      onClick: handleDelete,
+      onPress: handleDelete,
     },
   ];
 
@@ -68,7 +71,7 @@ const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
         <DropdownMenu aria-label="Setting">
           {menuList.map((menu) => (
             <DropdownItem
-              onPress={menu.onClick}
+              onPress={menu.onPress}
               key={menu.label}
               color={menu.color}
             >

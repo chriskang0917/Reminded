@@ -11,11 +11,11 @@ interface IAction {
 }
 
 const ideaActionList: IAction[] = [
-  { label: "This Week", path: "/idea/week" },
-  { label: "Search", path: "/idea/search" },
-  { label: "Idea Pools", path: "/idea/pools" },
-  { label: "Transformed", path: "/idea/transformed" },
-  { label: "Archive", path: "/idea/archive" },
+  { label: "本週靈感", path: "/idea/week" },
+  { label: "搜尋靈感", path: "/idea/search" },
+  { label: "靈感池", path: "/idea/pools" },
+  { label: "已轉換", path: "/idea/action" },
+  { label: "已封存", path: "/idea/archive" },
 ];
 
 interface IButton {

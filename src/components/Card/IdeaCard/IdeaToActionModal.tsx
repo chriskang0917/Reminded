@@ -12,18 +12,14 @@ import {
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
-import { ICard, cardStore } from "../../../store/cardStore";
+import { ICard, NewCard, cardStore } from "../../../store/cardStore";
 
-const toolTipList = [
-  {
-    label: "封存",
-    content: "轉換行動後封存靈感",
-  },
-  {
-    label: "轉換",
-    content: "轉換行動後保留靈感",
-  },
-];
+interface ActionModalProps {
+  card: ICard;
+  isOpen: boolean;
+  onOpenChange: () => void;
+  onClose: () => void;
+}
 
 interface ButtonProps {
   label: "刪除" | "關閉" | "封存" | "轉換";
@@ -43,34 +39,19 @@ interface ButtonProps {
     | "solid"
     | "light"
     | undefined;
+  onPress: () => void;
 }
 
-const buttonsList: ButtonProps[] = [
+const toolTipList = [
   {
     label: "封存",
-    color: "warning",
-    variant: "ghost",
+    content: "轉換行動後封存靈感",
   },
   {
     label: "轉換",
-    color: "primary",
+    content: "轉換行動後保留靈感",
   },
 ];
-
-const modalHeader = "以動詞開頭，轉換你的行動...";
-const modalExample = (
-  <p className="text-sm text-slate-500">
-    <strong>範例</strong>：<strong>寫一篇</strong> 500 字的文章、
-    <strong>尋找</strong>公司附近的健身房...
-  </p>
-);
-
-interface ActionModalProps {
-  card: ICard;
-  isOpen: boolean;
-  onOpenChange: () => void;
-  onClose: () => void;
-}
 
 export const IdeaToActionModal = observer(
   ({ card, isOpen, onOpenChange, onClose }: ActionModalProps) => {
@@ -82,23 +63,69 @@ export const IdeaToActionModal = observer(
       inputRef.current?.select();
     }, [isOpen]);
 
+    const buttonsList: ButtonProps[] = [
+      {
+        label: "封存",
+        color: "warning",
+        variant: "ghost",
+        onPress: () => {
+          const ideaToActionInput = inputRef.current?.value || "";
+          if (!ideaToActionInput) return toast.error("請輸入內容");
+          const newCard = new NewCard(ideaToActionInput, card.tags, "action");
+          cardStore.updateCard(card.id, {
+            isArchived: true,
+            isTransformed: true,
+          });
+          cardStore.updateCardToFirebase(card.id, {
+            isArchived: true,
+            isTransformed: true,
+          });
+          cardStore.addCard(newCard);
+          cardStore.addCardToFireStore(newCard);
+          toast.success("封存成功");
+          onClose();
+        },
+      },
+      {
+        label: "轉換",
+        color: "primary",
+        onPress: () => {
+          const ideaToActionInput = inputRef.current?.value || "";
+          if (!ideaToActionInput) return toast.error("請輸入內容");
+          const newCard = new NewCard(ideaToActionInput, card.tags, "action");
+          cardStore.updateCard(card.id, { isTransformed: true });
+          cardStore.updateCardToFirebase(card.id, { isTransformed: true });
+          cardStore.addCard(newCard);
+          cardStore.addCardToFireStore(newCard);
+          toast.success("轉換成功");
+          onClose();
+        },
+      },
+    ];
+
     const handleDelete = () => {
       onClose();
       cardStore.deleteCard(card.id);
+      cardStore.deleteCardFromFireStore(card.id);
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      const content = inputRef.current?.value || "";
-      if (!content) return toast.error("請輸入內容");
-      cardStore.addCard("action", content, card.tags);
-      onClose();
+      buttonsList[1].onPress();
     };
+
+    const modalHeader = "以動詞開頭，轉換你的行動...";
+    const modalExample = (
+      <p className="text-sm text-slate-500">
+        <strong>範例</strong>：<strong>寫一篇</strong> 500 字的文章、
+        <strong>尋找</strong>公司附近的健身房...
+      </p>
+    );
 
     return (
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
-          {(onClose) => (
+          {() => (
             <>
               <ModalHeader className="flex items-center gap-2">
                 <h1>轉換你的靈感</h1>
@@ -128,21 +155,24 @@ export const IdeaToActionModal = observer(
                 <section>{modalExample}</section>
               </ModalBody>
               <ModalFooter className="flex justify-between">
-                <Button size="sm" color="danger" onClick={handleDelete}>
+                <Button size="sm" color="danger" onPress={handleDelete}>
                   刪除
                 </Button>
                 <div className="flex gap-2">
-                  {buttonsList.map((button) => (
-                    <Button
-                      key={button.label}
-                      size="sm"
-                      variant={button.variant}
-                      color={button.color}
-                      onPress={onClose}
-                    >
-                      {button.label}
-                    </Button>
-                  ))}
+                  {buttonsList.map((button) => {
+                    if (card.isArchived && button.label === "封存") return;
+                    return (
+                      <Button
+                        key={button.label}
+                        size="sm"
+                        variant={button.variant}
+                        color={button.color}
+                        onPress={button.onPress}
+                      >
+                        {button.label}
+                      </Button>
+                    );
+                  })}
                 </div>
               </ModalFooter>
             </>

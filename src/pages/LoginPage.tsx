@@ -15,7 +15,7 @@ import {
 } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Navigate } from "react-router-dom";
 import { authStore } from "../store/authStore";
 
@@ -90,16 +90,15 @@ const LoginPage = observer(() => {
   };
 
   const isRedirect = [
-    authStore.uid !== "",
+    authStore.uid,
     !loginState.isSettingName,
     authStore.isLogin,
-  ].every((boolean) => boolean === true);
+  ].every((boolean) => boolean);
 
   if (isRedirect) return <Navigate to="/" replace />;
 
   return (
     <main className="flex h-[100svh] items-center justify-center">
-      <Toaster position="top-center" />
       <Card className="h-[400px] w-3/5 max-w-[500px]">
         <CardHeader className="flex w-full flex-col items-center">
           <h1 className="my-2 text-center text-2xl font-bold">Reminded</h1>
@@ -154,7 +153,12 @@ const LoginPage = observer(() => {
           </div>
         </CardFooter>
       </Card>
-      <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal
+        backdrop="blur"
+        isDismissable={false}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      >
         <ModalContent>
           {() => (
             <>
