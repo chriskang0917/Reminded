@@ -2,7 +2,7 @@ import { useState } from "react";
 import { cardStore } from "../store/cardStore";
 import { getFusedResults } from "../utils/input";
 
-type searchType = "idea" | "action";
+type searchType = "idea" | "action" | "todo";
 
 export const useSearch = (type: searchType) => {
   const [searchText, setSearchText] = useState("");
