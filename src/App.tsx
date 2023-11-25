@@ -42,6 +42,7 @@ const router = createBrowserRouter([
         element: <ActionLayout />,
         children: [{ path: ":route", element: <ActionPage /> }],
       },
+      { path: "search", element: <section>Search</section> },
       {
         path: "profile",
         element: <ProfilePage />,
