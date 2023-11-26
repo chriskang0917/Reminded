@@ -320,11 +320,11 @@ class CardStore {
     this.firebaseService = firebaseService;
   }
 
-  async initActiveCards() {
+  initActiveCards() {
     this.firebaseService.initActiveCards();
   }
 
-  async getArchivedCards() {
+  getArchivedCards() {
     this.firebaseService.getArchivedCards();
   }
 
