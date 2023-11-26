@@ -56,10 +56,7 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
   const handleDuplicate = () => {
     const newCard = new NewCard(card.content, card.tags, card.status);
     cardStore.addCard(newCard);
-  };
-
-  const handleArchive = () => {
-    cardStore.archiveCard(card.id);
+    cardStore.addCardToFireStore(newCard);
   };
 
   const handleDelete = () => {
@@ -67,12 +64,12 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
   };
 
   const handleUpdateStatus = (status: cardStatus) => {
-    cardStore.updateCardStatus(card.id, status);
+    cardStore.updateCard(card.id, { status });
+    cardStore.updateCardToFirebase(card.id, { status });
   };
 
   const menuList: IList[] = [
     { label: "複製", color: "default", onPress: handleDuplicate },
-    { label: "封存", color: "warning", onPress: handleArchive },
     { label: "刪除", color: "danger", onPress: handleDelete },
   ];
 

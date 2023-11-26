@@ -11,7 +11,8 @@ interface DatePickerProps {
 
 function DatePicker({ card, date, setDate }: DatePickerProps) {
   const handleRemoveDate = () => {
-    cardStore.updateDueDate(card.id, null);
+    cardStore.updateCard(card.id, { dueDate: null });
+    cardStore.updateCardToFirebase(card.id, { dueDate: null });
     setDate(null);
   };
 

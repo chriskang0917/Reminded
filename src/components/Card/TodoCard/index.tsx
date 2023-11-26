@@ -25,7 +25,7 @@ export const TodoCard = ({ card }: CardToolProps) => {
 
   const handleComplete = () => {
     setIsSelect(!isSelect);
-    cardStore.completeCard(card.id);
+    cardStore.updateCard(card.id, { isArchived: !isSelect });
     cardStore.updateCardToFirebase(card.id, { isArchived: !isSelect });
   };
 

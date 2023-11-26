@@ -1,4 +1,3 @@
-import { addDays, isSameISOWeek, parseISO } from "date-fns";
 import {
   FieldValue,
   collection,
@@ -13,7 +12,7 @@ import {
 import { makeAutoObservable, runInAction } from "mobx";
 import { nanoid } from "nanoid";
 import { db } from "../config/firebase";
-import { WeekStartsOn, cardUtils } from "../utils/cardUtils";
+import { cardUtils } from "../utils/cardUtils";
 import { authStore } from "./authStore";
 
 export type cardStatus =
@@ -66,14 +65,7 @@ export interface IUpdateCard {
 interface ICardService {
   getAllTags: string[];
   getFilteredCardsWith: (cardsType: CardsType) => ICard[];
-  getThisWeekCardsWith: (weekStartsOn: WeekStartsOn) => ICard[];
   addCard: (newCard: NewCard, updateCard?: IUpdateCard) => void;
-  addCardTag: (id: string, tag: string) => void;
-  updateCardContent: (id: string, content: string) => void;
-  updateCardStatus: (id: string, status: cardStatus) => void;
-  updateDueDate: (id: string, date: string | null) => void;
-  archiveCard: (id: string) => void;
-  completeCard: (id: string) => void;
   deleteCard: (id: string) => void;
   deleteCardTag: (id: string, tag: string) => void;
 }
@@ -188,13 +180,6 @@ class CardService implements ICardService {
     }
   }
 
-  getThisWeekCardsWith(weekStartsOn: WeekStartsOn) {
-    return cardStore.cards.filter((card) => {
-      const adjustedDate = addDays(parseISO(card.createdTime), -weekStartsOn);
-      isSameISOWeek(new Date(), adjustedDate);
-    });
-  }
-
   addCard(newCard: NewCard, updateCard?: IUpdateCard) {
     cardStore.cards.unshift({ ...newCard, ...updateCard });
   }
@@ -203,84 +188,6 @@ class CardService implements ICardService {
     const updatedTime = new Date().toISOString();
     cardStore.cards = cardStore.cards.map((card) => {
       if (card.id === id) return { ...card, ...updateCard, updatedTime };
-      return card;
-    });
-  }
-
-  addCardTag(id: string, tag: string) {
-    cardStore.cards = cardStore.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          tags: [...card.tags, tag],
-        };
-      }
-      return card;
-    });
-  }
-
-  updateCardContent(id: string, content: string) {
-    const trimmedContent = content.trim();
-    cardStore.cards = cardStore.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          content: trimmedContent,
-          updatedTime: new Date().toISOString(),
-        };
-      }
-      return card;
-    });
-  }
-
-  updateCardStatus(id: string, status: cardStatus) {
-    cardStore.cards = cardStore.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          status,
-          updatedTime: new Date().toISOString(),
-        };
-      }
-      return card;
-    });
-  }
-
-  updateDueDate(id: string, date: string | null) {
-    cardStore.cards = cardStore.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          dueDate: date,
-          updatedTime: new Date().toISOString(),
-        };
-      }
-      return card;
-    });
-  }
-
-  archiveCard(id: string) {
-    cardStore.cards = cardStore.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          isArchived: true,
-          updatedTime: new Date().toISOString(),
-        };
-      }
-      return card;
-    });
-  }
-
-  completeCard(id: string) {
-    cardStore.cards = cardStore.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          isArchived: true,
-          updatedTime: new Date().toISOString(),
-        };
-      }
       return card;
     });
   }
@@ -419,10 +326,6 @@ class CardStore {
     return this.cardService.getAllTags;
   }
 
-  getThisWeekCardsWith(weekStartsOn: WeekStartsOn) {
-    return this.cardService.getThisWeekCardsWith(weekStartsOn);
-  }
-
   getFilteredCardsWith(cardsType: CardsType) {
     return this.cardService.getFilteredCardsWith(cardsType);
   }
@@ -431,32 +334,8 @@ class CardStore {
     this.cardService.addCard(newCard, updateCard);
   }
 
-  addCardTag(id: string, tag: string) {
-    this.cardService.addCardTag(id, tag);
-  }
-
   updateCard(id: string, updateCard: IUpdateCard) {
     this.cardService.updateCard(id, updateCard);
-  }
-
-  updateCardContent(id: string, content: string) {
-    this.cardService.updateCardContent(id, content);
-  }
-
-  updateCardStatus(id: string, status: cardStatus) {
-    this.cardService.updateCardStatus(id, status);
-  }
-
-  updateDueDate(id: string, date: string | null) {
-    this.cardService.updateDueDate(id, date);
-  }
-
-  archiveCard(id: string) {
-    this.cardService.archiveCard(id);
-  }
-
-  completeCard(id: string) {
-    this.cardService.completeCard(id);
   }
 
   deleteCard(id: string) {
