@@ -1,6 +1,6 @@
 import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { cardStore } from "../../store/cardStore";
+import { CardsType, cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { TodoCard } from "../Card";
 import { TodoInput } from "../Input";
@@ -8,7 +8,8 @@ import { TodoInput } from "../Input";
 const Title = "所有待辦";
 
 export const TodoAll = observer(() => {
-  const todoCards = cardStore.cards.filter((card) => card.status === "todo");
+  const todoCards = cardStore.getFilteredCardsWith(CardsType.TodoAll);
+
   return (
     <section className="ml-52">
       <div className="mx-auto mt-10 flex max-w-[500px] flex-col items-center">

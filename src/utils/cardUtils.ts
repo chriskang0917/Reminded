@@ -2,12 +2,11 @@ import {
   addDays,
   endOfWeek,
   format,
-  isSameISOWeek,
   isWithinInterval,
   parseISO,
   startOfWeek,
 } from "date-fns";
-import { cardStore } from "../store/cardStore";
+import { ICard } from "./../store/cardStore";
 
 export const enum WeekStartsOn {
   Sunday = 0,
@@ -42,17 +41,12 @@ export const cardUtils = {
       end: endOfWeekDate,
     });
   },
-  getThisWeekIdeaCardsWith(weekStartsOn: WeekStartsOn) {
-    return cardStore.cards.filter((card) => {
-      const adjustedDate = addDays(parseISO(card.createdTime), -weekStartsOn);
-      return isSameISOWeek(new Date(), adjustedDate);
-    });
-  },
-  getThisWeekTodoCardsWith(weekStartsOn: WeekStartsOn) {
-    return cardStore.cards.filter((card) => {
-      if (!card.dueDate) return false;
-      const adjustedDate = addDays(parseISO(card.dueDate), -weekStartsOn);
-      return isSameISOWeek(new Date(), adjustedDate);
+  sortCardsByDueDateDesc(cards: ICard[]) {
+    return cards.sort((a, b) => {
+      if (a.dueDate && b.dueDate) {
+        return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
+      }
+      return 0;
     });
   },
 };
