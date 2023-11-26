@@ -21,11 +21,12 @@ interface CardToolProps {
 
 export const TodoCard = ({ card }: CardToolProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isSelect, setIsSelect] = useState(false);
+  const [isSelect, setIsSelect] = useState(card.isArchived);
 
   const handleComplete = () => {
     setIsSelect(!isSelect);
     cardStore.completeCard(card.id);
+    cardStore.updateCardToFirebase(card.id, { isArchived: !isSelect });
   };
 
   return (
@@ -63,7 +64,7 @@ export const TodoCard = ({ card }: CardToolProps) => {
           ))}
         </div>
       </div>
-      <div className="mt-2 flex w-[500px] flex-wrap items-center gap-x-2">
+      <div className="mt-2 flex flex-wrap items-center gap-x-2">
         <CardTags card={card} />
       </div>
     </BasicCard>

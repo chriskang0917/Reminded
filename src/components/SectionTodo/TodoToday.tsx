@@ -2,24 +2,24 @@ import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { CardsType, cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
-import { IdeaCard } from "../Card";
+import { TodoCard } from "../Card";
+import { TodoInput } from "../Input";
 
-const Title = "本週靈感";
+const Title = "今日待辦";
 
-export const IdeaWeek = observer(() => {
-  const ideaCardsOfThisWeek = cardStore.getFilteredCardsWith(
-    CardsType.IdeaThisWeek,
-  );
+export const TodoToday = observer(() => {
+  const todoTodayCards = cardStore.getFilteredCardsWith(CardsType.TodoToday);
 
   return (
     <section className="ml-52">
       <div className="mx-auto mt-10 flex max-w-[500px] flex-col items-center">
         <h1 className={style.mainTitle}>{Title}</h1>
+        <TodoInput />
         <Divider />
         <ul className="mt-5 grid w-full gap-3">
-          {ideaCardsOfThisWeek.map((card) => (
+          {todoTodayCards.map((card) => (
             <li key={card.id}>
-              <IdeaCard card={card} />
+              <TodoCard card={card} />
             </li>
           ))}
         </ul>

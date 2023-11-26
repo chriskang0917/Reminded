@@ -6,12 +6,14 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ActionLayout from "./components/Layout/ActionLayout";
 import IdeaLayout from "./components/Layout/IdeaLayout";
 import RootLayout from "./components/Layout/RootLayout";
+import TodoLayout from "./components/Layout/TodoLayout";
 import ActionPage from "./pages/ActionPage";
 import ErrorPage from "./pages/ErrorPage";
 import IdeaPage from "./pages/IdeaPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/Profile";
 import Homepage from "./pages/TodayPage";
+import TodoPage from "./pages/TodoPage";
 import { authStore } from "./store/authStore";
 import { cardStore } from "./store/cardStore";
 
@@ -25,7 +27,11 @@ const router = createBrowserRouter([
         path: "/",
         element: <Homepage />,
       },
-      { path: "todo", element: <section>Todo</section> },
+      {
+        path: "todo",
+        element: <TodoLayout />,
+        children: [{ path: ":route", element: <TodoPage /> }],
+      },
       {
         path: "idea",
         element: <IdeaLayout />,
@@ -36,6 +42,7 @@ const router = createBrowserRouter([
         element: <ActionLayout />,
         children: [{ path: ":route", element: <ActionPage /> }],
       },
+      { path: "search", element: <section>Search</section> },
       {
         path: "profile",
         element: <ProfilePage />,

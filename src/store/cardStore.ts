@@ -1,17 +1,19 @@
 import { addDays, isSameISOWeek, parseISO } from "date-fns";
 import {
+  FieldValue,
   collection,
   deleteDoc,
   doc,
   onSnapshot,
   query,
+  serverTimestamp,
   setDoc,
   where,
 } from "firebase/firestore";
 import { makeAutoObservable, runInAction } from "mobx";
 import { nanoid } from "nanoid";
 import { db } from "../config/firebase";
-import { WeekStartsOn } from "../utils/cardUtils";
+import { WeekStartsOn, cardUtils } from "../utils/cardUtils";
 import { authStore } from "./authStore";
 
 export type cardStatus =
@@ -21,6 +23,16 @@ export type cardStatus =
   | "remind"
   | "note"
   | "execute";
+
+export const enum CardsType {
+  TodoAll,
+  TodoToday,
+  TodoTomorrow,
+  TodoThisWeek,
+  TodoComplete,
+  IdeaAll,
+  IdeaThisWeek,
+}
 
 export interface ICard {
   id: string;
@@ -32,6 +44,7 @@ export interface ICard {
   isImportant: boolean;
   createdTime: string;
   updatedTime: string;
+  serverTimestamp: FieldValue;
   dueDate: string | null;
   reminderStartDate: number | null;
   reminderEndDate: number | null;
@@ -52,10 +65,9 @@ export interface IUpdateCard {
 
 interface ICardService {
   getAllTags: string[];
-  getCards: ICard[];
-  getFilteredCardsWith: (status: cardStatus) => ICard[];
+  getFilteredCardsWith: (cardsType: CardsType) => ICard[];
   getThisWeekCardsWith: (weekStartsOn: WeekStartsOn) => ICard[];
-  addCard: (newCard: NewCard) => void;
+  addCard: (newCard: NewCard, updateCard?: IUpdateCard) => void;
   addCardTag: (id: string, tag: string) => void;
   updateCardContent: (id: string, content: string) => void;
   updateCardStatus: (id: string, status: cardStatus) => void;
@@ -85,6 +97,7 @@ export class NewCard implements ICard {
   isArchived: boolean = false;
   isTransformed: boolean = false;
   isImportant: boolean = false;
+  serverTimestamp: FieldValue;
   createdTime: string;
   updatedTime: string;
   dueDate: string | null;
@@ -97,6 +110,7 @@ export class NewCard implements ICard {
     this.content = content;
     this.tags = tags[0] ? tags : [];
     this.status = status;
+    this.serverTimestamp = serverTimestamp();
     this.createdTime = currentDate;
     this.updatedTime = currentDate;
     this.dueDate = status === "todo" ? currentDate : null;
@@ -110,12 +124,68 @@ class CardService implements ICardService {
     return [...new Set(tags)];
   }
 
-  get getCards() {
-    return cardStore.cards;
+  private getTodoAllCards() {
+    const cards = cardStore.cards.filter((card) => card.status === "todo");
+    const sortedCardsDesc = cardUtils.sortCardsByDueDateDesc(cards);
+    return sortedCardsDesc;
   }
 
-  getFilteredCardsWith(status: cardStatus) {
-    return cardStore.cards.filter((card) => card.status === status);
+  private getTodoTodayCards() {
+    return cardStore.cards.filter((card) => {
+      return card.status === "todo" && cardUtils.getIsToday(card.dueDate || "");
+    });
+  }
+
+  private getTodoTomorrowCards() {
+    return cardStore.cards.filter(
+      (card) =>
+        card.status === "todo" && cardUtils.getIsTomorrow(card.dueDate || ""),
+    );
+  }
+
+  private getTodoThisWeekCards() {
+    return cardStore.cards.filter((card) => {
+      if (!card.dueDate) return false;
+      return card.status === "todo" && cardUtils.getIsThisWeek(card.dueDate);
+    });
+  }
+
+  private getTodoCompletedCards() {
+    return cardStore.archivedCards.filter((card) => {
+      return card.status === "todo" && card.isArchived;
+    });
+  }
+
+  private getIdeaAllCards() {
+    return cardStore.cards.filter((card) => card.status === "idea");
+  }
+
+  private getIdeaThisWeekCards() {
+    return cardStore.cards.filter((card) => {
+      if (!card.dueDate) return false;
+      return card.status === "idea" && cardUtils.getIsThisWeek(card.dueDate);
+    });
+  }
+
+  getFilteredCardsWith(cardSType: CardsType) {
+    switch (cardSType) {
+      case CardsType.TodoAll:
+        return this.getTodoAllCards();
+      case CardsType.TodoToday:
+        return this.getTodoTodayCards();
+      case CardsType.TodoTomorrow:
+        return this.getTodoTomorrowCards();
+      case CardsType.TodoThisWeek:
+        return this.getTodoThisWeekCards();
+      case CardsType.TodoComplete:
+        return this.getTodoCompletedCards();
+      case CardsType.IdeaAll:
+        return this.getIdeaAllCards();
+      case CardsType.IdeaThisWeek:
+        return this.getIdeaThisWeekCards();
+      default:
+        return [];
+    }
   }
 
   getThisWeekCardsWith(weekStartsOn: WeekStartsOn) {
@@ -125,8 +195,8 @@ class CardService implements ICardService {
     });
   }
 
-  addCard(newCard: NewCard) {
-    cardStore.cards.unshift(newCard);
+  addCard(newCard: NewCard, updateCard?: IUpdateCard) {
+    cardStore.cards.unshift({ ...newCard, ...updateCard });
   }
 
   updateCard(id: string, updateCard: IUpdateCard) {
@@ -233,7 +303,7 @@ class CardService implements ICardService {
 }
 
 class FirebaseService implements IFirebaseService {
-  getLocalCards() {
+  private getLocalCards() {
     const localCards = JSON.parse(localStorage.getItem("cards") || "");
     if (localCards) runInAction(() => (cardStore.cards = localCards));
   }
@@ -246,7 +316,8 @@ class FirebaseService implements IFirebaseService {
       this.getLocalCards();
 
       const cardsRef = collection(db, "user_cards", uid, "cards");
-      const q = query(cardsRef, where("isArchived", "==", false));
+      const queryArchived = where("isArchived", "==", false);
+      const q = query(cardsRef, queryArchived);
 
       return onSnapshot(q, (querySnapshot) => {
         const cards: ICard[] = [];
@@ -348,20 +419,16 @@ class CardStore {
     return this.cardService.getAllTags;
   }
 
-  get getCards() {
-    return this.cardService.getCards;
-  }
-
   getThisWeekCardsWith(weekStartsOn: WeekStartsOn) {
     return this.cardService.getThisWeekCardsWith(weekStartsOn);
   }
 
-  getFilteredCardsWith(status: cardStatus) {
-    return this.cardService.getFilteredCardsWith(status);
+  getFilteredCardsWith(cardsType: CardsType) {
+    return this.cardService.getFilteredCardsWith(cardsType);
   }
 
-  addCard(newCard: NewCard) {
-    this.cardService.addCard(newCard);
+  addCard(newCard: NewCard, updateCard?: IUpdateCard) {
+    this.cardService.addCard(newCard, updateCard);
   }
 
   addCardTag(id: string, tag: string) {

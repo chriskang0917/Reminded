@@ -1,5 +1,12 @@
-import { addDays, format, isSameISOWeek, parseISO } from "date-fns";
-import { cardStore } from "../store/cardStore";
+import {
+  addDays,
+  endOfWeek,
+  format,
+  isWithinInterval,
+  parseISO,
+  startOfWeek,
+} from "date-fns";
+import { ICard } from "./../store/cardStore";
 
 export const enum WeekStartsOn {
   Sunday = 0,
@@ -12,17 +19,34 @@ export const enum WeekStartsOn {
 }
 
 export const cardUtils = {
+  dateFormat: "yyyy-MM-dd",
+  weekStartsOn: WeekStartsOn.Monday,
   getIsToday(date: string) {
-    const dateFormat = "yyyy-MM-dd";
-    const dueDate = parseISO(date);
-    const today = format(Date.now(), dateFormat);
-
-    return format(dueDate, dateFormat) === today;
+    const today = format(Date.now(), this.dateFormat);
+    return format(parseISO(date), this.dateFormat) === today;
   },
-  getThisWeekCardsWith(weekStartsOn: WeekStartsOn) {
-    return cardStore.cards.filter((card) => {
-      const adjustedDate = addDays(parseISO(card.createdTime), -weekStartsOn);
-      return isSameISOWeek(new Date(), adjustedDate);
+  getIsTomorrow(date: string) {
+    const tomorrow = format(addDays(Date.now(), 1), this.dateFormat);
+    return format(parseISO(date), this.dateFormat) === tomorrow;
+  },
+  getIsThisWeek(date: string) {
+    const startOfWeekDate = startOfWeek(Date.now(), {
+      weekStartsOn: this.weekStartsOn,
+    });
+    const endOfWeekDate = endOfWeek(Date.now(), {
+      weekStartsOn: this.weekStartsOn,
+    });
+    return isWithinInterval(parseISO(date), {
+      start: startOfWeekDate,
+      end: endOfWeekDate,
+    });
+  },
+  sortCardsByDueDateDesc(cards: ICard[]) {
+    return cards.sort((a, b) => {
+      if (a.dueDate && b.dueDate) {
+        return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
+      }
+      return 0;
     });
   },
 };

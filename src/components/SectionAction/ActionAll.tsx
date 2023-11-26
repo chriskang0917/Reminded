@@ -1,14 +1,14 @@
 import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { CardsType, cardStore } from "../../store/cardStore";
+import { cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { IdeaCard } from "../Card";
 
-const Title = "本週靈感";
+const Title = "所有行動";
 
-export const IdeaWeek = observer(() => {
-  const ideaCardsOfThisWeek = cardStore.getFilteredCardsWith(
-    CardsType.IdeaThisWeek,
+export const ActionAll = observer(() => {
+  const actionCards = cardStore.cards.filter(
+    (card) => card.status === "action",
   );
 
   return (
@@ -17,7 +17,7 @@ export const IdeaWeek = observer(() => {
         <h1 className={style.mainTitle}>{Title}</h1>
         <Divider />
         <ul className="mt-5 grid w-full gap-3">
-          {ideaCardsOfThisWeek.map((card) => (
+          {actionCards.map((card) => (
             <li key={card.id}>
               <IdeaCard card={card} />
             </li>
