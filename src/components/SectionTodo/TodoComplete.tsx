@@ -1,17 +1,14 @@
 import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { WeekStartsOn, cardUtils } from "../../utils/cardUtils";
+import { cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { TodoCard } from "../Card";
 
 const Title = "已完成";
 
 export const TodoComplete = observer(() => {
-  const cardsOfThisWeek = cardUtils.getThisWeekIdeaCardsWith(
-    WeekStartsOn.Sunday,
-  );
-  const todoCardOfThisWeek = cardsOfThisWeek.filter(
-    (card) => card.status === "todo",
+  const todoComplete = cardStore.cards.filter(
+    (card) => card.status === "todo" && card.isArchived,
   );
 
   return (
@@ -20,7 +17,7 @@ export const TodoComplete = observer(() => {
         <h1 className={style.mainTitle}>{Title}</h1>
         <Divider />
         <ul className="mt-5 grid w-full gap-3">
-          {todoCardOfThisWeek.map((card) => (
+          {todoComplete.map((card) => (
             <li key={card.id}>
               <TodoCard card={card} />
             </li>

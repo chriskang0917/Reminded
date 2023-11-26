@@ -55,7 +55,6 @@ export interface IUpdateCard {
 
 interface ICardService {
   getAllTags: string[];
-  getCards: ICard[];
   getFilteredCardsWith: (status: cardStatus) => ICard[];
   getThisWeekCardsWith: (weekStartsOn: WeekStartsOn) => ICard[];
   addCard: (newCard: NewCard, updateCard?: IUpdateCard) => void;
@@ -113,10 +112,6 @@ class CardService implements ICardService {
     const tags = cardStore.cards.map((card) => card.tags).flat() || [];
     if (!tags) return [];
     return [...new Set(tags)];
-  }
-
-  get getCards() {
-    return cardStore.cards;
   }
 
   getFilteredCardsWith(status: cardStatus) {
@@ -238,7 +233,7 @@ class CardService implements ICardService {
 }
 
 class FirebaseService implements IFirebaseService {
-  getLocalCards() {
+  private getLocalCards() {
     const localCards = JSON.parse(localStorage.getItem("cards") || "");
     if (localCards) runInAction(() => (cardStore.cards = localCards));
   }
@@ -352,10 +347,6 @@ class CardStore {
 
   get getAllTags() {
     return this.cardService.getAllTags;
-  }
-
-  get getCards() {
-    return this.cardService.getCards;
   }
 
   getThisWeekCardsWith(weekStartsOn: WeekStartsOn) {

@@ -21,7 +21,7 @@ interface CardToolProps {
 
 export const TodoCard = ({ card }: CardToolProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isSelect, setIsSelect] = useState(false);
+  const [isSelect, setIsSelect] = useState(card.isArchived);
 
   const handleComplete = () => {
     setIsSelect(!isSelect);
