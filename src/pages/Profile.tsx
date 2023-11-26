@@ -7,8 +7,8 @@ const ProfilePage = observer(() => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    authStore.logout();
     navigate("/login");
+    authStore.logout();
   };
 
   return (

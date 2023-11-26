@@ -123,8 +123,8 @@ class EmailAuthService implements AuthService {
   logout() {
     cookie.deleteCookie("uid");
     runInAction(() => {
-      authStore.uid = null;
       authStore.isLogin = false;
+      authStore.uid = null;
     });
 
     signOut(auth)
