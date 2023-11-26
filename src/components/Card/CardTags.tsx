@@ -23,17 +23,16 @@ const CardTags = observer(({ card }: { card: ICard }) => {
 
   return (
     <>
-      {card.tags[0] !== "" &&
-        card.tags.map((tag: string) => (
-          <Chip
-            size="sm"
-            key={tag}
-            className="mt-2 px-2"
-            onClose={() => cardStore.deleteCardTag(card.id, tag)}
-          >
-            {tag}
-          </Chip>
-        ))}
+      {card.tags.map((tag: string) => (
+        <Chip
+          size="sm"
+          key={tag}
+          className="mt-2 px-2"
+          onClose={() => cardStore.deleteCardTag(card.id, tag)}
+        >
+          {tag}
+        </Chip>
+      ))}
       {!isTagInputShow && (
         <IoIosAddCircleOutline
           className="mt-2 h-4 w-4 cursor-pointer"
