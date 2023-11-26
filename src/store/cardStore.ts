@@ -13,7 +13,7 @@ import {
 import { makeAutoObservable, runInAction } from "mobx";
 import { nanoid } from "nanoid";
 import { db } from "../config/firebase";
-import { WeekStartsOn } from "../utils/cardUtils";
+import { WeekStartsOn, cardUtils } from "../utils/cardUtils";
 import { authStore } from "./authStore";
 
 export type cardStatus =
@@ -23,6 +23,12 @@ export type cardStatus =
   | "remind"
   | "note"
   | "execute";
+
+export const enum CardsType {
+  TodoToday = "todo_today",
+  TodoTomorrow = "todo_tomorrow",
+  TodoThisWeek = "todo_this_week",
+}
 
 export interface ICard {
   id: string;
@@ -55,7 +61,7 @@ export interface IUpdateCard {
 
 interface ICardService {
   getAllTags: string[];
-  getFilteredCardsWith: (status: cardStatus) => ICard[];
+  getFilteredCardsWith: (cardsType: CardsType) => ICard[];
   getThisWeekCardsWith: (weekStartsOn: WeekStartsOn) => ICard[];
   addCard: (newCard: NewCard, updateCard?: IUpdateCard) => void;
   addCardTag: (id: string, tag: string) => void;
@@ -114,8 +120,37 @@ class CardService implements ICardService {
     return [...new Set(tags)];
   }
 
-  getFilteredCardsWith(status: cardStatus) {
-    return cardStore.cards.filter((card) => card.status === status);
+  private getTodoTodayCards() {
+    return cardStore.cards.filter((card) => {
+      return card.status === "todo" && cardUtils.getIsToday(card.dueDate || "");
+    });
+  }
+
+  private getTodoTomorrowCards() {
+    return cardStore.cards.filter(
+      (card) =>
+        card.status === "todo" && cardUtils.getIsTomorrow(card.dueDate || ""),
+    );
+  }
+
+  private getTodoThisWeekCards() {
+    return cardStore.cards.filter((card) => {
+      if (!card.dueDate) return false;
+      return card.status === "todo" && cardUtils.getIsThisWeek(card.dueDate);
+    });
+  }
+
+  getFilteredCardsWith(cardSType: CardsType) {
+    switch (cardSType) {
+      case CardsType.TodoToday:
+        return this.getTodoTodayCards();
+      case CardsType.TodoTomorrow:
+        return this.getTodoTomorrowCards();
+      case CardsType.TodoThisWeek:
+        return this.getTodoThisWeekCards();
+      default:
+        return [];
+    }
   }
 
   getThisWeekCardsWith(weekStartsOn: WeekStartsOn) {
@@ -353,8 +388,8 @@ class CardStore {
     return this.cardService.getThisWeekCardsWith(weekStartsOn);
   }
 
-  getFilteredCardsWith(status: cardStatus) {
-    return this.cardService.getFilteredCardsWith(status);
+  getFilteredCardsWith(cardsType: CardsType) {
+    return this.cardService.getFilteredCardsWith(cardsType);
   }
 
   addCard(newCard: NewCard, updateCard?: IUpdateCard) {

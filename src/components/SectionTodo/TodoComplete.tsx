@@ -1,13 +1,18 @@
 import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 import { cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { TodoCard } from "../Card";
 
-const Title = "已完成";
+const Title = "已完成待辦";
 
 export const TodoComplete = observer(() => {
-  const todoComplete = cardStore.cards.filter(
+  useEffect(() => {
+    cardStore.getArchivedCards();
+  }, []);
+
+  const todoComplete = cardStore.archivedCards.filter(
     (card) => card.status === "todo" && card.isArchived,
   );
 

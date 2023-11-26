@@ -7,7 +7,7 @@ type searchType = "idea" | "action" | "todo";
 export const useSearch = (type: searchType) => {
   const [searchText, setSearchText] = useState("");
 
-  const filteredCards = cardStore.getFilteredCardsWith(type);
+  const filteredCards = cardStore.cards.filter((card) => card.status === type);
   const results = getFusedResults(filteredCards, searchText);
 
   const handleSearch = (text: string) => {

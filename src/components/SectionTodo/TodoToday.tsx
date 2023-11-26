@@ -1,7 +1,6 @@
 import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { cardStore } from "../../store/cardStore";
-import { cardUtils } from "../../utils/cardUtils";
+import { CardsType, cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { TodoCard } from "../Card";
 import { TodoInput } from "../Input";
@@ -9,12 +8,7 @@ import { TodoInput } from "../Input";
 const Title = "今日待辦";
 
 export const TodoToday = observer(() => {
-  const todoCards = cardStore.cards.filter((card) => {
-    if (!card.dueDate) return false;
-    const isTodo = card.status === "todo";
-    const isToday = cardUtils.getIsToday(card.dueDate);
-    return isTodo && isToday;
-  });
+  const todoTodayCards = cardStore.getFilteredCardsWith(CardsType.TodoToday);
 
   return (
     <section className="ml-52">
@@ -23,7 +17,7 @@ export const TodoToday = observer(() => {
         <TodoInput />
         <Divider />
         <ul className="mt-5 grid w-full gap-3">
-          {todoCards.map((card) => (
+          {todoTodayCards.map((card) => (
             <li key={card.id}>
               <TodoCard card={card} />
             </li>

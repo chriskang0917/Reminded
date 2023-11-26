@@ -1,4 +1,12 @@
-import { addDays, format, isSameISOWeek, parseISO } from "date-fns";
+import {
+  addDays,
+  endOfWeek,
+  format,
+  isSameISOWeek,
+  isWithinInterval,
+  parseISO,
+  startOfWeek,
+} from "date-fns";
 import { cardStore } from "../store/cardStore";
 
 export const enum WeekStartsOn {
@@ -12,12 +20,27 @@ export const enum WeekStartsOn {
 }
 
 export const cardUtils = {
+  dateFormat: "yyyy-MM-dd",
+  weekStartsOn: WeekStartsOn.Monday,
   getIsToday(date: string) {
-    const dateFormat = "yyyy-MM-dd";
-    const dueDate = parseISO(date);
-    const today = format(Date.now(), dateFormat);
-
-    return format(dueDate, dateFormat) === today;
+    const today = format(Date.now(), this.dateFormat);
+    return format(parseISO(date), this.dateFormat) === today;
+  },
+  getIsTomorrow(date: string) {
+    const tomorrow = format(addDays(Date.now(), 1), this.dateFormat);
+    return format(parseISO(date), this.dateFormat) === tomorrow;
+  },
+  getIsThisWeek(date: string) {
+    const startOfWeekDate = startOfWeek(Date.now(), {
+      weekStartsOn: this.weekStartsOn,
+    });
+    const endOfWeekDate = endOfWeek(Date.now(), {
+      weekStartsOn: this.weekStartsOn,
+    });
+    return isWithinInterval(parseISO(date), {
+      start: startOfWeekDate,
+      end: endOfWeekDate,
+    });
   },
   getThisWeekIdeaCardsWith(weekStartsOn: WeekStartsOn) {
     return cardStore.cards.filter((card) => {
