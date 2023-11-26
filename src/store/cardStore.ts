@@ -62,6 +62,16 @@ export interface IUpdateCard {
   reminderEndDate?: number | null;
 }
 
+interface ICardsTypeService {
+  getTodoAllCards: () => ICard[];
+  getTodoTodayCards: () => ICard[];
+  getTodoTomorrowCards: () => ICard[];
+  getTodoThisWeekCards: () => ICard[];
+  getTodoCompletedCards: () => ICard[];
+  getIdeaAllCards: () => ICard[];
+  getIdeaThisWeekCards: () => ICard[];
+}
+
 interface ICardService {
   getAllTags: string[];
   getFilteredCardsWith: (cardsType: CardsType) => ICard[];
@@ -109,72 +119,80 @@ export class NewCard implements ICard {
   }
 }
 
-class CardService implements ICardService {
-  get getAllTags() {
-    const tags = cardStore.cards.map((card) => card.tags).flat() || [];
-    if (!tags) return [];
-    return [...new Set(tags)];
-  }
-
-  private getTodoAllCards() {
+class CardsTypeService implements ICardsTypeService {
+  getTodoAllCards() {
     const cards = cardStore.cards.filter((card) => card.status === "todo");
     const sortedCardsDesc = cardUtils.sortCardsByDueDateDesc(cards);
     return sortedCardsDesc;
   }
 
-  private getTodoTodayCards() {
+  getTodoTodayCards() {
     return cardStore.cards.filter((card) => {
       return card.status === "todo" && cardUtils.getIsToday(card.dueDate || "");
     });
   }
 
-  private getTodoTomorrowCards() {
+  getTodoTomorrowCards() {
     return cardStore.cards.filter(
       (card) =>
         card.status === "todo" && cardUtils.getIsTomorrow(card.dueDate || ""),
     );
   }
 
-  private getTodoThisWeekCards() {
+  getTodoThisWeekCards() {
     return cardStore.cards.filter((card) => {
       if (!card.dueDate) return false;
       return card.status === "todo" && cardUtils.getIsThisWeek(card.dueDate);
     });
   }
 
-  private getTodoCompletedCards() {
+  getTodoCompletedCards() {
     return cardStore.archivedCards.filter((card) => {
       return card.status === "todo" && card.isArchived;
     });
   }
 
-  private getIdeaAllCards() {
+  getIdeaAllCards() {
     return cardStore.cards.filter((card) => card.status === "idea");
   }
 
-  private getIdeaThisWeekCards() {
+  getIdeaThisWeekCards() {
     return cardStore.cards.filter((card) => {
       if (!card.dueDate) return false;
       return card.status === "idea" && cardUtils.getIsThisWeek(card.dueDate);
     });
   }
+}
+
+class CardService implements ICardService {
+  private cardsTypeService: CardsTypeService;
+
+  constructor(cardsTypeService: CardsTypeService) {
+    this.cardsTypeService = cardsTypeService;
+  }
+
+  get getAllTags() {
+    const tags = cardStore.cards.map((card) => card.tags).flat() || [];
+    if (!tags) return [];
+    return [...new Set(tags)];
+  }
 
   getFilteredCardsWith(cardSType: CardsType) {
     switch (cardSType) {
       case CardsType.TodoAll:
-        return this.getTodoAllCards();
+        return this.cardsTypeService.getTodoAllCards();
       case CardsType.TodoToday:
-        return this.getTodoTodayCards();
+        return this.cardsTypeService.getTodoTodayCards();
       case CardsType.TodoTomorrow:
-        return this.getTodoTomorrowCards();
+        return this.cardsTypeService.getTodoTomorrowCards();
       case CardsType.TodoThisWeek:
-        return this.getTodoThisWeekCards();
+        return this.cardsTypeService.getTodoThisWeekCards();
       case CardsType.TodoComplete:
-        return this.getTodoCompletedCards();
+        return this.cardsTypeService.getTodoCompletedCards();
       case CardsType.IdeaAll:
-        return this.getIdeaAllCards();
+        return this.cardsTypeService.getIdeaAllCards();
       case CardsType.IdeaThisWeek:
-        return this.getIdeaThisWeekCards();
+        return this.cardsTypeService.getIdeaThisWeekCards();
       default:
         return [];
     }
@@ -302,11 +320,11 @@ class CardStore {
     this.firebaseService = firebaseService;
   }
 
-  initActiveCards() {
+  async initActiveCards() {
     this.firebaseService.initActiveCards();
   }
 
-  getArchivedCards() {
+  async getArchivedCards() {
     this.firebaseService.getArchivedCards();
   }
 
@@ -347,7 +365,8 @@ class CardStore {
   }
 }
 
-const cardService = new CardService();
+const cardsTypeService = new CardsTypeService();
+const cardService = new CardService(cardsTypeService);
 const firebaseService = new FirebaseService();
 export const cardStore = new CardStore(cardService, firebaseService);
 
