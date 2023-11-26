@@ -20,7 +20,7 @@ export const enum WeekStartsOn {
 
 export const cardUtils = {
   dateFormat: "yyyy-MM-dd",
-  weekStartsOn: WeekStartsOn.Monday,
+  weekStartsOn: WeekStartsOn.Sunday,
   getIsToday(date: string) {
     const today = format(Date.now(), this.dateFormat);
     return format(parseISO(date), this.dateFormat) === today;
