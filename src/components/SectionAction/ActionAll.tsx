@@ -28,7 +28,7 @@ export const ActionAll = observer(() => {
         <h1 className={style.mainTitle}>{Title}</h1>
         <Divider />
         <Spacer y={5} />
-        <ul>
+        <ul className="w-full">
           {actionAllList.map((list) => (
             <li key={list.label} className="flex w-full flex-col items-center">
               <div className="flex w-full justify-between">

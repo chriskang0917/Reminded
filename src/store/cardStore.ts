@@ -36,6 +36,7 @@ export const enum CardsType {
   IdeaThisWeek,
   ActionAll,
   ActionTodo,
+  ActionExpired,
   ExecutedAction,
 }
 
@@ -203,6 +204,16 @@ class CardsTypeService implements ICardsTypeService {
     );
   }
 
+  getActionExpiredCards() {
+    return cardStore.cards.filter(
+      (card) =>
+        card.status === "action" &&
+        card.dueDate &&
+        cardUtils.isExceedToday(card.dueDate) &&
+        !card.isArchived,
+    );
+  }
+
   getActionTodoCards() {
     return cardStore.cards.filter(
       (card) => card.status === "action" && card.dueDate && !card.isArchived,
@@ -249,6 +260,8 @@ class CardService implements ICardService {
         return this.cardsTypeService.getActionAllCards();
       case CardsType.ActionTodo:
         return this.cardsTypeService.getActionTodoCards();
+      case CardsType.ActionExpired:
+        return this.cardsTypeService.getActionExpiredCards();
       case CardsType.ExecutedAction:
         return this.cardsTypeService.getExecutedActionCards();
       default:
