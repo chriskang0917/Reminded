@@ -53,7 +53,7 @@ class EmailAuthService implements AuthService {
           authStore.uid = doc.data()?.uid;
         });
       } catch (error) {
-        console.log("init_state_error", error);
+        console.error("init_state_error", error);
       }
     });
   }
@@ -94,7 +94,7 @@ class EmailAuthService implements AuthService {
           toast.error("此信箱已被註冊");
         }
 
-        console.log(errorCode, errorMessage);
+        console.error(errorCode, errorMessage);
         if (callback) callback("error");
       });
   }
@@ -116,7 +116,7 @@ class EmailAuthService implements AuthService {
         const errorMessage = error.message;
 
         toast.error("登入失敗");
-        console.log(errorCode, errorMessage);
+        console.error(errorCode, errorMessage);
       });
   }
 
@@ -129,7 +129,7 @@ class EmailAuthService implements AuthService {
 
     signOut(auth)
       .then(() => toast.success("登出成功"))
-      .catch((error) => console.log("sign_out_error", error));
+      .catch((error) => console.error("sign_out_error", error));
   }
 
   async updateProfile({ name, email }: IProfile) {
