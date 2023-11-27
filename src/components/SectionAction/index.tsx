@@ -1,3 +1,3 @@
 export { ActionAll } from "./ActionAll";
-export { ActionOverdue as ActionExpire } from "./ActionOverdue";
+export { ActionExpire as ActionExpire } from "./ActionExpire";
 export { ActionSearch } from "./ActionSearch";

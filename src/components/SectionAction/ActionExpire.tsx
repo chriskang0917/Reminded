@@ -6,7 +6,7 @@ import { ActionCard } from "../Card";
 
 const Title = "已過期的行動待辦";
 
-export const ActionOverdue = observer(() => {
+export const ActionExpire = observer(() => {
   const actionTodoCards = cardStore.getFilteredCardsWith(
     CardsType.ActionExpired,
   );

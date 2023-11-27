@@ -13,7 +13,7 @@ interface IAction {
 const ideaActionList: IAction[] = [
   { label: "所有行動", path: "/action/all" },
   { label: "搜尋行動", path: "/action/search" },
-  { label: "已過期行動", path: "/action/overdue" },
+  { label: "已過期行動", path: "/action/expire" },
   { label: "已執行行動", path: "/action/executed" },
   { label: "封存行動", path: "/action/archive" },
 ];
