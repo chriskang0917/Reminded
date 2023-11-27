@@ -2,6 +2,7 @@ import {
   addDays,
   endOfWeek,
   format,
+  isBefore,
   isWithinInterval,
   parseISO,
   startOfWeek,
@@ -40,6 +41,11 @@ export const cardUtils = {
       start: startOfWeekDate,
       end: endOfWeekDate,
     });
+  },
+  isExceedToday(date: string) {
+    const dueDate = parseISO(format(parseISO(date), this.dateFormat));
+    const today = parseISO(format(Date.now(), this.dateFormat));
+    return isBefore(dueDate, today);
   },
   sortCardsByDueDateDesc(cards: ICard[]) {
     return cards.sort((a, b) => {

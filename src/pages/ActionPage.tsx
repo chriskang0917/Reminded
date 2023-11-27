@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { ActionSearch } from "../components/SectionAction";
 import { ActionAll } from "../components/SectionAction/ActionAll";
+import { ActionExpire } from "../components/SectionAction/ActionExpire";
 
 const renderActionPage = (route: string | undefined) => {
   switch (route) {
@@ -8,8 +9,8 @@ const renderActionPage = (route: string | undefined) => {
       return <ActionAll />;
     case "search":
       return <ActionSearch />;
-    case "overdue":
-      return <section>Overdue</section>;
+    case "expire":
+      return <ActionExpire />;
     case "executed":
       return <section>Executed</section>;
     case "archive":
