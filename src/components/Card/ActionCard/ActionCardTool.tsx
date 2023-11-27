@@ -42,7 +42,7 @@ interface IList {
   onPress?: () => void;
 }
 
-export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
+export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
   const parsedDate = card.dueDate ? parseISO(card.dueDate) : null;
   const [selectedDate, setSelectedDate] = useState<Date | null>(parsedDate);
 
@@ -59,8 +59,14 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
     cardStore.addCardToFireStore(newCard);
   };
 
+  const handleArchive = () => {
+    cardStore.updateCard(card.id, { isArchived: true });
+    cardStore.updateCardToFirebase(card.id, { isArchived: true });
+  };
+
   const handleDelete = () => {
     cardStore.deleteCard(card.id);
+    cardStore.deleteCardFromFireStore(card.id);
   };
 
   const handleUpdateStatus = (status: cardStatus) => {
@@ -70,15 +76,11 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
 
   const menuList: IList[] = [
     { label: "複製", color: "default", onPress: handleDuplicate },
+    { label: "封存", color: "danger", onPress: handleArchive },
     { label: "刪除", color: "danger", onPress: handleDelete },
   ];
 
   const actionList: IList[] = [
-    {
-      label: "行動",
-      color: "default",
-      onPress: () => handleUpdateStatus("action"),
-    },
     {
       label: "靈感",
       color: "default",
@@ -142,17 +144,19 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
             <button className="w-4">{setting.icon}</button>
           </DropdownTrigger>
           <DropdownMenu aria-label="Action">
-            {actionList.map((action) => (
-              <DropdownItem
-                textValue={action.label || ""}
-                key={action.label}
-                color={action.color}
-                onPress={action.onPress}
-              >
-                <span>轉換為 </span>
-                <strong>{action.label}</strong>
-              </DropdownItem>
-            ))}
+            {actionList.map((action) => {
+              return (
+                <DropdownItem
+                  textValue={action.label || ""}
+                  key={action.label}
+                  color={action.color}
+                  onPress={action.onPress}
+                >
+                  <span>轉換為 </span>
+                  <strong>{action.label}</strong>
+                </DropdownItem>
+              );
+            })}
           </DropdownMenu>
         </Dropdown>
       )}

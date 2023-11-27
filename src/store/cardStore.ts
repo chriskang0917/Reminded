@@ -1,5 +1,6 @@
 import {
   FieldValue,
+  Timestamp,
   collection,
   deleteDoc,
   doc,
@@ -25,6 +26,7 @@ export type cardStatus =
   | "execute";
 
 export const enum CardsType {
+  All,
   TodoAll,
   TodoToday,
   TodoTomorrow,
@@ -32,6 +34,9 @@ export const enum CardsType {
   TodoComplete,
   IdeaAll,
   IdeaThisWeek,
+  ActionAll,
+  ActionTodo,
+  ExecutedAction,
 }
 
 export interface ICard {
@@ -121,8 +126,16 @@ export class NewCard implements ICard {
 }
 
 class CardsTypeService implements ICardsTypeService {
+  getAllCards() {
+    return cardStore.cards;
+  }
+
   getTodoAllCards() {
-    const cards = cardStore.cards.filter((card) => card.status === "todo");
+    const cards = cardStore.cards.filter(
+      (card) =>
+        (card.status === "todo" || card.status === "action") &&
+        !card.isArchived,
+    );
     const sortedCardsDesc = cardUtils.sortCardsByDueDateDesc(cards);
     return sortedCardsDesc;
   }
@@ -130,38 +143,74 @@ class CardsTypeService implements ICardsTypeService {
   getTodoTodayCards() {
     return cardStore.cards.filter((card) => {
       if (!card.dueDate) return false;
-      return card.status === "todo" && cardUtils.isToday(card.dueDate);
+      return (
+        (card.status === "todo" || card.status === "action") &&
+        cardUtils.isToday(card.dueDate) &&
+        !card.isArchived
+      );
     });
   }
 
   getTodoTomorrowCards() {
     return cardStore.cards.filter((card) => {
       if (!card.dueDate) return false;
-      return card.status === "todo" && cardUtils.isTomorrow(card.dueDate);
+      return (
+        (card.status === "todo" || card.status === "action") &&
+        cardUtils.isTomorrow(card.dueDate) &&
+        !card.isArchived
+      );
     });
   }
 
   getTodoThisWeekCards() {
     return cardStore.cards.filter((card) => {
       if (!card.dueDate) return false;
-      return card.status === "todo" && cardUtils.isThisWeek(card.dueDate);
+      return (
+        (card.status === "todo" || card.status === "action") &&
+        cardUtils.isThisWeek(card.dueDate) &&
+        !card.isArchived
+      );
     });
   }
 
   getTodoCompletedCards() {
     return cardStore.archivedCards.filter((card) => {
-      return card.status === "todo" && card.isArchived;
+      return (
+        (card.status === "todo" || card.status === "execute") && card.isArchived
+      );
     });
   }
 
   getIdeaAllCards() {
-    return cardStore.cards.filter((card) => card.status === "idea");
+    return cardStore.cards.filter(
+      (card) => card.status === "idea" && !card.isArchived,
+    );
   }
 
   getIdeaThisWeekCards() {
     return cardStore.cards.filter((card) => {
-      return card.status === "idea" && cardUtils.isThisWeek(card.createdTime);
+      return (
+        card.status === "idea" &&
+        cardUtils.isThisWeek(card.createdTime) &&
+        !card.isArchived
+      );
     });
+  }
+
+  getActionAllCards() {
+    return cardStore.cards.filter(
+      (card) => card.status === "action" && !card.dueDate && !card.isArchived,
+    );
+  }
+
+  getActionTodoCards() {
+    return cardStore.cards.filter(
+      (card) => card.status === "action" && card.dueDate && !card.isArchived,
+    );
+  }
+
+  getExecutedActionCards() {
+    return cardStore.archivedCards.filter((card) => card.status === "execute");
   }
 }
 
@@ -180,6 +229,8 @@ class CardService implements ICardService {
 
   getFilteredCardsWith(cardSType: CardsType) {
     switch (cardSType) {
+      case CardsType.All:
+        return this.cardsTypeService.getAllCards();
       case CardsType.TodoAll:
         return this.cardsTypeService.getTodoAllCards();
       case CardsType.TodoToday:
@@ -194,6 +245,12 @@ class CardService implements ICardService {
         return this.cardsTypeService.getIdeaAllCards();
       case CardsType.IdeaThisWeek:
         return this.cardsTypeService.getIdeaThisWeekCards();
+      case CardsType.ActionAll:
+        return this.cardsTypeService.getActionAllCards();
+      case CardsType.ActionTodo:
+        return this.cardsTypeService.getActionTodoCards();
+      case CardsType.ExecutedAction:
+        return this.cardsTypeService.getExecutedActionCards();
       default:
         return [];
     }
@@ -274,6 +331,27 @@ class FirebaseService implements IFirebaseService {
     }
   }
 
+  async getExecutedActionCards() {
+    const uid = cookie.getCookie("uid");
+    if (!uid) return;
+    const cardsRef = collection(db, "user_cards", uid, "cards");
+    const oneWeekAgo = new Date().setDate(new Date().getDate() - 7);
+    const serverTimestamp = Timestamp.fromDate(new Date(oneWeekAgo));
+    const q = query(cardsRef, where("serverTimestamp", ">=", serverTimestamp));
+
+    return onSnapshot(q, (querySnapshot) => {
+      const executedActionCards: ICard[] = [];
+      querySnapshot.forEach((doc) => {
+        if (doc.data().status !== "execute") return;
+        if (doc.data().isArchived !== true) return;
+        executedActionCards.push(doc.data() as ICard);
+      });
+      runInAction(() => {
+        cardStore.executedActionCards = executedActionCards || [];
+      });
+    });
+  }
+
   async updateCardToFirebase(cardId: string, updateCard: IUpdateCard) {
     try {
       if (!authStore.uid) return;
@@ -314,6 +392,7 @@ class CardStore {
   private firebaseService: FirebaseService;
   cards: ICard[] = [];
   archivedCards: ICard[] = [];
+  executedActionCards: ICard[] = [];
 
   constructor(cardService: CardService, firebaseService: FirebaseService) {
     makeAutoObservable(this);
@@ -327,6 +406,10 @@ class CardStore {
 
   getArchivedCards() {
     this.firebaseService.getArchivedCards();
+  }
+
+  async getExecutedActionCards() {
+    this.firebaseService.getExecutedActionCards();
   }
 
   async updateCardToFirebase(cardId: string, updateCard: IUpdateCard) {
