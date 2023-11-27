@@ -26,21 +26,28 @@ const Editable = observer(
       cardStore.updateCardToFirebase(id, { content: currentText });
     }, [isEditing, childRef, currentText]);
 
-    const handleKeyDown = ({
-      key: keyDown,
-      metaKey,
-    }: React.KeyboardEvent<HTMLInputElement>) => {
-      const keys = ["Escape", "Tab", "Enter"];
+    const handleKeyDown = ({ key: keyDown, metaKey }: React.KeyboardEvent) => {
+      const keys = ["Escape"];
       if (keys.includes(keyDown)) setIsEditing(false);
       if (keyDown === "Backspace" && metaKey) cardStore.deleteCard(id);
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      setIsEditing(false);
     };
 
     return (
       <section>
         {isEditing ? (
-          <div onBlur={() => setIsEditing(false)} onKeyDown={handleKeyDown}>
+          <form
+            onSubmit={handleSubmit}
+            onKeyDown={handleKeyDown}
+            onBlur={() => setIsEditing(false)}
+          >
             {children}
-          </div>
+            <button type="submit"></button>
+          </form>
         ) : (
           <div onClick={() => setIsEditing(true)}>
             <div className="w-[300px] tracking-wide">
