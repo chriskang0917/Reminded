@@ -8,8 +8,6 @@ import { TodoCard } from "../Card";
 export const TodayTodo = observer(() => {
   const todoCards = cardStore.getFilteredCardsWith(CardsType.TodoToday);
 
-  console.log(cardStore.cards);
-
   return (
     <section className="flex w-full flex-col items-center">
       <div className="flex w-full items-center justify-between">

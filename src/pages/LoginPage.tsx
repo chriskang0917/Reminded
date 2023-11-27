@@ -14,7 +14,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { Navigate } from "react-router-dom";
 import { authStore } from "../store/authStore";
@@ -22,6 +22,7 @@ import { authStore } from "../store/authStore";
 const DEFAULT_EMAIL = "test@gmail.com";
 
 const LoginPage = observer(() => {
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [loginState, setLoginState] = useState({
     newUserName: "",
@@ -30,6 +31,13 @@ const LoginPage = observer(() => {
     isLoginPage: true,
     isSettingName: false,
   });
+
+  useEffect(() => {
+    if (loginState.isSettingName) {
+      nameInputRef.current?.focus();
+      nameInputRef.current?.select();
+    }
+  }, [isOpen]);
 
   const onLoginSubmit = () => {
     if (loginState.isLoginPage) {
@@ -42,6 +50,10 @@ const LoginPage = observer(() => {
     const registerCallback = (result?: string) => {
       if (result === "error") return;
       onOpen();
+      setLoginState((prevState) => ({
+        ...prevState,
+        newUserName: authStore.name || "",
+      }));
     };
     setLoginState((prevState) => ({
       ...prevState,
@@ -54,7 +66,7 @@ const LoginPage = observer(() => {
     onLoginSubmit();
   };
 
-  const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onLoginSubmit();
   };
@@ -74,7 +86,7 @@ const LoginPage = observer(() => {
     }));
   };
 
-  const handleNameSubmit = () => {
+  const onNameSubmit = () => {
     if (!loginState.newUserName) {
       return toast.error("請輸入暱稱");
     }
@@ -87,6 +99,23 @@ const LoginPage = observer(() => {
       isSettingName: false,
     }));
     onClose();
+  };
+
+  const handleNameFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onNameSubmit();
+  };
+
+  const handleNameSubmit = () => {
+    onNameSubmit();
+  };
+
+  const handleModalClose = () => {
+    onClose();
+    setLoginState((prevState) => ({
+      ...prevState,
+      isSettingName: false,
+    }));
   };
 
   const isRedirect = [
@@ -158,6 +187,7 @@ const LoginPage = observer(() => {
         isDismissable={false}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
+        onClose={handleModalClose}
       >
         <ModalContent>
           {() => (
@@ -166,13 +196,20 @@ const LoginPage = observer(() => {
                 <h1>註冊成功！ 輸入你想使用的暱稱</h1>
               </ModalHeader>
               <ModalBody>
-                <Input
-                  value={loginState.newUserName}
-                  onValueChange={(newUserName) =>
-                    setLoginState({ ...loginState, newUserName })
-                  }
-                  placeholder="輸入你的暱稱"
-                />
+                <p className="text-center text-sm">
+                  <strong>預設暱稱</strong>：{authStore.name}
+                </p>
+                <form onSubmit={handleNameFormSubmit}>
+                  <Input
+                    ref={nameInputRef}
+                    value={loginState.newUserName}
+                    onValueChange={(newUserName) =>
+                      setLoginState({ ...loginState, newUserName })
+                    }
+                    placeholder="輸入你的暱稱"
+                  />
+                  <button type="submit"></button>
+                </form>
               </ModalBody>
               <ModalFooter className="flex justify-center">
                 <Button
