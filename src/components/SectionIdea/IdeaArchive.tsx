@@ -1,14 +1,16 @@
 import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 import { cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { IdeaCard } from "../Card";
-import { useEffect } from "react";
 
 const Title = "已封存靈感";
 
 export const IdeaArchive = observer(() => {
-  useEffect(() => cardStore.getArchivedCards(), []);
+  useEffect(() => {
+    cardStore.getArchivedCards();
+  }, []);
 
   return (
     <section className="ml-52">

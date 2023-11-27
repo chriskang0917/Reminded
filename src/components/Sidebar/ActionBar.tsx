@@ -11,11 +11,11 @@ interface IAction {
 }
 
 const ideaActionList: IAction[] = [
-  { label: "All Action", path: "/action/all" },
-  { label: "Search", path: "/action/search" },
-  { label: "Overdue", path: "/action/overdue" },
-  { label: "Executed", path: "/action/executed" },
-  { label: "Archive", path: "/action/archive" },
+  { label: "所有行動", path: "/action/all" },
+  { label: "搜尋行動", path: "/action/search" },
+  { label: "已過期行動", path: "/action/overdue" },
+  { label: "已執行行動", path: "/action/executed" },
+  { label: "封存行動", path: "/action/archive" },
 ];
 
 interface IButton {

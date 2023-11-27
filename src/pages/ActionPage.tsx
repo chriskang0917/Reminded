@@ -1,10 +1,11 @@
 import { useParams } from "react-router-dom";
 import { ActionSearch } from "../components/SectionAction";
+import { ActionAll } from "../components/SectionAction/ActionAll";
 
 const renderActionPage = (route: string | undefined) => {
   switch (route) {
     case "all":
-      return <section>All</section>;
+      return <ActionAll />;
     case "search":
       return <ActionSearch />;
     case "overdue":

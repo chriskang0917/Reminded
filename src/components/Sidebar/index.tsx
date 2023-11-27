@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const actionList = [
   { label: "今日", path: "/" },
-  { label: "待辦", path: "/todo" },
+  { label: "待辦", path: "/todo/today" },
   { label: "行動", path: "/action/all" },
   { label: "靈感", path: "/idea/week" },
   { label: "搜尋", path: "/search" },
