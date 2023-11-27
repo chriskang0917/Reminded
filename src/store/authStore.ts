@@ -78,7 +78,7 @@ class EmailAuthService implements AuthService {
         if (!authStore.uid) return;
         const profileRef = doc(db, "users", authStore.uid);
         const randomName = `User_${Math.floor(Math.random() * 10000)}`;
-        authStore.name = randomName;
+        runInAction(() => (authStore.name = randomName));
 
         setDoc(profileRef, {
           name: authStore.name,
