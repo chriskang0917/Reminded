@@ -11,7 +11,7 @@ export const TodayIdea = observer(() => {
     if (!card.createdTime) return false;
     const isIdea = card.status === "idea";
     const isArchived = card.isArchived;
-    const isToday = cardUtils.getIsToday(card.createdTime);
+    const isToday = cardUtils.isToday(card.createdTime);
     return isIdea && !isArchived && isToday;
   });
 

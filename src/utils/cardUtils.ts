@@ -21,15 +21,15 @@ export const enum WeekStartsOn {
 export const cardUtils = {
   dateFormat: "yyyy-MM-dd",
   weekStartsOn: WeekStartsOn.Sunday,
-  getIsToday(date: string) {
+  isToday(date: string) {
     const today = format(Date.now(), this.dateFormat);
     return format(parseISO(date), this.dateFormat) === today;
   },
-  getIsTomorrow(date: string) {
+  isTomorrow(date: string) {
     const tomorrow = format(addDays(Date.now(), 1), this.dateFormat);
     return format(parseISO(date), this.dateFormat) === tomorrow;
   },
-  getIsThisWeek(date: string) {
+  isThisWeek(date: string) {
     const startOfWeekDate = startOfWeek(Date.now(), {
       weekStartsOn: this.weekStartsOn,
     });

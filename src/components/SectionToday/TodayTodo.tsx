@@ -1,19 +1,12 @@
 import { Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { IoFilterOutline } from "react-icons/io5";
-import { cardStore } from "../../store/cardStore";
-import { cardUtils } from "../../utils/cardUtils";
+import { CardsType, cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { TodoCard } from "../Card";
 
 export const TodayTodo = observer(() => {
-  const todoCards = cardStore.cards.filter((card) => {
-    if (!card.dueDate) return false;
-    const isTodo = card.status === "todo";
-    const isArchived = card.isArchived;
-    const isToday = cardUtils.getIsToday(card.dueDate);
-    return isTodo && !isArchived && isToday;
-  });
+  const todoCards = cardStore.getFilteredCardsWith(CardsType.TodoToday);
 
   return (
     <section className="flex w-full flex-col items-center">

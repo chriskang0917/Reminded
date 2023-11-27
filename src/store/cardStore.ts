@@ -13,6 +13,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { nanoid } from "nanoid";
 import { db } from "../config/firebase";
 import { cardUtils } from "../utils/cardUtils";
+import { cookie } from "../utils/cookie";
 import { authStore } from "./authStore";
 
 export type cardStatus =
@@ -128,21 +129,22 @@ class CardsTypeService implements ICardsTypeService {
 
   getTodoTodayCards() {
     return cardStore.cards.filter((card) => {
-      return card.status === "todo" && cardUtils.getIsToday(card.dueDate || "");
+      if (!card.dueDate) return false;
+      return card.status === "todo" && cardUtils.isToday(card.dueDate);
     });
   }
 
   getTodoTomorrowCards() {
-    return cardStore.cards.filter(
-      (card) =>
-        card.status === "todo" && cardUtils.getIsTomorrow(card.dueDate || ""),
-    );
+    return cardStore.cards.filter((card) => {
+      if (!card.dueDate) return false;
+      return card.status === "todo" && cardUtils.isTomorrow(card.dueDate);
+    });
   }
 
   getTodoThisWeekCards() {
     return cardStore.cards.filter((card) => {
       if (!card.dueDate) return false;
-      return card.status === "todo" && cardUtils.getIsThisWeek(card.dueDate);
+      return card.status === "todo" && cardUtils.isThisWeek(card.dueDate);
     });
   }
 
@@ -158,8 +160,7 @@ class CardsTypeService implements ICardsTypeService {
 
   getIdeaThisWeekCards() {
     return cardStore.cards.filter((card) => {
-      if (!card.dueDate) return false;
-      return card.status === "idea" && cardUtils.getIsThisWeek(card.dueDate);
+      return card.status === "idea" && cardUtils.isThisWeek(card.createdTime);
     });
   }
 }
@@ -257,7 +258,7 @@ class FirebaseService implements IFirebaseService {
 
   async getArchivedCards() {
     try {
-      const uid = authStore.uid;
+      const uid = cookie.getCookie("uid");
       if (!uid) return;
 
       const cardsRef = collection(db, "user_cards", uid, "cards");
