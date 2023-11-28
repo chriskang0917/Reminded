@@ -257,9 +257,11 @@ class CardsTypeService implements ICardsTypeService {
 
   getActionTodoCards() {
     const sortedCards = this.getSortedCardsByOrderList();
-    return sortedCards.filter(
+    const cards = sortedCards.filter(
       (card) => card.status === "action" && card.dueDate && !card.isArchived,
     );
+    const sortedCardsDesc = cardUtils.sortCardsDescBy("dueDate", cards);
+    return sortedCardsDesc;
   }
 
   getExecutedActionCards() {
