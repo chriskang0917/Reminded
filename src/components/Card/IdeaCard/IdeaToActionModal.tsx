@@ -44,12 +44,12 @@ interface ButtonProps {
 
 const toolTipList = [
   {
-    label: "封存",
-    content: "轉換行動後封存靈感",
-  },
-  {
     label: "轉換",
     content: "轉換行動後保留靈感",
+  },
+  {
+    label: "封存",
+    content: "轉換行動後封存靈感",
   },
 ];
 
@@ -65,9 +65,24 @@ export const IdeaToActionModal = observer(
 
     const buttonsList: ButtonProps[] = [
       {
-        label: "封存",
-        color: "warning",
+        label: "轉換",
         variant: "ghost",
+        color: "warning",
+        onPress: () => {
+          const ideaToActionInput = inputRef.current?.value || "";
+          if (!ideaToActionInput) return toast.error("請輸入內容");
+          const newCard = new NewCard(ideaToActionInput, card.tags, "action");
+          cardStore.updateCard(card.id, { isTransformed: true });
+          cardStore.updateCardToFirebase(card.id, { isTransformed: true });
+          cardStore.addCard(newCard);
+          cardStore.addCardToFireStore(newCard);
+          toast.success("轉換成功");
+          onClose();
+        },
+      },
+      {
+        label: "封存",
+        color: "primary",
         onPress: () => {
           const ideaToActionInput = inputRef.current?.value || "";
           if (!ideaToActionInput) return toast.error("請輸入內容");
@@ -83,21 +98,6 @@ export const IdeaToActionModal = observer(
           cardStore.addCard(newCard);
           cardStore.addCardToFireStore(newCard);
           toast.success("封存成功");
-          onClose();
-        },
-      },
-      {
-        label: "轉換",
-        color: "primary",
-        onPress: () => {
-          const ideaToActionInput = inputRef.current?.value || "";
-          if (!ideaToActionInput) return toast.error("請輸入內容");
-          const newCard = new NewCard(ideaToActionInput, card.tags, "action");
-          cardStore.updateCard(card.id, { isTransformed: true });
-          cardStore.updateCardToFirebase(card.id, { isTransformed: true });
-          cardStore.addCard(newCard);
-          cardStore.addCardToFireStore(newCard);
-          toast.success("轉換成功");
           onClose();
         },
       },
