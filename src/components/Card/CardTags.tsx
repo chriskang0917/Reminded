@@ -22,12 +22,12 @@ const CardTags = observer(({ card }: { card: ICard }) => {
   };
 
   return (
-    <>
+    <div className="flex items-center justify-start gap-2">
       {card.tags.map((tag: string) => (
         <Chip
           size="sm"
           key={tag}
-          className="mt-2 px-2"
+          className="px-2"
           onClose={() => cardStore.deleteCardTag(card.id, tag)}
         >
           {tag}
@@ -35,12 +35,15 @@ const CardTags = observer(({ card }: { card: ICard }) => {
       ))}
       {!isTagInputShow && (
         <IoIosAddCircleOutline
-          className="mt-2 h-4 w-4 cursor-pointer"
+          className="h-4 w-4 cursor-pointer"
           onClick={() => setIsTagInputShow(!isTagInputShow)}
         />
       )}
       {isTagInputShow && (
-        <form onSubmit={handleTagSubmit}>
+        <form
+          onSubmit={handleTagSubmit}
+          className="flex h-5 items-center overflow-y-hidden"
+        >
           <Input
             ref={tagInputRef}
             size="sm"
@@ -52,7 +55,7 @@ const CardTags = observer(({ card }: { card: ICard }) => {
           <button type="submit"></button>
         </form>
       )}
-    </>
+    </div>
   );
 });
 

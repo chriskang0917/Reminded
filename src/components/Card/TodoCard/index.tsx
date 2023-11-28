@@ -64,7 +64,7 @@ export const TodoCard = ({ card }: CardToolProps) => {
           ))}
         </div>
       </div>
-      <div className="mt-2 flex flex-wrap items-center gap-x-2">
+      <div className="mt-5 flex flex-wrap items-center gap-x-2">
         <CardTags card={card} />
       </div>
     </BasicCard>
