@@ -23,12 +23,10 @@ import { createPortal } from "react-dom";
 import Sidebar from "../components/Sidebar";
 
 const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [6, 7, 8, 9, 10];
 
 const DndPocPage = observer(() => {
   const [activeId, setActiveId] = useState<number | null>(null);
   const [items1, setItems1] = useState(arr1);
-  const [items2, setItems2] = useState(arr2);
 
   const sensors = useSensors(
     useSensor(MouseSensor),
@@ -76,19 +74,6 @@ const DndPocPage = observer(() => {
           >
             <ul className="flex w-full flex-col gap-2">
               {items1.map((item) => (
-                <li className="w-full bg-slate-400 text-center" key={item}>
-                  <SortableItem item={item} />
-                </li>
-              ))}
-            </ul>
-          </SortableContext>
-          <h2>Items2</h2>
-          <SortableContext
-            items={items2}
-            strategy={verticalListSortingStrategy}
-          >
-            <ul className="flex w-full flex-col gap-2">
-              {items2.map((item) => (
                 <li className="w-full bg-slate-400 text-center" key={item}>
                   <SortableItem item={item} />
                 </li>
