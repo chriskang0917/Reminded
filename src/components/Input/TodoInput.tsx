@@ -12,6 +12,7 @@ import { Key, useEffect, useRef, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import { CiCalendarDate } from "react-icons/ci";
 import { IoIosAdd } from "react-icons/io";
+import { useLocation } from "react-router-dom";
 import { NewCard, cardStore } from "../../store/cardStore";
 import { getObjectFilteredTags } from "../../utils/input";
 
@@ -22,12 +23,17 @@ interface IInput {
 }
 
 export const TodoInput = observer(() => {
+  const location = useLocation();
+  const isTomorrow = location.pathname === "/todo/tomorrow";
+
   const inputRef = useRef<HTMLInputElement>(null);
   const tagRef = useRef<HTMLInputElement>(null);
   const [input, setInput] = useState<IInput>({
     content: "",
     tag: "",
-    date: new Date(),
+    date: isTomorrow
+      ? new Date(new Date().setDate(new Date().getDate() + 1))
+      : new Date(),
   });
 
   useEffect(() => {
@@ -50,8 +56,8 @@ export const TodoInput = observer(() => {
     if (input.content === "") return;
     const newCard = new NewCard(input.content, [input.tag], "todo");
     const dueDate = input.date?.toISOString() || null;
-    cardStore.addCard(newCard, { dueDate });
-    cardStore.addCardToFireStore(newCard);
+    cardStore.addCard(newCard, { dueDate: dueDate });
+    cardStore.addCardToFireStore(newCard, { dueDate });
     setInput((prev) => ({ ...prev, content: "", tag: "" }));
   };
 
