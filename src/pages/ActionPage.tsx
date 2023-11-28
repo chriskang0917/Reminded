@@ -1,7 +1,12 @@
 import { useParams } from "react-router-dom";
-import { ActionSearch } from "../components/SectionAction";
-import { ActionAll } from "../components/SectionAction/ActionAll";
-import { ActionExpire } from "../components/SectionAction/ActionExpire";
+import {
+  ActionAll,
+  ActionArchive,
+  ActionExecute,
+  ActionExpire,
+  ActionSearch,
+} from "../components/SectionAction";
+import ErrorPage from "./ErrorPage";
 
 const renderActionPage = (route: string | undefined) => {
   switch (route) {
@@ -12,11 +17,11 @@ const renderActionPage = (route: string | undefined) => {
     case "expire":
       return <ActionExpire />;
     case "executed":
-      return <section>Executed</section>;
+      return <ActionExecute />;
     case "archive":
-      return <section>Archive</section>;
+      return <ActionArchive />;
     default:
-      return <section>404</section>;
+      return <ErrorPage />;
   }
 };
 

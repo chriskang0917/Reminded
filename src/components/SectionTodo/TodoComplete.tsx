@@ -12,7 +12,7 @@ export const TodoComplete = observer(() => {
 
   useEffect(() => {
     cardStore.getArchivedCards();
-  }, []);
+  }, [cardStore.archivedCards.length]);
 
   return (
     <section className="ml-52">

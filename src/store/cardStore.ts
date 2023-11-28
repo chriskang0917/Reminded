@@ -37,6 +37,7 @@ export const enum CardsType {
   ActionAll,
   ActionTodo,
   ActionExpired,
+  ActionArchive,
   ExecutedAction,
 }
 
@@ -70,6 +71,7 @@ export interface IUpdateCard {
 }
 
 interface ICardsTypeService {
+  getAllCards: () => ICard[];
   getTodoAllCards: () => ICard[];
   getTodoTodayCards: () => ICard[];
   getTodoTomorrowCards: () => ICard[];
@@ -81,7 +83,7 @@ interface ICardsTypeService {
   getActionExpiredCards: () => ICard[];
   getActionTodoCards: () => ICard[];
   getExecutedActionCards: () => ICard[];
-  getAllCards: () => ICard[];
+  getActionArchiveCards: () => ICard[];
 }
 
 interface ICardService {
@@ -231,7 +233,17 @@ class CardsTypeService implements ICardsTypeService {
   }
 
   getExecutedActionCards() {
-    return cardStore.archivedCards.filter((card) => card.status === "execute");
+    const justArchived = cardStore.cards.filter(
+      (card) => card.status === "execute",
+    );
+    const hasArchived = cardStore.archivedCards.filter(
+      (card) => card.status === "execute",
+    );
+    return [...justArchived, ...hasArchived];
+  }
+
+  getActionArchiveCards() {
+    return cardStore.archivedCards.filter((card) => card.status === "action");
   }
 }
 
@@ -323,7 +335,8 @@ class FirebaseService implements IFirebaseService {
       if (!uid) return;
 
       const cardsRef = collection(db, "user_cards", uid, "cards");
-      const q = query(cardsRef, where("isArchived", "==", true));
+      const queryActive = where("isArchived", "==", true);
+      const q = query(cardsRef, queryActive);
 
       return onSnapshot(q, (querySnapshot) => {
         const archivedCards: ICard[] = [];
