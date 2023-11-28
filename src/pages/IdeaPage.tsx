@@ -3,9 +3,10 @@ import {
   IdeaAction,
   IdeaArchive,
   IdeaPools,
+  IdeaSearch,
   IdeaWeek,
 } from "../components/SectionIdea";
-import { IdeaSearch } from "../components/SectionIdea/IdeaSearch";
+import ErrorPage from "./ErrorPage";
 
 const renderIdeaPage = (route: string | undefined) => {
   switch (route) {
@@ -19,6 +20,8 @@ const renderIdeaPage = (route: string | undefined) => {
       return <IdeaAction />;
     case "archive":
       return <IdeaArchive />;
+    default:
+      return <ErrorPage />;
   }
 };
 

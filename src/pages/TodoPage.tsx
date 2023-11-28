@@ -2,11 +2,11 @@ import { useParams } from "react-router-dom";
 import { ActionAll } from "../components/SectionAction/ActionAll";
 import {
   TodoAll,
+  TodoComplete,
   TodoToday,
   TodoTomorrow,
   TodoWeek,
 } from "../components/SectionTodo";
-import { TodoComplete } from "../components/SectionTodo/TodoComplete";
 
 const renderTodoPage = (route: string | undefined) => {
   switch (route) {
