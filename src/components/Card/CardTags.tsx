@@ -18,7 +18,14 @@ const CardTags = observer(({ card }: { card: ICard }) => {
     const newTag = tagInputRef.current?.value;
     const updatedTags = [...card.tags, newTag];
     cardStore.updateCard(card.id, { tags: updatedTags });
+    cardStore.updateCardToFirebase(card.id, { tags: updatedTags });
     setIsTagInputShow(false);
+  };
+
+  const handleDeleteTag = (tag: string) => {
+    const updatedTags = card.tags.filter((t) => t !== tag);
+    cardStore.updateCard(card.id, { tags: updatedTags });
+    cardStore.updateCardToFirebase(card.id, { tags: updatedTags });
   };
 
   return (
@@ -28,7 +35,7 @@ const CardTags = observer(({ card }: { card: ICard }) => {
           size="sm"
           key={tag}
           className="px-2"
-          onClose={() => cardStore.deleteCardTag(card.id, tag)}
+          onClose={() => handleDeleteTag(tag)}
         >
           {tag}
         </Chip>

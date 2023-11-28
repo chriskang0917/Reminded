@@ -89,7 +89,6 @@ interface ICardService {
   getFilteredCardsWith: (cardsType: CardsType) => ICard[];
   addCard: (newCard: NewCard, updateCard?: IUpdateCard) => void;
   deleteCard: (id: string) => void;
-  deleteCardTag: (id: string, tag: string) => void;
 }
 
 interface IFirebaseService {
@@ -290,18 +289,6 @@ class CardService implements ICardService {
   deleteCard(id: string) {
     cardStore.cards = cardStore.cards.filter((card) => card.id !== id);
   }
-
-  deleteCardTag(id: string, tag: string) {
-    cardStore.cards = cardStore.cards.map((card) => {
-      if (card.id === id) {
-        return {
-          ...card,
-          tags: card.tags.filter((item) => item !== tag),
-        };
-      }
-      return card;
-    });
-  }
 }
 
 class FirebaseService implements IFirebaseService {
@@ -455,10 +442,6 @@ class CardStore {
 
   deleteCard(id: string) {
     this.cardService.deleteCard(id);
-  }
-
-  deleteCardTag(id: string, tag: string) {
-    this.cardService.deleteCardTag(id, tag);
   }
 }
 
