@@ -10,6 +10,7 @@ import {
 import { observer } from "mobx-react-lite";
 import { Key, useEffect, useRef, useState } from "react";
 import { DayPicker } from "react-day-picker";
+import toast from "react-hot-toast";
 import { CiCalendarDate } from "react-icons/ci";
 import { IoIosAdd } from "react-icons/io";
 import { useLocation } from "react-router-dom";
@@ -25,15 +26,16 @@ interface IInput {
 export const TodoInput = observer(() => {
   const location = useLocation();
   const isTomorrow = location.pathname === "/todo/tomorrow";
+  const tomorrowDate = new Date(new Date().setDate(new Date().getDate() + 1));
+  const todayDate = new Date();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const tagRef = useRef<HTMLInputElement>(null);
+
   const [input, setInput] = useState<IInput>({
+    date: isTomorrow ? tomorrowDate : todayDate,
     content: "",
     tag: "",
-    date: isTomorrow
-      ? new Date(new Date().setDate(new Date().getDate() + 1))
-      : new Date(),
   });
 
   useEffect(() => {
@@ -58,7 +60,7 @@ export const TodoInput = observer(() => {
     const dueDate = input.date?.toISOString() || null;
     cardStore.addCard(newCard, { dueDate: dueDate });
     cardStore.addCardToFireStore(newCard, { dueDate });
-    setInput((prev) => ({ ...prev, content: "", tag: "" }));
+    setInput((prev) => ({ ...prev, content: "", tag: "", date: tomorrowDate }));
   };
 
   const handleInputChange = (value: string) => {
@@ -73,17 +75,31 @@ export const TodoInput = observer(() => {
     setInput((prev) => ({ ...prev, tag: select as string }));
   };
 
+  const handleReturnToday = () => {
+    toast.success("已設定到期日為今日");
+    setInput((prev) => ({ ...prev, date: todayDate }));
+  };
+
+  const handleConfirmDate = () => {
+    if (!input.date) return toast.error("請選擇到期日");
+    setInput((prev) => ({ ...prev, date: tomorrowDate }));
+  };
+
   const handleRemoveDate = () => {
-    setInput((prev) => ({ ...prev, date: new Date() }));
+    toast.success("已經移除到期日");
+    setInput((prev) => ({ ...prev, date: undefined }));
   };
 
   const DatePickerFooter = (
-    <div className="mt-2 flex justify-center gap-2">
-      <Button size="sm" variant="light" onPress={handleRemoveDate}>
-        返回今天
+    <div className="flex justify-between">
+      <Button size="sm" variant="light" onPress={handleReturnToday}>
+        今天
+      </Button>
+      <Button size="sm" variant="ghost" onPress={handleConfirmDate}>
+        確認日期
       </Button>
       <Button size="sm" variant="light" onPress={handleRemoveDate}>
-        確認日期
+        移除到期
       </Button>
     </div>
   );

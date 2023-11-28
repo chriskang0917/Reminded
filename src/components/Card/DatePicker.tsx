@@ -53,16 +53,13 @@ function DatePicker({ card, date, setDate }: DatePickerProps) {
   const parsedDate = selectedDate || undefined;
 
   return (
-    <>
-      <DayPicker
-        className="bg-gray"
-        mode="single"
-        selected={parsedDate}
-        onSelect={handleSelectDate as (date: Date | undefined) => void}
-        footer={DatePickerFooter}
-      />
-      <input type="date" name="" id="" />
-    </>
+    <DayPicker
+      className="bg-gray"
+      mode="single"
+      selected={parsedDate}
+      onSelect={handleSelectDate as (date: Date | undefined) => void}
+      footer={DatePickerFooter}
+    />
   );
 }
 
