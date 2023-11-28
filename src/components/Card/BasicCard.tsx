@@ -7,7 +7,9 @@ interface BasicCardProps {
 function BasicCard({ children }: BasicCardProps) {
   return (
     <Card fullWidth radius="sm">
-      <CardBody className="my-2 min-h-[96px] pl-3">{children}</CardBody>
+      <CardBody className="my-2 flex min-h-[96px] flex-col pl-3">
+        {children}
+      </CardBody>
     </Card>
   );
 }
