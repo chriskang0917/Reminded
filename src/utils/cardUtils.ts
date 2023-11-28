@@ -47,12 +47,24 @@ export const cardUtils = {
     const today = parseISO(format(Date.now(), this.dateFormat));
     return isBefore(dueDate, today);
   },
-  sortCardsByDueDateDesc(cards: ICard[]) {
-    return cards.sort((a, b) => {
-      if (a.dueDate && b.dueDate) {
-        return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
-      }
-      return 0;
-    });
+  sortCardsDescBy(strategy: string, cards: ICard[]) {
+    switch (strategy) {
+      case "dueDate":
+        return cards.sort((a, b) => {
+          if (a.dueDate === null) return 1;
+          if (b.dueDate === null) return -1;
+          if (a.dueDate > b.dueDate) return -1;
+          if (a.dueDate < b.dueDate) return 1;
+          return 0;
+        });
+      case "createdTime":
+        return cards.sort((a, b) => {
+          if (a.createdTime > b.createdTime) return -1;
+          if (a.createdTime < b.createdTime) return 1;
+          return 0;
+        });
+      default:
+        return cards;
+    }
   },
 };

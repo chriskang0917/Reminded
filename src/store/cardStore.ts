@@ -141,7 +141,7 @@ class CardsTypeService implements ICardsTypeService {
         (card.status === "todo" || card.status === "action") &&
         !card.isArchived,
     );
-    const sortedCardsDesc = cardUtils.sortCardsByDueDateDesc(cards);
+    const sortedCardsDesc = cardUtils.sortCardsDescBy("dueDate", cards);
     return sortedCardsDesc;
   }
 
@@ -168,7 +168,7 @@ class CardsTypeService implements ICardsTypeService {
   }
 
   getTodoThisWeekCards() {
-    return cardStore.cards.filter((card) => {
+    const cards = cardStore.cards.filter((card) => {
       if (!card.dueDate) return false;
       return (
         (card.status === "todo" || card.status === "action") &&
@@ -176,6 +176,8 @@ class CardsTypeService implements ICardsTypeService {
         !card.isArchived
       );
     });
+    const sortedCardsDesc = cardUtils.sortCardsDescBy("dueDate", cards);
+    return sortedCardsDesc;
   }
 
   getTodoCompletedCards() {
@@ -187,19 +189,23 @@ class CardsTypeService implements ICardsTypeService {
   }
 
   getIdeaAllCards() {
-    return cardStore.cards.filter(
+    const cards = cardStore.cards.filter(
       (card) => card.status === "idea" && !card.isArchived,
     );
+    const sortedCardsDesc = cardUtils.sortCardsDescBy("createdTime", cards);
+    return sortedCardsDesc;
   }
 
   getIdeaThisWeekCards() {
-    return cardStore.cards.filter((card) => {
+    const cards = cardStore.cards.filter((card) => {
       return (
         card.status === "idea" &&
         cardUtils.isThisWeek(card.createdTime) &&
         !card.isArchived
       );
     });
+    const sortedCardsDesc = cardUtils.sortCardsDescBy("createdTime", cards);
+    return sortedCardsDesc;
   }
 
   getActionAllCards() {
