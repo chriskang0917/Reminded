@@ -10,7 +10,7 @@ const Title = "已封存靈感";
 export const IdeaArchive = observer(() => {
   useEffect(() => {
     cardStore.getArchivedCards();
-  }, []);
+  }, [cardStore.archivedCards.length]);
 
   return (
     <section className="ml-52">

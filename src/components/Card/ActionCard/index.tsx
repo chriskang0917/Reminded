@@ -28,22 +28,22 @@ export const ActionCard = ({ card }: CardToolProps) => {
     if (card.status === "execute") {
       cardStore.updateCard(card.id, {
         status: "action",
-        isArchived: !isSelect,
+        isArchived: false,
       });
       cardStore.updateCardToFirebase(card.id, {
         status: "action",
-        isArchived: !isSelect,
+        isArchived: false,
       });
       return;
     }
     if (card.status === "action") {
       cardStore.updateCard(card.id, {
         status: "execute",
-        isArchived: !isSelect,
+        isArchived: true,
       });
       cardStore.updateCardToFirebase(card.id, {
         status: "execute",
-        isArchived: !isSelect,
+        isArchived: true,
       });
     }
   };
