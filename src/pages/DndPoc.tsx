@@ -6,7 +6,6 @@ import {
   KeyboardSensor,
   MouseSensor,
   PointerSensor,
-  closestCenter,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -24,12 +23,12 @@ import { createPortal } from "react-dom";
 import Sidebar from "../components/Sidebar";
 
 const arr1 = [1, 2, 3, 4, 5];
-// const arr2 = [6, 7, 8, 9, 10];
+const arr2 = [6, 7, 8, 9, 10];
 
 const DndPocPage = observer(() => {
   const [activeId, setActiveId] = useState<number | null>(null);
   const [items1, setItems1] = useState(arr1);
-  // const [items2, setItems2] = useState(arr2);
+  const [items2, setItems2] = useState(arr2);
 
   const sensors = useSensors(
     useSensor(MouseSensor),
@@ -46,6 +45,9 @@ const DndPocPage = observer(() => {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
+    console.log("active", active);
+    console.log("over", over);
+
     if (active.id !== over?.id) {
       setItems1((items) => {
         const oldIndex = items.indexOf(active.id as number);
@@ -59,7 +61,6 @@ const DndPocPage = observer(() => {
 
   return (
     <DndContext
-      collisionDetection={closestCenter}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       sensors={sensors}
@@ -82,7 +83,7 @@ const DndPocPage = observer(() => {
             </ul>
           </SortableContext>
           <h2>Items2</h2>
-          {/* <SortableContext
+          <SortableContext
             items={items2}
             strategy={verticalListSortingStrategy}
           >
@@ -93,7 +94,7 @@ const DndPocPage = observer(() => {
                 </li>
               ))}
             </ul>
-          </SortableContext> */}
+          </SortableContext>
           {activeId &&
             createPortal(
               <DragOverlay>

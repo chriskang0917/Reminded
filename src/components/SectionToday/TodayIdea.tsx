@@ -1,19 +1,21 @@
 import { Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { IoFilterOutline } from "react-icons/io5";
-import { cardStore } from "../../store/cardStore";
+import { CardsType, cardStore } from "../../store/cardStore";
 import { cardUtils } from "../../utils/cardUtils";
 import { style } from "../../utils/style";
 import { IdeaCard } from "../Card/IdeaCard";
 
 export const TodayIdea = observer(() => {
-  const ideaCards = cardStore.cards.filter((card) => {
-    if (!card.createdTime) return false;
-    const isIdea = card.status === "idea";
-    const isArchived = card.isArchived;
-    const isToday = cardUtils.isToday(card.createdTime);
-    return isIdea && !isArchived && isToday;
-  });
+  const ideaCards = cardStore
+    .getFilteredCardsWith(CardsType.All)
+    .filter((card) => {
+      if (!card.createdTime) return false;
+      const isIdea = card.status === "idea";
+      const isArchived = card.isArchived;
+      const isToday = cardUtils.isToday(card.createdTime);
+      return isIdea && !isArchived && isToday;
+    });
 
   return (
     <section className="flex w-full flex-col items-center">

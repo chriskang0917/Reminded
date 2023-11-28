@@ -8,7 +8,7 @@ const Title = "已封存的行動";
 
 export const ActionArchive = observer(() => {
   const actionTodoCards = cardStore.getFilteredCardsWith(
-    CardsType.ActionExpired,
+    CardsType.ActionArchive,
   );
 
   return (

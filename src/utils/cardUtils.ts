@@ -7,7 +7,7 @@ import {
   parseISO,
   startOfWeek,
 } from "date-fns";
-import { ICard } from "./../store/cardStore";
+import { ICard, ICardObject } from "./../store/cardStore";
 
 export const enum WeekStartsOn {
   Sunday = 0,
@@ -66,5 +66,12 @@ export const cardUtils = {
       default:
         return cards;
     }
+  },
+  getSortedCardsByOrderList(cardOrderList: string[], cardsObject: ICardObject) {
+    const sortedCards: ICard[] = [];
+    cardOrderList.forEach((id) => {
+      if (cardsObject.hasOwnProperty(id)) sortedCards.push(cardsObject[id]);
+    });
+    return sortedCards;
   },
 };

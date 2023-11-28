@@ -1,11 +1,13 @@
 import { Card, CardBody, Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { IoFilterOutline } from "react-icons/io5";
-import { cardStore } from "../../store/cardStore";
+import { CardsType, cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 
 export const TodayReminder = observer(() => {
-  const todoCards = cardStore.cards.filter((card) => card.status === "remind");
+  const todoCards = cardStore
+    .getFilteredCardsWith(CardsType.All)
+    .filter((card) => card.status === "remind");
 
   return (
     <section className="flex w-full flex-col items-center">
