@@ -54,7 +54,8 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
   };
 
   const handleDuplicate = () => {
-    const newCard = new NewCard(card.content, card.tags, card.status);
+    const duplicateText = `${card.content} copy`;
+    const newCard = new NewCard(duplicateText, card.tags, card.status);
     cardStore.addCard(newCard);
     cardStore.addCardToFireStore(newCard);
   };

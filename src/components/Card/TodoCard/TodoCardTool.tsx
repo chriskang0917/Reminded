@@ -54,13 +54,15 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
   };
 
   const handleDuplicate = () => {
-    const newCard = new NewCard(card.content, card.tags, card.status);
+    const duplicateText = `${card.content} copy`;
+    const newCard = new NewCard(duplicateText, card.tags, card.status);
     cardStore.addCard(newCard);
     cardStore.addCardToFireStore(newCard);
   };
 
   const handleDelete = () => {
     cardStore.deleteCard(card.id);
+    cardStore.deleteCardFromFireStore(card.id);
   };
 
   const handleUpdateStatus = (status: cardStatus) => {

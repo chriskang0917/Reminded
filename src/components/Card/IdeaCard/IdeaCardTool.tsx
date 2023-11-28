@@ -31,8 +31,10 @@ interface MenuList {
 
 const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
   const handleDuplicate = () => {
-    const newCard = new NewCard(card.content, card.tags, card.status);
+    const duplicateText = `${card.content} copy`;
+    const newCard = new NewCard(duplicateText, card.tags, card.status);
     cardStore.addCard(newCard);
+    cardStore.addCardToFireStore(newCard);
   };
 
   const handleDelete = () => {
