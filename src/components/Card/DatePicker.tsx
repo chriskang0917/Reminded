@@ -1,19 +1,17 @@
 import { Button } from "@nextui-org/react";
-import { parseISO } from "date-fns";
 import { useState } from "react";
 import { DayPicker } from "react-day-picker";
+import toast from "react-hot-toast";
 import { ICard, cardStore } from "../../store/cardStore";
 
 interface DatePickerProps {
   card: ICard;
-  date: string | null;
+  date: Date | null;
   setDate: (date: Date | null) => void;
 }
 
 function DatePicker({ card, date, setDate }: DatePickerProps) {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(() =>
-    parseISO(date as string),
-  );
+  const [selectedDate, setSelectedDate] = useState<Date | null>(date);
 
   const handleSelectDate = (date: Date | undefined) => {
     const dueDate = date || null;
@@ -21,10 +19,13 @@ function DatePicker({ card, date, setDate }: DatePickerProps) {
   };
 
   const handleReturnToday = () => {
+    toast.success("已設定到期日為今日");
     setSelectedDate(new Date());
   };
 
   const handleConfirmDate = () => {
+    if (!selectedDate) return toast.error("請選擇到期日");
+    toast.success("已設定到期日");
     setDate(selectedDate);
   };
 
@@ -52,13 +53,16 @@ function DatePicker({ card, date, setDate }: DatePickerProps) {
   const parsedDate = selectedDate || undefined;
 
   return (
-    <DayPicker
-      className="bg-gray"
-      mode="single"
-      selected={parsedDate}
-      onSelect={handleSelectDate as (date: Date | undefined) => void}
-      footer={DatePickerFooter}
-    />
+    <>
+      <DayPicker
+        className="bg-gray"
+        mode="single"
+        selected={parsedDate}
+        onSelect={handleSelectDate as (date: Date | undefined) => void}
+        footer={DatePickerFooter}
+      />
+      <input type="date" name="" id="" />
+    </>
   );
 }
 

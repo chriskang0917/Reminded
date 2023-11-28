@@ -117,7 +117,7 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
           <PopoverContent>
             <DatePicker
               card={card}
-              date={selectedDate.toDateString()}
+              date={selectedDate}
               setDate={handleDateChange}
             />
           </PopoverContent>
