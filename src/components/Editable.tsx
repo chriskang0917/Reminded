@@ -29,7 +29,10 @@ const Editable = observer(
     const handleKeyDown = ({ key: keyDown, metaKey }: React.KeyboardEvent) => {
       const keys = ["Escape"];
       if (keys.includes(keyDown)) setIsEditing(false);
-      if (keyDown === "Backspace" && metaKey) cardStore.deleteCard(id);
+      if (keyDown === "Backspace" && metaKey) {
+        cardStore.deleteCard(id);
+        cardStore.deleteCardFromFireStore(id);
+      }
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
