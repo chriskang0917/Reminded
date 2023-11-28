@@ -41,7 +41,7 @@ const Editable = observer(
     };
 
     return (
-      <section>
+      <section className="flex-grow">
         {isEditing ? (
           <form
             onSubmit={handleSubmit}
