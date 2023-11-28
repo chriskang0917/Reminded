@@ -66,8 +66,8 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
   };
 
   const handleUpdateStatus = (status: cardStatus) => {
-    cardStore.updateCard(card.id, { status });
-    cardStore.updateCardToFirebase(card.id, { status });
+    cardStore.updateCard(card.id, { status, dueDate: null });
+    cardStore.updateCardToFirebase(card.id, { status, dueDate: null });
   };
 
   const menuList: IList[] = [
