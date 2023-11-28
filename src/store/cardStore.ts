@@ -77,6 +77,11 @@ interface ICardsTypeService {
   getTodoCompletedCards: () => ICard[];
   getIdeaAllCards: () => ICard[];
   getIdeaThisWeekCards: () => ICard[];
+  getActionAllCards: () => ICard[];
+  getActionExpiredCards: () => ICard[];
+  getActionTodoCards: () => ICard[];
+  getExecutedActionCards: () => ICard[];
+  getAllCards: () => ICard[];
 }
 
 interface ICardService {
@@ -299,17 +304,10 @@ class CardService implements ICardService {
 }
 
 class FirebaseService implements IFirebaseService {
-  private getLocalCards() {
-    const localCards = JSON.parse(localStorage.getItem("cards") || "");
-    if (localCards) runInAction(() => (cardStore.cards = localCards));
-  }
-
   async initActiveCards() {
     try {
       const uid = authStore.uid;
       if (!uid) return;
-
-      this.getLocalCards();
 
       const cardsRef = collection(db, "user_cards", uid, "cards");
       const queryArchived = where("isArchived", "==", false);
@@ -318,7 +316,6 @@ class FirebaseService implements IFirebaseService {
       return onSnapshot(q, (querySnapshot) => {
         const cards: ICard[] = [];
         querySnapshot.forEach((doc) => cards.push(doc.data() as ICard));
-        localStorage.setItem("cards", JSON.stringify(cards || []));
         runInAction(() => (cardStore.cards = cards || []));
       });
     } catch (error) {
