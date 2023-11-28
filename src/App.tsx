@@ -8,6 +8,7 @@ import IdeaLayout from "./components/Layout/IdeaLayout";
 import RootLayout from "./components/Layout/RootLayout";
 import TodoLayout from "./components/Layout/TodoLayout";
 import ActionPage from "./pages/ActionPage";
+import DndPocPage from "./pages/DndPoc";
 import ErrorPage from "./pages/ErrorPage";
 import IdeaPage from "./pages/IdeaPage";
 import LoginPage from "./pages/LoginPage";
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/dnd-poc",
+    element: <DndPocPage />,
   },
 ]);
 

@@ -11,6 +11,9 @@ dependencies:
   '@dnd-kit/sortable':
     specifier: ^8.0.0
     version: 8.0.0(@dnd-kit/core@6.1.0)(react@18.2.0)
+  '@dnd-kit/utilities':
+    specifier: ^3.2.2
+    version: 3.2.2(react@18.2.0)
   '@nextui-org/react':
     specifier: ^2.2.9
     version: 2.2.9(@types/react@18.2.37)(framer-motion@10.16.5)(react-dom@18.2.0)(react@18.2.0)(tailwind-variants@0.1.18)(tailwindcss@3.3.5)
