@@ -1,7 +1,7 @@
 import { Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { CardsType, cardStore } from "../../store/cardStore";
+import { ExecutedActionCards, cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { ActionCard } from "../Card";
 
@@ -9,7 +9,7 @@ const Title = "已執行的行動";
 
 export const ActionExecute = observer(() => {
   const actionTodoCards = cardStore.getFilteredCardsWith(
-    CardsType.ExecutedAction,
+    new ExecutedActionCards(),
   );
 
   useEffect(() => {

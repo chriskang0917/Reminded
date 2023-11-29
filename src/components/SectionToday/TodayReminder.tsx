@@ -1,12 +1,12 @@
 import { Card, CardBody, Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { IoFilterOutline } from "react-icons/io5";
-import { CardsType, cardStore } from "../../store/cardStore";
+import { AllCards, cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 
 export const TodayReminder = observer(() => {
   const todoCards = cardStore
-    .getFilteredCardsWith(CardsType.All)
+    .getFilteredCardsWith(new AllCards())
     .filter((card) => card.status === "remind");
 
   return (

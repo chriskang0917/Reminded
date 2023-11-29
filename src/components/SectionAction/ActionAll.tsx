@@ -1,15 +1,19 @@
 import { Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { CardsType, cardStore } from "../../store/cardStore";
+import {
+  ActionAllCards,
+  ActionTodoCards,
+  cardStore,
+} from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { ActionCard } from "../Card";
 
 const Title = "所有行動";
 
 export const ActionAll = observer(() => {
-  const actionTodoCards = cardStore.getFilteredCardsWith(CardsType.ActionTodo);
-  const actionCards = cardStore.getFilteredCardsWith(CardsType.ActionAll);
+  const actionTodoCards = cardStore.getFilteredCardsWith(new ActionTodoCards());
+  const actionCards = cardStore.getFilteredCardsWith(new ActionAllCards());
   const executedActionCards = cardStore.executedActionCards;
 
   useEffect(() => {

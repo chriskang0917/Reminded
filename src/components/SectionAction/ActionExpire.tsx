@@ -1,6 +1,6 @@
 import { Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { CardsType, cardStore } from "../../store/cardStore";
+import { ActionExpiredCards, cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { ActionCard } from "../Card";
 
@@ -8,7 +8,7 @@ const Title = "已過期的行動待辦";
 
 export const ActionExpire = observer(() => {
   const actionTodoCards = cardStore.getFilteredCardsWith(
-    CardsType.ActionExpired,
+    new ActionExpiredCards(),
   );
 
   return (

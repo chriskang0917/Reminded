@@ -1,14 +1,14 @@
 import { Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { IoFilterOutline } from "react-icons/io5";
-import { CardsType, cardStore } from "../../store/cardStore";
+import { AllCards, cardStore } from "../../store/cardStore";
 import { cardUtils } from "../../utils/cardUtils";
 import { style } from "../../utils/style";
 import { IdeaCard } from "../Card/IdeaCard";
 
 export const TodayIdea = observer(() => {
   const ideaCards = cardStore
-    .getFilteredCardsWith(CardsType.All)
+    .getFilteredCardsWith(new AllCards())
     .filter((card) => {
       if (!card.createdTime) return false;
       const isIdea = card.status === "idea";

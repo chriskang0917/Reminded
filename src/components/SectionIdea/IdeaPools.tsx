@@ -1,13 +1,13 @@
 import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { CardsType, cardStore } from "../../store/cardStore";
+import { IdeaAllCards, cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { IdeaCard } from "../Card";
 
 const Title = "所有靈感";
 
 export const IdeaPools = observer(() => {
-  const ideaCardsAll = cardStore.getFilteredCardsWith(CardsType.IdeaAll);
+  const ideaCardsAll = cardStore.getFilteredCardsWith(new IdeaAllCards());
 
   return (
     <section className="ml-52">

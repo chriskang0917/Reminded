@@ -25,22 +25,6 @@ export type cardStatus =
   | "note"
   | "execute";
 
-export const enum CardsType {
-  All,
-  TodoAll,
-  TodoToday,
-  TodoTomorrow,
-  TodoThisWeek,
-  TodoComplete,
-  IdeaAll,
-  IdeaThisWeek,
-  ActionAll,
-  ActionTodo,
-  ActionExpired,
-  ActionArchive,
-  ExecutedAction,
-}
-
 export interface ICard {
   id: string;
   content: string;
@@ -74,25 +58,9 @@ export interface IUpdateCard {
   reminderEndDate?: number | null;
 }
 
-interface ICardsTypeService {
-  getAllCards: () => ICard[];
-  getTodoAllCards: () => ICard[];
-  getTodoTodayCards: () => ICard[];
-  getTodoTomorrowCards: () => ICard[];
-  getTodoThisWeekCards: () => ICard[];
-  getTodoCompletedCards: () => ICard[];
-  getIdeaAllCards: () => ICard[];
-  getIdeaThisWeekCards: () => ICard[];
-  getActionAllCards: () => ICard[];
-  getActionExpiredCards: () => ICard[];
-  getActionTodoCards: () => ICard[];
-  getExecutedActionCards: () => ICard[];
-  getActionArchiveCards: () => ICard[];
-}
-
 interface ICardService {
   getAllTags: string[];
-  getFilteredCardsWith: (cardsType: CardsType) => ICard[];
+  getFilteredCardsWith: (cardsStrategy: CardsStrategy) => ICard[];
   addCard: (newCard: NewCard, updateCard?: IUpdateCard) => void;
   deleteCard: (id: string) => void;
   updateCard: (id: string, updateCard: IUpdateCard) => void;
@@ -140,65 +108,76 @@ export class NewCard implements ICard {
 }
 
 /* ===============================
-=======  CardsTypeService  =======
+========  CardsStrategy  =========
 =============================== */
 
-class CardsTypeService implements ICardsTypeService {
-  private getSortedCardsByOrderList() {
-    const sortedCards: ICard[] = [];
-    cardStore.cardOrderList.forEach((id) => {
-      if (cardStore.cards.hasOwnProperty(id))
-        sortedCards.push(cardStore.cards[id]);
-    });
-    return sortedCards;
-  }
+interface ICardsStrategy {
+  getCards: () => ICard[];
+}
 
-  getAllCards() {
+abstract class CardsStrategy implements ICardsStrategy {
+  protected getSortedCardsByOrderList() {
+    return cardUtils.getSortedCardsByOrderList(
+      cardStore.cardOrderList,
+      cardStore.cards,
+    );
+  }
+  getCards() {
+    // 這裡的 getCards() 會被子類別覆寫，預設回傳全部的卡片
     return this.getSortedCardsByOrderList();
   }
+}
 
-  getTodoAllCards() {
-    const sortedCards = this.getSortedCardsByOrderList();
-    const cards = sortedCards.filter(
-      (card) =>
-        (card.status === "todo" ||
-          (card.status === "action" && card.dueDate)) &&
-        !card.isArchived,
-    );
-    const sortedCardsDesc = cardUtils.sortCardsDescBy("dueDate", cards);
-    return sortedCardsDesc;
+export class AllCards extends CardsStrategy {
+  getCards() {
+    return this.getSortedCardsByOrderList();
   }
+}
 
-  getTodoTodayCards() {
+export class TodoAllCards extends CardsStrategy {
+  getCards() {
+    const sortedCards = this.getSortedCardsByOrderList();
+    return sortedCards.filter(
+      (card) => card.status === "todo" && !card.isArchived,
+    );
+  }
+}
+
+export class TodoTodayCards extends CardsStrategy {
+  getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     return sortedCards.filter((card) => {
       if (!card.dueDate) return false;
       return (
-        (card.status === "todo" || card.status === "action") &&
+        card.status === "todo" &&
         cardUtils.isToday(card.dueDate) &&
         !card.isArchived
       );
     });
   }
+}
 
-  getTodoTomorrowCards() {
+export class TodoTomorrowCards extends CardsStrategy {
+  getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     return sortedCards.filter((card) => {
       if (!card.dueDate) return false;
       return (
-        (card.status === "todo" || card.status === "action") &&
+        card.status === "todo" &&
         cardUtils.isTomorrow(card.dueDate) &&
         !card.isArchived
       );
     });
   }
+}
 
-  getTodoThisWeekCards() {
+export class TodoThisWeekCards extends CardsStrategy {
+  getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     const cards = sortedCards.filter((card) => {
       if (!card.dueDate) return false;
       return (
-        (card.status === "todo" || card.status === "action") &&
+        card.status === "todo" &&
         cardUtils.isThisWeek(card.dueDate) &&
         !card.isArchived
       );
@@ -206,25 +185,27 @@ class CardsTypeService implements ICardsTypeService {
     const sortedCardsDesc = cardUtils.sortCardsDescBy("dueDate", cards);
     return sortedCardsDesc;
   }
+}
 
-  getTodoCompletedCards() {
-    return cardStore.archivedCards.filter((card) => {
-      return (
-        (card.status === "todo" || card.status === "execute") && card.isArchived
-      );
-    });
+export class TodoCompletedCards extends CardsStrategy {
+  getCards() {
+    return cardStore.archivedCards.filter(
+      (card) => card.status === "todo" && card.isArchived,
+    );
   }
+}
 
-  getIdeaAllCards() {
+export class IdeaAllCards extends CardsStrategy {
+  getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
-    const cards = sortedCards.filter(
+    return sortedCards.filter(
       (card) => card.status === "idea" && !card.isArchived,
     );
-    const sortedCardsDesc = cardUtils.sortCardsDescBy("createdTime", cards);
-    return sortedCardsDesc;
   }
+}
 
-  getIdeaThisWeekCards() {
+export class IdeaThisWeekCards extends CardsStrategy {
+  getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     const cards = sortedCards.filter((card) => {
       return (
@@ -236,15 +217,19 @@ class CardsTypeService implements ICardsTypeService {
     const sortedCardsDesc = cardUtils.sortCardsDescBy("createdTime", cards);
     return sortedCardsDesc;
   }
+}
 
-  getActionAllCards() {
+export class ActionAllCards extends CardsStrategy {
+  getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     return sortedCards.filter(
       (card) => card.status === "action" && !card.dueDate && !card.isArchived,
     );
   }
+}
 
-  getActionExpiredCards() {
+export class ActionExpiredCards extends CardsStrategy {
+  getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     return sortedCards.filter(
       (card) =>
@@ -254,8 +239,10 @@ class CardsTypeService implements ICardsTypeService {
         !card.isArchived,
     );
   }
+}
 
-  getActionTodoCards() {
+export class ActionTodoCards extends CardsStrategy {
+  getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     const cards = sortedCards.filter(
       (card) => card.status === "action" && card.dueDate && !card.isArchived,
@@ -263,8 +250,10 @@ class CardsTypeService implements ICardsTypeService {
     const sortedCardsDesc = cardUtils.sortCardsDescBy("dueDate", cards);
     return sortedCardsDesc;
   }
+}
 
-  getExecutedActionCards() {
+export class ExecutedActionCards extends CardsStrategy {
+  getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     const justArchived = sortedCards.filter(
       (card) => card.status === "execute",
@@ -274,8 +263,10 @@ class CardsTypeService implements ICardsTypeService {
     );
     return [...justArchived, ...hasArchived];
   }
+}
 
-  getActionArchiveCards() {
+export class ActionArchiveCards extends CardsStrategy {
+  getCards() {
     return cardStore.archivedCards.filter((card) => card.status === "action");
   }
 }
@@ -285,8 +276,6 @@ class CardsTypeService implements ICardsTypeService {
 =============================== */
 
 class CardService implements ICardService {
-  private cardsTypeService: CardsTypeService;
-
   private getSortedCardsByOrderList() {
     const sortedCards: ICard[] = [];
     cardStore.cardOrderList.forEach((id) => {
@@ -296,10 +285,6 @@ class CardService implements ICardService {
     return sortedCards;
   }
 
-  constructor(cardsTypeService: CardsTypeService) {
-    this.cardsTypeService = cardsTypeService;
-  }
-
   get getAllTags() {
     const sortedCards = this.getSortedCardsByOrderList();
     const tags = sortedCards.map((card) => card.tags).flat() || [];
@@ -307,37 +292,8 @@ class CardService implements ICardService {
     return [...new Set(tags)];
   }
 
-  getFilteredCardsWith(cardSType: CardsType) {
-    switch (cardSType) {
-      case CardsType.All:
-        return this.cardsTypeService.getAllCards();
-      case CardsType.TodoAll:
-        return this.cardsTypeService.getTodoAllCards();
-      case CardsType.TodoToday:
-        return this.cardsTypeService.getTodoTodayCards();
-      case CardsType.TodoTomorrow:
-        return this.cardsTypeService.getTodoTomorrowCards();
-      case CardsType.TodoThisWeek:
-        return this.cardsTypeService.getTodoThisWeekCards();
-      case CardsType.TodoComplete:
-        return this.cardsTypeService.getTodoCompletedCards();
-      case CardsType.IdeaAll:
-        return this.cardsTypeService.getIdeaAllCards();
-      case CardsType.IdeaThisWeek:
-        return this.cardsTypeService.getIdeaThisWeekCards();
-      case CardsType.ActionAll:
-        return this.cardsTypeService.getActionAllCards();
-      case CardsType.ActionTodo:
-        return this.cardsTypeService.getActionTodoCards();
-      case CardsType.ActionExpired:
-        return this.cardsTypeService.getActionExpiredCards();
-      case CardsType.ExecutedAction:
-        return this.cardsTypeService.getExecutedActionCards();
-      case CardsType.ActionArchive:
-        return this.cardsTypeService.getActionArchiveCards();
-      default:
-        return [];
-    }
+  getFilteredCardsWith(cardStrategy: CardsStrategy) {
+    return cardStrategy.getCards();
   }
 
   addCard(newCard: NewCard, updateCard?: IUpdateCard) {
@@ -529,8 +485,8 @@ class CardStore {
     return this.cardService.getAllTags;
   }
 
-  getFilteredCardsWith(cardsType: CardsType) {
-    return this.cardService.getFilteredCardsWith(cardsType);
+  getFilteredCardsWith(cardsStrategy: CardsStrategy) {
+    return this.cardService.getFilteredCardsWith(cardsStrategy);
   }
 
   addCard(newCard: NewCard, updateCard?: IUpdateCard) {
@@ -546,8 +502,7 @@ class CardStore {
   }
 }
 
-const cardsTypeService = new CardsTypeService();
-const cardService = new CardService(cardsTypeService);
+const cardService = new CardService();
 const firebaseService = new FirebaseService();
 export const cardStore = new CardStore(cardService, firebaseService);
 

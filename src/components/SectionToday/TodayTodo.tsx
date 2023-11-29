@@ -1,12 +1,12 @@
 import { Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { IoFilterOutline } from "react-icons/io5";
-import { CardsType, cardStore } from "../../store/cardStore";
+import { TodoTodayCards, cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { TodoCard } from "../Card";
 
 export const TodayTodo = observer(() => {
-  const todoCards = cardStore.getFilteredCardsWith(CardsType.TodoToday);
+  const todoCards = cardStore.getFilteredCardsWith(new TodoTodayCards());
 
   return (
     <section className="flex w-full flex-col items-center">

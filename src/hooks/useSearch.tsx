@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CardsType, cardStore } from "../store/cardStore";
+import { AllCards, cardStore } from "../store/cardStore";
 import { getFusedResults } from "../utils/input";
 
 type searchType = "idea" | "action" | "todo";
@@ -8,7 +8,7 @@ export const useSearch = (type: searchType) => {
   const [searchText, setSearchText] = useState("");
 
   const filteredCards = cardStore
-    .getFilteredCardsWith(CardsType.All)
+    .getFilteredCardsWith(new AllCards())
     .filter((card) => card.status === type);
   const results = getFusedResults(filteredCards, searchText);
 

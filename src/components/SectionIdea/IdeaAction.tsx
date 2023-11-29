@@ -1,6 +1,6 @@
 import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { CardsType, cardStore } from "../../store/cardStore";
+import { AllCards, cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { IdeaCard } from "../Card";
 
@@ -8,7 +8,7 @@ const Title = "已轉換靈感";
 
 export const IdeaAction = observer(() => {
   const transformedCards = cardStore
-    .getFilteredCardsWith(CardsType.All)
+    .getFilteredCardsWith(new AllCards())
     .filter((card) => card.isTransformed);
 
   return (

@@ -1,6 +1,6 @@
 import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { CardsType, cardStore } from "../../store/cardStore";
+import { TodoTodayCards, cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { TodoCard } from "../Card";
 import { TodoInput } from "../Input";
@@ -8,7 +8,7 @@ import { TodoInput } from "../Input";
 const Title = "今日待辦";
 
 export const TodoToday = observer(() => {
-  const todoTodayCards = cardStore.getFilteredCardsWith(CardsType.TodoToday);
+  const todoTodayCards = cardStore.getFilteredCardsWith(new TodoTodayCards());
 
   return (
     <section className="ml-52">

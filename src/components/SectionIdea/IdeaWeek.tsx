@@ -1,6 +1,6 @@
 import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { CardsType, cardStore } from "../../store/cardStore";
+import { IdeaThisWeekCards, cardStore } from "../../store/cardStore";
 import { style } from "../../utils/style";
 import { IdeaCard } from "../Card";
 
@@ -8,7 +8,7 @@ const Title = "本週靈感";
 
 export const IdeaWeek = observer(() => {
   const ideaCardsOfThisWeek = cardStore.getFilteredCardsWith(
-    CardsType.IdeaThisWeek,
+    new IdeaThisWeekCards(),
   );
 
   return (
