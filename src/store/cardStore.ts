@@ -208,15 +208,13 @@ export class IdeaAllCards extends CardsStrategy {
 export class IdeaThisWeekCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
-    const cards = sortedCards.filter((card) => {
+    return sortedCards.filter((card) => {
       return (
         card.status === "idea" &&
         cardUtils.isThisWeek(card.createdTime) &&
         !card.isArchived
       );
     });
-    const sortedCardsDesc = cardUtils.sortCardsDescBy("createdTime", cards);
-    return sortedCardsDesc;
   }
 }
 
