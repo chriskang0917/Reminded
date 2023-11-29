@@ -3,6 +3,9 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useState } from "react";
@@ -16,6 +19,14 @@ interface DndContextProps {
 
 export const DndProvider = ({ children }: DndContextProps) => {
   const [activeCard, setActiveCard] = useState<ICard | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+  );
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveCard(event.active.data.current?.card ?? null);
@@ -55,7 +66,11 @@ export const DndProvider = ({ children }: DndContextProps) => {
   };
 
   return (
-    <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
       {children}
       {createPortal(
         <DragOverlay>
