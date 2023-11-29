@@ -21,7 +21,7 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
   return (
-    <BasicCard>
+    <BasicCard card={card}>
       <div className="flex items-center justify-between">
         <Editable
           id={card.id}

@@ -51,7 +51,7 @@ export const ActionCard = ({ card }: CardToolProps) => {
   const isTodo = card.dueDate || card.status === "execute";
 
   return (
-    <BasicCard>
+    <BasicCard card={card}>
       <div className="flex items-center justify-between">
         <div className="flex">
           {isTodo && (
