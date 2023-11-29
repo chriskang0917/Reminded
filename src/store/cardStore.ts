@@ -320,6 +320,10 @@ class CardService implements ICardService {
       );
     });
   }
+
+  updateCardOrderList(cardOrderList: string[]) {
+    runInAction(() => (cardStore.cardOrderList = cardOrderList));
+  }
 }
 
 /* ===============================
@@ -437,6 +441,16 @@ class FirebaseService implements IFirebaseService {
       console.error(error);
     }
   }
+
+  async updateCardOrderListToFirebase(cardOrderList: string[]) {
+    try {
+      if (!authStore.uid) return;
+      const cardOrderListRef = doc(db, "user_cards", authStore.uid);
+      await setDoc(cardOrderListRef, { cardOrderList });
+    } catch (error) {
+      console.error("updateCardOrderList_error", error);
+    }
+  }
 }
 
 /* ===============================
@@ -481,6 +495,10 @@ class CardStore {
     this.firebaseService.deleteCardFromFireStore(cardId);
   }
 
+  async updateCardOrderListToFirebase(cardOrderList: string[]) {
+    this.firebaseService.updateCardOrderListToFirebase(cardOrderList);
+  }
+
   get getAllTags() {
     return this.cardService.getAllTags;
   }
@@ -499,6 +517,10 @@ class CardStore {
 
   deleteCard(id: string) {
     this.cardService.deleteCard(id);
+  }
+
+  updateCardOrderList(cardOrderList: string[]) {
+    this.cardService.updateCardOrderList(cardOrderList);
   }
 }
 

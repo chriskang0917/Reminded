@@ -11,12 +11,19 @@ interface SortableItemProps {
 
 export const SortableItem = observer(
   ({ card, children }: SortableItemProps) => {
-    const { setNodeRef, attributes, listeners, transform, transition } =
-      useSortable({ id: card.id, data: { card: toJS(card) } });
+    const {
+      isDragging,
+      setNodeRef,
+      attributes,
+      listeners,
+      transform,
+      transition,
+    } = useSortable({ id: card.id, data: { card: toJS(card) } });
 
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
+      opacity: isDragging ? 0.3 : 1,
     };
 
     return (

@@ -4,7 +4,7 @@ import { SortableItem } from "../DND/SortableItem";
 
 interface BasicCardProps {
   card: ICard;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 function BasicCard({ card, children }: BasicCardProps) {
