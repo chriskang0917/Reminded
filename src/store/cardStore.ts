@@ -136,10 +136,11 @@ export class AllCards extends CardsStrategy {
 
 export class TodoAllCards extends CardsStrategy {
   getCards() {
-    const sortedCards = this.getSortedCardsByOrderList();
-    return sortedCards.filter(
+    const sortedCards = this.getSortedCardsByOrderList().filter(
       (card) => card.status === "todo" && !card.isArchived,
     );
+    const descSortedCards = cardUtils.sortCardsDescBy("dueDate", sortedCards);
+    return descSortedCards;
   }
 }
 
