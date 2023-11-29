@@ -332,8 +332,9 @@ class CardService implements ICardService {
 
 class FirebaseService implements IFirebaseService {
   private async getCardOrderList() {
-    const uid = cookie.getCookie("uid");
+    const uid = authStore.uid || cookie.getCookie("uid");
     if (!uid) return;
+
     const cardsOrderListRef = doc(db, "user_cards", uid);
     return onSnapshot(cardsOrderListRef, (doc) => {
       const cardOrderList = doc.data()?.cardOrderList || [];
@@ -342,8 +343,9 @@ class FirebaseService implements IFirebaseService {
   }
 
   private async getActiveCards() {
-    const uid = cookie.getCookie("uid");
+    const uid = authStore.uid || cookie.getCookie("uid");
     if (!uid) return;
+
     const cardsRef = collection(db, "user_cards", uid, "cards");
     const queryArchived = where("isArchived", "==", false);
     const q = query(cardsRef, queryArchived);
@@ -368,7 +370,7 @@ class FirebaseService implements IFirebaseService {
 
   async getArchivedCards() {
     try {
-      const uid = cookie.getCookie("uid");
+      const uid = authStore.uid || cookie.getCookie("uid");
       if (!uid) return;
 
       const cardsRef = collection(db, "user_cards", uid, "cards");
@@ -386,8 +388,9 @@ class FirebaseService implements IFirebaseService {
   }
 
   async getExecutedActionCards() {
-    const uid = cookie.getCookie("uid");
+    const uid = authStore.uid || cookie.getCookie("uid");
     if (!uid) return;
+
     const cardsRef = collection(db, "user_cards", uid, "cards");
     const oneWeekAgo = new Date().setDate(new Date().getDate() - 7);
     const serverTimestamp = Timestamp.fromDate(new Date(oneWeekAgo));
@@ -408,9 +411,10 @@ class FirebaseService implements IFirebaseService {
 
   async addCardToFireStore(card: ICard, updateCard?: IUpdateCard) {
     try {
-      if (!authStore.uid) return;
-      const cardsRef = doc(db, "user_cards", authStore.uid, "cards", card.id);
-      const cardOrderListRef = doc(db, "user_cards", authStore.uid);
+      const uid = authStore.uid || cookie.getCookie("uid");
+      if (!uid) return;
+      const cardsRef = doc(db, "user_cards", uid, "cards", card.id);
+      const cardOrderListRef = doc(db, "user_cards", uid);
       await setDoc(cardsRef, Object.assign({}, { ...card, ...updateCard }), {
         merge: true,
       });
@@ -424,8 +428,9 @@ class FirebaseService implements IFirebaseService {
 
   async updateCardToFirebase(cardId: string, updateCard: IUpdateCard) {
     try {
-      if (!authStore.uid) return;
-      const cardsRef = doc(db, "user_cards", authStore.uid, "cards", cardId);
+      const uid = authStore.uid || cookie.getCookie("uid");
+      if (!uid) return;
+      const cardsRef = doc(db, "user_cards", uid, "cards", cardId);
       await setDoc(cardsRef, { ...updateCard }, { merge: true });
     } catch (error) {
       console.error("update_card_error", error);
@@ -434,8 +439,9 @@ class FirebaseService implements IFirebaseService {
 
   async deleteCardFromFireStore(cardId: string) {
     try {
-      if (!authStore.uid) return;
-      const cardsRef = doc(db, "user_cards", authStore.uid, "cards", cardId);
+      const uid = authStore.uid || cookie.getCookie("uid");
+      if (!uid) return;
+      const cardsRef = doc(db, "user_cards", uid, "cards", cardId);
       await deleteDoc(cardsRef);
     } catch (error) {
       console.error(error);
@@ -444,8 +450,9 @@ class FirebaseService implements IFirebaseService {
 
   async updateCardOrderListToFirebase(cardOrderList: string[]) {
     try {
-      if (!authStore.uid) return;
-      const cardOrderListRef = doc(db, "user_cards", authStore.uid);
+      const uid = authStore.uid || cookie.getCookie("uid");
+      if (!uid) return;
+      const cardOrderListRef = doc(db, "user_cards", uid);
       await setDoc(cardOrderListRef, { cardOrderList });
     } catch (error) {
       console.error("updateCardOrderList_error", error);
