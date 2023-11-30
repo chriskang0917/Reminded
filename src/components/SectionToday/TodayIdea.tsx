@@ -1,6 +1,5 @@
 import { Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { IoFilterOutline } from "react-icons/io5";
 import { AllCards, cardStore } from "../../store/cardStore";
 import { cardUtils } from "../../utils/cardUtils";
 import { style } from "../../utils/style";
@@ -19,10 +18,7 @@ export const TodayIdea = observer(() => {
 
   return (
     <section className="flex w-full flex-col items-center">
-      <div className="flex w-full justify-between">
-        <h2 className={style.subTitle}>Today's ideas</h2>
-        <IoFilterOutline className="text-lg" />
-      </div>
+      <h2 className={style.subTitle}>Today's ideas</h2>
       <Divider />
       <div className="mt-5 grid w-full gap-3">
         {ideaCards.map((card) => (
