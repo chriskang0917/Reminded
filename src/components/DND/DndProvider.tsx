@@ -4,6 +4,7 @@ import {
   DragOverlay,
   DragStartEvent,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -23,7 +24,14 @@ export const DndProvider = ({ children }: DndContextProps) => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
+        distance: 50,
+        delay: 1000,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
         distance: 10,
+        delay: 1000,
       },
     }),
   );
