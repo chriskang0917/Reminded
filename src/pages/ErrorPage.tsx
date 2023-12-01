@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import Sidebar from "../components/Sidebar";
+import { Sidebar } from "../components/Sidebar";
 
 const ErrorPage = observer(() => {
   return (

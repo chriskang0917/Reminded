@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { ActionBar } from "../Sidebar/ActionBar";
+import { ActionBar } from "../Sidebar";
 
 function ActionLayout() {
   return (

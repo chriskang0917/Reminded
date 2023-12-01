@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { authStore } from "../../store/authStore";
 import { cookie } from "../../utils/cookie";
 import { DndProvider, SortableProvider } from "../DND";
-import Sidebar from "../Sidebar";
+import { Sidebar } from "../Sidebar";
 
 const RootLayout = observer(() => {
   const uid = cookie.getCookie("uid");
