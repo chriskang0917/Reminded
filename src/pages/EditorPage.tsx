@@ -11,6 +11,7 @@ const EditorPage = observer(() => {
       <main className="ml-20 mt-10">
         <div className="px-auto mx-auto flex max-w-fit flex-col items-center">
           <h1>Editor</h1>
+          {/* {editor && <FloatingMenu editor={editor as Editor}>HI</FloatingMenu>} */}
           <NoteEditor content={content} />
         </div>
       </main>

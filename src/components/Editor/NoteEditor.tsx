@@ -1,7 +1,8 @@
-import { Card, Divider } from "@nextui-org/react";
+import { Button, ScrollShadow, Spacer } from "@nextui-org/react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { observer } from "mobx-react-lite";
+import { ICard } from "../../store/cardStore";
 import { AfterMenu } from "./AfterMenu";
 
 const extensions = [
@@ -21,38 +22,61 @@ const extensions = [
 ];
 
 interface NoteEditorProps {
-  content?: string;
+  card: ICard;
+  onClose?: () => void;
 }
 
-const NoteEditor = observer(({ content }: NoteEditorProps) => {
+const NoteEditor = observer(({ card, onClose }: NoteEditorProps) => {
   const editor = useEditor({
     extensions,
-    content,
+    content: card.content,
     editorProps: {
       attributes: {
-        class: "p-2 outline-none",
+        class: "py-2 outline-none min-h-[250px]",
       },
     },
+    // onUpdate: ({ editor }) => {
+    //   const html = editor.getHTML();
+    //   console.log(html);
+    // },
   });
+
+  if (!editor) {
+    return null;
+  }
 
   return (
     <>
-      {editor && (
-        <Card className="mx-10 max-w-[500px] p-4">
-          <>
-            <input
-              className="mt-5 py-2 pl-2 text-xl font-bold tracking-wider outline-0"
-              type="text"
-              placeholder="筆記標題"
-            />
-            <div className="py-2">
-              <EditorContent editor={editor} />
-              <Divider className="my-4" />
-            </div>
-            <AfterMenu editor={editor} />
-          </>
-        </Card>
-      )}
+      <input
+        className="py-2 text-xl font-bold tracking-wider outline-0"
+        type="text"
+        placeholder="筆記標題"
+      />
+      <div className="py-2">
+        <ScrollShadow hideScrollBar className="h-[250px]">
+          <EditorContent editor={editor} />
+        </ScrollShadow>
+      </div>
+      <Spacer y={2} />
+      <div className="flex justify-between">
+        <AfterMenu editor={editor} />
+        <Button
+          className="min-w-[40px] tracking-wider"
+          radius="sm"
+          color="danger"
+          onPress={onClose}
+        >
+          關閉
+        </Button>
+        <Button
+          className="min-w-[40px] tracking-wider"
+          radius="sm"
+          color="primary"
+          onPress={onClose}
+        >
+          送出
+        </Button>
+      </div>
     </>
   );
 });
