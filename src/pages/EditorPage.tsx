@@ -1,5 +1,8 @@
 import { observer } from "mobx-react-lite";
+import NoteEditor from "../components/Editor/NoteEditor";
 import { Sidebar } from "../components/Sidebar";
+
+const content = "<p>Hello World!</p>";
 
 const EditorPage = observer(() => {
   return (
@@ -7,7 +10,8 @@ const EditorPage = observer(() => {
       <Sidebar />
       <main className="ml-20 mt-10">
         <div className="px-auto mx-auto flex max-w-fit flex-col items-center">
-          <h1>抱歉，您提供的路徑不存在。</h1>
+          <h1>Editor</h1>
+          <NoteEditor content={content} />
         </div>
       </main>
     </>

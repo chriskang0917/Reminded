@@ -52,15 +52,15 @@ const router = createBrowserRouter([
         path: "setting",
         element: <section>Profile</section>,
       },
+      {
+        path: "editor",
+        element: <EditorPage />,
+      },
     ],
   },
   {
     path: "/login",
     element: <LoginPage />,
-  },
-  {
-    path: "/editor",
-    element: <EditorPage />,
   },
 ]);
 

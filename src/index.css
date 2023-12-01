@@ -8,4 +8,28 @@
   * {
     font-family: "Noto Sans TC", sans-serif;
   }
+
+  h1.editor-heading {
+    padding: 5px 0 10px 8px;
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    color: #111827;
+  }
+
+  h2.editor-heading {
+    padding: 5px 0 5px 8px;
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 1.2;
+    color: #111827;
+  }
+
+  h3.editor-heading {
+    padding: 5px 0 0 8px;
+    font-weight: 600;
+    font-size: 1.125rem;
+    line-height: 1.2;
+    color: #111827;
+  }
 }
