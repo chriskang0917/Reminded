@@ -18,6 +18,8 @@ export const IdeaNoteModal = ({
   return (
     <Modal
       className="mx-10 max-w-[600px] p-4"
+      backdrop="blur"
+      isKeyboardDismissDisabled
       isDismissable={false}
       isOpen={isOpen}
       onOpenChange={onOpenChange}
