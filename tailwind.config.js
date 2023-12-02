@@ -8,8 +8,28 @@ export default {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    colors: {
+      primary: "#32435F",
+      secondary: "#8F8681",
+      third: "#A67F78",
+      fourth: "#E1DCD9",
+    },
     extend: {},
   },
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [
+    nextui({
+      themes: {
+        light: {
+          colors: {
+            primary: {
+              DEFAULT: "#32435F",
+              foreground: "#ffffff",
+            },
+            secondary: "#8F8681",
+          },
+        },
+      },
+    }),
+  ],
 };

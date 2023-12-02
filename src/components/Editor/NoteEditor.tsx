@@ -23,14 +23,19 @@ const extensions = [
         class: "border-l-4 border-gray-300 pl-3 ml-2 my-2",
       },
     },
+    orderedList: {
+      HTMLAttributes: {
+        class: "list-decimal my-3 ml-2",
+      },
+    },
     bulletList: {
       HTMLAttributes: {
-        class: "list-disc before:content-['* '] my-1 ml-2",
+        class: "my-3",
       },
     },
     listItem: {
       HTMLAttributes: {
-        class: "list-decimal my-1 ml-2",
+        class: "list-style ml-2",
       },
     },
   }),
@@ -47,7 +52,7 @@ const NoteEditor = observer(({ card }: NoteEditorProps) => {
     content: card.content,
     editorProps: {
       attributes: {
-        class: "py-2 outline-none min-h-[250px]",
+        class: "py-2 outline-none min-h-[250px] text-primary",
       },
     },
     // onUpdate: ({ editor }) => {
@@ -73,7 +78,7 @@ const NoteEditor = observer(({ card }: NoteEditorProps) => {
         </ScrollShadow>
       </div>
       <Spacer y={2} />
-      <div className="flex justify-between">
+      <div className="relative flex justify-between">
         <AfterMenu editor={editor} />
       </div>
     </>

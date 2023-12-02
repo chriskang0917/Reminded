@@ -25,6 +25,7 @@ export const IdeaNoteModal = ({
     <Modal
       className="mx-10 max-w-[600px] p-4"
       backdrop="blur"
+      hideCloseButton
       isKeyboardDismissDisabled
       isDismissable={false}
       isOpen={isOpen}
@@ -32,7 +33,7 @@ export const IdeaNoteModal = ({
     >
       <ModalContent>
         <ModalHeader className="flex justify-between">
-          <h1>轉換你的筆記...</h1>
+          <h1 className="text-third tracking-wider">轉換你的靈感...</h1>
           <div className="flex gap-2">
             <Button
               className="min-w-[40px] tracking-wider"

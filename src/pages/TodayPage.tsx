@@ -9,14 +9,12 @@ import {
 
 const Homepage = observer(() => {
   return (
-    <main className="ml-20 mt-10">
-      <div className="px-auto mx-auto flex max-w-fit flex-col items-center">
-        <IdeaInput />
-        <TodayTodo />
-        <TodayIdea />
-        <TodayReminder />
-      </div>
-    </main>
+    <div className="px-auto mx-auto flex max-w-fit flex-col items-center">
+      <IdeaInput />
+      <TodayTodo />
+      <TodayIdea />
+      <TodayReminder />
+    </div>
   );
 });
 
