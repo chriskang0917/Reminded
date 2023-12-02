@@ -45,31 +45,18 @@ export interface ICardObject {
   [id: string]: ICard;
 }
 
-export interface IUpdateCard {
-  content?: string;
-  tags?: string[];
-  status?: cardStatus;
-  isArchived?: boolean;
-  isTransformed?: boolean;
-  isImportant?: boolean;
-  updatedTime?: string;
-  dueDate?: string | null;
-  reminderStartDate?: number | null;
-  reminderEndDate?: number | null;
-}
-
 interface ICardService {
   getAllTags: string[];
   getFilteredCardsWith: (cardsStrategy: CardsStrategy) => ICard[];
-  addCard: (newCard: NewCard, updateCard?: IUpdateCard) => void;
+  addCard: (newCard: NewCard, updateCard?: Partial<ICard>) => void;
   deleteCard: (id: string) => void;
-  updateCard: (id: string, updateCard: IUpdateCard) => void;
+  updateCard: (id: string, updateCard: Partial<ICard>) => void;
 }
 
 interface IFirebaseService {
   initActiveCards: () => void;
-  updateCardToFirebase: (cardId: string, card: IUpdateCard) => void;
-  addCardToFireStore: (card: ICard, updateCard?: IUpdateCard) => void;
+  updateCardToFirebase: (cardId: string, card: Partial<ICard>) => void;
+  addCardToFireStore: (card: ICard, updateCard?: Partial<ICard>) => void;
   getArchivedCards: () => void;
   getExecutedActionCards: () => void;
   deleteCardFromFireStore: (cardId: string) => void;
@@ -295,7 +282,7 @@ class CardService implements ICardService {
     return cardStrategy.getCards();
   }
 
-  addCard(newCard: NewCard, updateCard?: IUpdateCard) {
+  addCard(newCard: NewCard, updateCard?: Partial<ICard>) {
     const updatedCard = { ...newCard, ...updateCard };
     runInAction(() => {
       cardStore.cards[newCard.id] = updatedCard;
@@ -303,7 +290,7 @@ class CardService implements ICardService {
     });
   }
 
-  updateCard(id: string, updateCard: IUpdateCard) {
+  updateCard(id: string, updateCard: Partial<ICard>) {
     const card = cardStore.cards[id];
     if (!card) return;
     const updatedTime = new Date().toISOString();
@@ -408,7 +395,7 @@ class FirebaseService implements IFirebaseService {
     });
   }
 
-  async addCardToFireStore(card: ICard, updateCard?: IUpdateCard) {
+  async addCardToFireStore(card: ICard, updateCard?: Partial<ICard>) {
     try {
       const uid = authStore.uid || cookie.getCookie("uid");
       if (!uid) return;
@@ -425,7 +412,7 @@ class FirebaseService implements IFirebaseService {
     }
   }
 
-  async updateCardToFirebase(cardId: string, updateCard: IUpdateCard) {
+  async updateCardToFirebase(cardId: string, updateCard: Partial<ICard>) {
     try {
       const uid = authStore.uid || cookie.getCookie("uid");
       if (!uid) return;
@@ -489,11 +476,11 @@ class CardStore {
     this.firebaseService.getExecutedActionCards();
   }
 
-  async updateCardToFirebase(cardId: string, updateCard: IUpdateCard) {
+  async updateCardToFirebase(cardId: string, updateCard: Partial<ICard>) {
     this.firebaseService.updateCardToFirebase(cardId, updateCard);
   }
 
-  async addCardToFireStore(card: ICard, updateCard?: IUpdateCard) {
+  async addCardToFireStore(card: ICard, updateCard?: Partial<ICard>) {
     this.firebaseService.addCardToFireStore(card, updateCard);
   }
 
@@ -513,11 +500,11 @@ class CardStore {
     return this.cardService.getFilteredCardsWith(cardsStrategy);
   }
 
-  addCard(newCard: NewCard, updateCard?: IUpdateCard) {
+  addCard(newCard: NewCard, updateCard?: Partial<ICard>) {
     this.cardService.addCard(newCard, updateCard);
   }
 
-  updateCard(id: string, updateCard: IUpdateCard) {
+  updateCard(id: string, updateCard: Partial<ICard>) {
     this.cardService.updateCard(id, updateCard);
   }
 

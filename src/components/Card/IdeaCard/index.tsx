@@ -38,7 +38,7 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
 
   return (
     <BasicCard card={card}>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-grow items-center justify-between">
         <Editable
           id={card.id}
           text={card.content}
@@ -72,7 +72,7 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
           />
         </div>
       </div>
-      <div className="mt-5 flex max-w-[500px] flex-wrap items-center gap-x-2">
+      <div className="mt-5 flex flex-wrap items-center gap-x-2">
         <CardTags card={card} />
       </div>
     </BasicCard>

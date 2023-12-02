@@ -25,6 +25,7 @@ export const SortableItem = observer(
       transition,
       opacity: isDragging ? 0.3 : 1,
       touchAction: "manipulation",
+      width: "100%",
     };
 
     return (

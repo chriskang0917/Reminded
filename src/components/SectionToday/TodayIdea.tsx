@@ -1,8 +1,7 @@
-import { Divider, Spacer } from "@nextui-org/react";
+import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { AllCards, cardStore } from "../../store/cardStore";
 import { cardUtils } from "../../utils/cardUtils";
-import { style } from "../../utils/style";
 import { IdeaCard } from "../Card/IdeaCard";
 
 export const TodayIdea = observer(() => {
@@ -18,8 +17,6 @@ export const TodayIdea = observer(() => {
 
   return (
     <section className="flex w-full flex-col items-center">
-      <h2 className={style.subTitle}>Today's ideas</h2>
-      <Divider />
       <div className="mt-5 grid w-full gap-3">
         {ideaCards.map((card) => (
           <IdeaCard key={card.id} card={card} />

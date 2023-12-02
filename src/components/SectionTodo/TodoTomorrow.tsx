@@ -11,8 +11,8 @@ export const TodoTomorrow = observer(() => {
   const todoTomorrow = cardStore.getFilteredCardsWith(new TodoTomorrowCards());
 
   return (
-    <section className="ml-52">
-      <div className="mx-auto mt-10 flex max-w-[500px] flex-col items-center">
+    <section>
+      <div className="mx-auto mt-10 flex flex-col items-center">
         <h1 className={style.mainTitle}>{Title}</h1>
         <TodoInput />
         <Divider />
