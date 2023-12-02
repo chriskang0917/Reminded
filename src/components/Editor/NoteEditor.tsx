@@ -1,4 +1,4 @@
-import { Button, ScrollShadow, Spacer } from "@nextui-org/react";
+import { ScrollShadow, Spacer } from "@nextui-org/react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { observer } from "mobx-react-lite";
@@ -18,6 +18,21 @@ const extensions = [
         class: "tracking-wide leading-7",
       },
     },
+    blockquote: {
+      HTMLAttributes: {
+        class: "border-l-4 border-gray-300 pl-3 ml-2 my-2",
+      },
+    },
+    bulletList: {
+      HTMLAttributes: {
+        class: "list-disc before:content-['* '] my-1 ml-2",
+      },
+    },
+    listItem: {
+      HTMLAttributes: {
+        class: "list-decimal my-1 ml-2",
+      },
+    },
   }),
 ];
 
@@ -26,7 +41,7 @@ interface NoteEditorProps {
   onClose?: () => void;
 }
 
-const NoteEditor = observer(({ card, onClose }: NoteEditorProps) => {
+const NoteEditor = observer(({ card }: NoteEditorProps) => {
   const editor = useEditor({
     extensions,
     content: card.content,
@@ -60,22 +75,6 @@ const NoteEditor = observer(({ card, onClose }: NoteEditorProps) => {
       <Spacer y={2} />
       <div className="flex justify-between">
         <AfterMenu editor={editor} />
-        <Button
-          className="min-w-[40px] tracking-wider"
-          radius="sm"
-          color="danger"
-          onPress={onClose}
-        >
-          關閉
-        </Button>
-        <Button
-          className="min-w-[40px] tracking-wider"
-          radius="sm"
-          color="primary"
-          onPress={onClose}
-        >
-          送出
-        </Button>
       </div>
     </>
   );

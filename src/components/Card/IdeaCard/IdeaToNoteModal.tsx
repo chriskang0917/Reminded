@@ -1,4 +1,10 @@
-import { Modal, ModalBody, ModalContent, ModalHeader } from "@nextui-org/react";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+} from "@nextui-org/react";
 import { ICard } from "../../../store/cardStore";
 import NoteEditor from "../../Editor/NoteEditor";
 
@@ -25,7 +31,29 @@ export const IdeaNoteModal = ({
       onOpenChange={onOpenChange}
     >
       <ModalContent>
-        <ModalHeader>轉換你的筆記...</ModalHeader>
+        <ModalHeader className="flex justify-between">
+          <h1>轉換你的筆記...</h1>
+          <div className="flex gap-2">
+            <Button
+              className="min-w-[40px] tracking-wider"
+              radius="sm"
+              variant="light"
+              color="danger"
+              onPress={onClose}
+            >
+              關閉
+            </Button>
+            <Button
+              className="min-w-[40px] tracking-wider"
+              radius="sm"
+              color="primary"
+              variant="shadow"
+              onPress={onClose}
+            >
+              記錄
+            </Button>
+          </div>
+        </ModalHeader>
         <ModalBody>
           <NoteEditor card={card} onClose={onClose} />
         </ModalBody>
