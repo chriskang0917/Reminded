@@ -13,7 +13,9 @@ const RootLayout = observer(() => {
     <DndProvider>
       <Sidebar />
       <SortableProvider>
-        {uid && isLogin ? <Outlet /> : <Navigate to="/login" replace />}
+        <main className="ml-20 mt-10 h-[100vh] bg-background text-foreground">
+          {uid && isLogin ? <Outlet /> : <Navigate to="/login" replace />}
+        </main>
       </SortableProvider>
     </DndProvider>
   );

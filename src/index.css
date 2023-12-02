@@ -8,4 +8,44 @@
   * {
     font-family: "Noto Sans TC", sans-serif;
   }
+
+  h1.editor-heading {
+    padding: 5px 0 10px;
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    color: #111827;
+  }
+
+  h2.editor-heading {
+    padding: 5px 0;
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 1.2;
+    color: #111827;
+  }
+
+  h3.editor-heading {
+    padding: 5px 0;
+    font-weight: 600;
+    font-size: 1.125rem;
+    line-height: 1.2;
+    color: #111827;
+  }
+
+  ul>li.list-style {
+    margin: 0;
+    display: flex;
+    align-items: center;
+
+    &::before {
+      content: "• ";
+      color: #32435F;
+    }
+  }
+
+  ol>li.list-style {
+    padding-left: 0.25rem;
+    list-style-type: decimal;
+  }
 }

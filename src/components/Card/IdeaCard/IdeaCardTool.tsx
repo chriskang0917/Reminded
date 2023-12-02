@@ -7,11 +7,12 @@ import {
 import { observer } from "mobx-react-lite";
 import { ICard, NewCard, cardStore } from "../../../store/cardStore";
 
-interface CardToolProps {
+interface IdeaCardToolProps {
   card: ICard;
   setting: {
     label: string;
     icon: React.ReactNode;
+    onClick: () => void;
   };
   onOpen?: () => void;
 }
@@ -29,7 +30,7 @@ interface MenuList {
   onPress?: () => void;
 }
 
-const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
+const IdeaCardTool = observer(({ card, setting }: IdeaCardToolProps) => {
   const handleDuplicate = () => {
     const duplicateText = `${card.content} copy`;
     const newCard = new NewCard(duplicateText, card.tags, card.status);
@@ -63,11 +64,7 @@ const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
   return (
     <Dropdown key={setting.label} backdrop="opaque">
       <DropdownTrigger>
-        {setting.label === "action" ? (
-          <button onClick={onOpen}>{setting.icon}</button>
-        ) : (
-          <button>{setting.icon}</button>
-        )}
+        <button onClick={setting.onClick}>{setting.icon}</button>
       </DropdownTrigger>
       {setting.label === "more" && (
         <DropdownMenu aria-label="Setting">
@@ -86,4 +83,4 @@ const CardTool = observer(({ card, setting, onOpen }: CardToolProps) => {
   );
 });
 
-export default CardTool;
+export default IdeaCardTool;

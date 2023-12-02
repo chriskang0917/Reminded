@@ -7,18 +7,34 @@ import { ICard } from "../../../store/cardStore";
 import Editable from "../../Editable";
 import BasicCard from "../BasicCard";
 import CardTags from "../CardTags";
-import CardTool from "./IdeaCardTool";
+import IdeaCardTool from "./IdeaCardTool";
 import { IdeaToActionModal } from "./IdeaToActionModal";
-
-const settingIcons = [
-  { icon: <PiNoteBlankThin />, label: "note" },
-  { icon: <GrTransaction className="h-3" />, label: "action" },
-  { icon: <HiOutlineDotsVertical />, label: "more" },
-];
+import { IdeaNoteModal } from "./IdeaToNoteModal";
 
 export const IdeaCard = ({ card }: { card: ICard }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenAction,
+    onOpen: onOpenAction,
+    onOpenChange: onOpenChangeAction,
+    onClose: onCloseAction,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenNote,
+    onOpen: onOpenNote,
+    onOpenChange: onOpenChangeNote,
+    onClose: onCloseNote,
+  } = useDisclosure();
+
+  const settingList = [
+    { icon: <PiNoteBlankThin />, label: "note", onClick: onOpenNote },
+    {
+      icon: <GrTransaction className="h-3" />,
+      label: "action",
+      onClick: onOpenAction,
+    },
+    { icon: <HiOutlineDotsVertical />, label: "more", onClick: () => {} },
+  ];
 
   return (
     <BasicCard card={card}>
@@ -39,19 +55,20 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
           />
         </Editable>
         <div className="flex w-24 items-center justify-between">
-          {settingIcons.map((setting) => (
-            <CardTool
-              key={setting.label}
-              card={card}
-              setting={setting}
-              onOpen={onOpen}
-            />
+          {settingList.map((setting) => (
+            <IdeaCardTool key={setting.label} card={card} setting={setting} />
           ))}
           <IdeaToActionModal
             card={card}
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-            onClose={onClose}
+            isOpen={isOpenAction}
+            onOpenChange={onOpenChangeAction}
+            onClose={onCloseAction}
+          />
+          <IdeaNoteModal
+            card={card}
+            isOpen={isOpenNote}
+            onOpenChange={onOpenChangeNote}
+            onClose={onCloseNote}
           />
         </div>
       </div>
