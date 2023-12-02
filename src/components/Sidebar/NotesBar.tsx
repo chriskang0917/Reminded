@@ -6,7 +6,10 @@ interface IAction {
   path: string;
 }
 
-const ideaActionList: IAction[] = [{ label: "所有筆記", path: "/notes/all" }];
+const ideaActionList: IAction[] = [
+  { label: "所有筆記", path: "/notes/all" },
+  { label: "搜尋筆記", path: "/notes/search" },
+];
 
 interface IButton {
   children: React.ReactNode;

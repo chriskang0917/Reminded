@@ -5,6 +5,8 @@ const renderIdeaPage = (route: string | undefined) => {
   switch (route) {
     case "all":
       return <div>Notes</div>;
+    case "search":
+      return <div>Search</div>;
     default:
       return <ErrorPage />;
   }
