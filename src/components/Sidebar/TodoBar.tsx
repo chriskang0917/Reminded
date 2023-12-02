@@ -1,9 +1,7 @@
-import { Chip, Divider, Input, Spacer } from "@nextui-org/react";
+import { Chip, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
-import { IoIosAddCircleOutline } from "react-icons/io";
 import { Link, useLocation } from "react-router-dom";
-import { authStore } from "../../store/authStore";
 
 interface ITodo {
   label: string;
@@ -83,7 +81,7 @@ export const TodoBar = observer(() => {
           ))}
         </ul>
         <Spacer y={2} />
-        <div className="mt-10 flex flex-col items-center">
+        {/* <div className="mt-10 flex flex-col items-center">
           <h2>Favorite</h2>
           <Divider className="my-4" />
           <ul className="flex flex-col items-center gap-4">
@@ -113,7 +111,7 @@ export const TodoBar = observer(() => {
               </button>
             )}
           </div>
-        </div>
+        </div> */}
       </aside>
     </div>
   );
