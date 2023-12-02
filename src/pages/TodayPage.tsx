@@ -13,7 +13,8 @@ const Homepage = observer(() => {
   const [selectedKey, setSelectedKey] = useState<Key>("todo");
 
   return (
-    <div className="flex w-full flex-col items-center">
+    <div className="-ml-20 flex w-full flex-col items-center">
+      <div className="fixed left-0 top-0 ml-20 h-[100svh] w-full rounded-[40px] bg-white" />
       <IdeaInput />
       <Tabs
         aria-label="Today's todo, ideas, and reminders"
