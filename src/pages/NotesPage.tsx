@@ -15,7 +15,7 @@ const renderIdeaPage = (route: string | undefined) => {
 
 function NotesPage() {
   const { route } = useParams();
-  return <section>{renderIdeaPage(route)}</section>;
+  return <section className="relative z-50">{renderIdeaPage(route)}</section>;
 }
 
 export default NotesPage;

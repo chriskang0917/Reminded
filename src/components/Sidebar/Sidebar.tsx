@@ -14,7 +14,7 @@ const settingList = [
 
 export const Sidebar = () => {
   return (
-    <nav className="bg-third fixed left-0 top-0 flex h-[100svh] w-36 flex-col items-center justify-between pr-10">
+    <nav className="bg-third fixed left-0 top-0 flex h-[100svh] w-36 flex-col items-center justify-between pr-10 opacity-70">
       <ul className="mt04 mt-20 flex flex-col gap-5 pr-6">
         {actionList.map((action) => (
           <li key={action.label}>

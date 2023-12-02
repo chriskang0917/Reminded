@@ -13,6 +13,8 @@ export default {
       secondary: "#8F8681",
       third: "#A67F78",
       fourth: "#E1DCD9",
+      white: "#ffffff",
+      black: "#000000",
     },
     extend: {},
   },
