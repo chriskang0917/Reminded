@@ -9,7 +9,7 @@ export const TodayTodo = observer(() => {
 
   if (todoCards.length === 0) {
     return (
-      <section className="flex w-[450px] flex-col items-center">
+      <section className="flex flex-col items-center">
         <Card className="text-md mt-2 flex w-full flex-col items-center gap-2 tracking-wide">
           <CardBody className="my-5 flex flex-col items-center gap-2">
             <SiStarship className="text-5xl" />
@@ -24,7 +24,7 @@ export const TodayTodo = observer(() => {
 
   return (
     <section className="flex w-full flex-col items-center">
-      <div className="mt-5 grid w-full gap-3">
+      <div className="mt-5 flex w-full gap-3">
         {todoCards.map((card) => (
           <TodoCard key={card.id} card={card} />
         ))}

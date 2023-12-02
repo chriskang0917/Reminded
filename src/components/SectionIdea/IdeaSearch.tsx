@@ -11,8 +11,8 @@ export const IdeaSearch = observer(() => {
     useSearch("idea");
 
   return (
-    <section className="ml-52">
-      <div className="mx-auto mt-10 flex max-w-[500px] flex-col items-center">
+    <section>
+      <div className="mx-auto mt-10 flex flex-col items-center">
         <h1 className={style.mainTitle}>Search Your Idea</h1>
         <p className={style.infoTitle}>{ideaCountsText}</p>
         <IdeaSearchInput searchText={text} onSearch={onSearch} />

@@ -13,7 +13,7 @@ const Homepage = observer(() => {
   const [selectedKey, setSelectedKey] = useState<Key>("todo");
 
   return (
-    <div className="px-auto mx-auto flex w-full max-w-fit flex-col items-center">
+    <div className="flex w-full flex-col items-center">
       <IdeaInput />
       <Tabs
         aria-label="Today's todo, ideas, and reminders"
@@ -22,13 +22,13 @@ const Homepage = observer(() => {
         selectedKey={selectedKey as string}
         onSelectionChange={(key) => setSelectedKey(key as Key)}
       >
-        <Tab key="todo" title="今日待辦">
+        <Tab className="w-full" key="todo" title="今日待辦">
           <TodayTodo />
         </Tab>
-        <Tab key="idea" title="今日靈感">
+        <Tab className="w-full" key="idea" title="今日靈感">
           <TodayIdea />
         </Tab>
-        <Tab key="reminder" title="今日提醒">
+        <Tab className="w-full" key="reminder" title="今日提醒">
           <TodayReminder />
         </Tab>
       </Tabs>
