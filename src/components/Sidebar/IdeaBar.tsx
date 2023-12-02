@@ -37,7 +37,6 @@ export const IdeaBar = observer(() => {
     e.preventDefault();
     const tag = tagInputRef.current?.value;
     if (!tag) return;
-    // cardStore.updateFavoriteTags("idea", tag);
     setIsFavoriteOpen(false);
   };
 
@@ -61,7 +60,6 @@ export const IdeaBar = observer(() => {
   const FavoriteTagChip = ({ children, favorite }: FavoriteTagChipProps) => {
     const handleClose = () => {
       console.log(favorite);
-      // cardStore.deleteFavoriteTag("idea", favorite);
     };
 
     return (

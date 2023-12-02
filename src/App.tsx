@@ -5,12 +5,14 @@ import { Toaster } from "react-hot-toast";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ActionLayout from "./components/Layout/ActionLayout";
 import IdeaLayout from "./components/Layout/IdeaLayout";
+import NotesLayout from "./components/Layout/NotesLayout";
 import RootLayout from "./components/Layout/RootLayout";
 import TodoLayout from "./components/Layout/TodoLayout";
 import ActionPage from "./pages/ActionPage";
 import ErrorPage from "./pages/ErrorPage";
 import IdeaPage from "./pages/IdeaPage";
 import LoginPage from "./pages/LoginPage";
+import NotesPage from "./pages/NotesPage";
 import ProfilePage from "./pages/Profile";
 import Homepage from "./pages/TodayPage";
 import TodoPage from "./pages/TodoPage";
@@ -41,6 +43,11 @@ const router = createBrowserRouter([
         path: "action",
         element: <ActionLayout />,
         children: [{ path: ":route", element: <ActionPage /> }],
+      },
+      {
+        path: "notes",
+        element: <NotesLayout />,
+        children: [{ path: ":route", element: <NotesPage /> }],
       },
       { path: "search", element: <section>Search</section> },
       {

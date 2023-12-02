@@ -5,7 +5,7 @@ const actionList = [
   { label: "待辦", path: "/todo/today" },
   { label: "行動", path: "/action/all" },
   { label: "靈感", path: "/idea/week" },
-  { label: "搜尋", path: "/search" },
+  { label: "筆記", path: "/notes/all" },
 ];
 const settingList = [
   { label: "用戶", path: "/profile" },
