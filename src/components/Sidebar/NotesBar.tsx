@@ -33,9 +33,9 @@ export const NotesBar = observer(() => {
   );
 
   return (
-    <div className="fixed left-0 top-0 ml-20 h-[100svh] w-32 bg-slate-200">
+    <div className="bg-fourth fixed left-0 top-0 ml-20 h-[100svh] w-32 rounded-full pt-20">
       <aside>
-        <ul className="flex flex-col items-center justify-center gap-4 pt-4">
+        <ul className="relative z-10 flex flex-col items-center justify-center gap-4 pt-4">
           {ideaActionList.map((action) => (
             <li key={action.label}>
               <NotesButton key={action.label} action={action}>
@@ -45,6 +45,10 @@ export const NotesBar = observer(() => {
           ))}
         </ul>
       </aside>
+      <div
+        aria-label="backdrop"
+        className="bg-fourth fixed top-0 z-0 ml-20 h-[100svh] w-full"
+      />
     </div>
   );
 });

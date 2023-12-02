@@ -14,8 +14,8 @@ const settingList = [
 
 export const Sidebar = () => {
   return (
-    <nav className="fixed left-0 top-0 flex h-[100svh] w-20 flex-col items-center justify-between bg-gray-100">
-      <ul className="mt04 mt-4 flex flex-col gap-5">
+    <nav className="bg-third fixed left-0 top-0 flex h-[100svh] w-36 flex-col items-center justify-between pr-10">
+      <ul className="mt04 mt-20 flex flex-col gap-5 pr-6">
         {actionList.map((action) => (
           <li key={action.label}>
             <Link to={action.path}>
@@ -24,7 +24,7 @@ export const Sidebar = () => {
           </li>
         ))}
       </ul>
-      <ul className="mb-6 flex flex-col gap-4">
+      <ul className="mb-6 flex flex-col gap-4 pr-6">
         {settingList.map((setting) => (
           <li key={setting.label}>
             <Link to={setting.path}>
