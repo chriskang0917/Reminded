@@ -45,6 +45,10 @@ export interface ICardObject {
   [id: string]: ICard;
 }
 
+export interface INewNoteObject {
+  [id: string]: NewNote;
+}
+
 interface ICardService {
   getAllTags: string[];
   getFilteredCardsWith: (cardsStrategy: CardsStrategy) => ICard[];
@@ -57,10 +61,10 @@ interface ICardService {
 
 interface IFirebaseService {
   initActiveCards: () => void;
-  updateCardToFirebase: (cardId: string, card: Partial<ICard>) => void;
-  addCardToFireStore: (card: ICard, updateCard?: Partial<ICard>) => void;
   getArchivedCards: () => void;
   getExecutedActionCards: () => void;
+  updateCardToFirebase: (cardId: string, card: Partial<ICard>) => void;
+  addCardToFireStore: (card: ICard, updateCard?: Partial<ICard>) => void;
   deleteCardFromFireStore: (cardId: string) => void;
 }
 
@@ -321,9 +325,9 @@ class CardService implements ICardService {
   }
 
   addNote(newNote: NewNote, updateNote?: Partial<ICard>) {
-    const updatedCard = { ...newNote, ...updateNote };
+    const updatedNote = { ...newNote, ...updateNote };
     runInAction(() => {
-      cardStore.cards[newNote.id] = updatedCard;
+      cardStore.cards[newNote.id] = updatedNote;
       cardStore.cardOrderList.unshift(newNote.id);
     });
   }

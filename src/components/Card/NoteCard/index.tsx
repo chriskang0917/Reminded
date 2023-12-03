@@ -6,15 +6,15 @@ import BasicCard from "../BasicCard";
 import NoteIcon from "./note-icon.svg";
 
 interface NoteCardProps {
-  card: NewNote;
+  note: NewNote;
 }
 
-export const NoteCard = ({ card }: NoteCardProps) => {
-  const parsedDate = parseISO(card.createdTime);
+export const NoteCard = ({ note }: NoteCardProps) => {
+  const parsedDate = parseISO(note.createdTime);
   const formattedDate = format(parsedDate, "yyyy-MM-dd");
 
   return (
-    <BasicCard className="flex-row justify-start px-7" card={card}>
+    <BasicCard className="flex-row justify-start px-7" card={note}>
       <Card className="max-w-32 my-1 -ml-1 aspect-auto">
         <CardBody className="flex items-center justify-center">
           <Image src={NoteIcon} width={100} />
@@ -22,21 +22,21 @@ export const NoteCard = ({ card }: NoteCardProps) => {
       </Card>
       <section className="ml-10 flex max-w-[60%] flex-col justify-between">
         <div className="flex flex-col gap-1">
-          <Link to={`/notes/article/${card.id}`} className="h-full w-full">
+          <Link to={`/notes/article/${note.id}`} className="h-full w-full">
             <h1 className="text-xl font-bold text-primary">
-              {card.noteTitle || ""}
+              {note.noteTitle || ""}
             </h1>
           </Link>
           <ul>
-            {card.tags.map((tag) => (
+            {note.tags.map((tag) => (
               <li key={tag} className="text-sm text-third opacity-50">
                 #{tag}
               </li>
             ))}
           </ul>
-          <Link to={`/notes/article/${card.id}`} className="h-full w-full">
+          <Link to={`/notes/article/${note.id}`} className="h-full w-full">
             <p className="text-sm tracking-wide text-secondary">
-              {card.content.length < 49 ? card.content : `${card.content}...`}
+              {note.content.length < 49 ? note.content : `${note.content}...`}
             </p>
           </Link>
         </div>

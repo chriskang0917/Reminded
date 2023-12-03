@@ -16,7 +16,7 @@ const extensions = [
     },
     paragraph: {
       HTMLAttributes: {
-        class: "tracking-wide leading-7",
+        class: "tracking-wider leading-6 my-5",
       },
     },
     blockquote: {
@@ -31,7 +31,7 @@ const extensions = [
     },
     bulletList: {
       HTMLAttributes: {
-        class: "my-3",
+        class: "relative my-3",
       },
     },
     listItem: {
