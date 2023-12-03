@@ -11,19 +11,17 @@ export const TodoAll = observer(() => {
   const todoCards = cardStore.getFilteredCardsWith(new TodoAllCards());
 
   return (
-    <section>
-      <div className="mx-auto mt-10 flex flex-col items-center">
-        <h1 className={style.mainTitle}>{Title}</h1>
-        <TodoInput />
-        <Divider />
-        <ul className="mt-5 grid w-full gap-3">
-          {todoCards.map((card) => (
-            <li key={card.id}>
-              <TodoCard card={card} />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
+    <div className="mx-auto mt-10 flex flex-col items-center">
+      <h1 className={style.mainTitle}>{Title}</h1>
+      <TodoInput />
+      <Divider />
+      <ul className="mt-5 grid w-full gap-3">
+        {todoCards.map((card) => (
+          <li key={card.id}>
+            <TodoCard card={card} />
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 });

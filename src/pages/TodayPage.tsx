@@ -3,11 +3,7 @@ import { observer } from "mobx-react-lite";
 import { Tab, Tabs } from "@nextui-org/react";
 import { Key, useState } from "react";
 import { IdeaInput } from "../components/Input";
-import {
-  TodayIdea,
-  TodayReminder,
-  TodayTodo,
-} from "../components/SectionToday";
+import { TodayIdea, TodayTodo } from "../components/SectionToday";
 
 const Homepage = observer(() => {
   const [selectedKey, setSelectedKey] = useState<Key>("todo");
@@ -29,9 +25,9 @@ const Homepage = observer(() => {
         <Tab className="w-full" key="idea" title="今日靈感">
           <TodayIdea />
         </Tab>
-        <Tab className="w-full" key="reminder" title="今日提醒">
+        {/* <Tab className="w-full" key="reminder" title="今日提醒">
           <TodayReminder />
-        </Tab>
+        </Tab> */}
       </Tabs>
     </div>
   );

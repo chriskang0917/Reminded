@@ -10,18 +10,16 @@ export const IdeaPools = observer(() => {
   const ideaCardsAll = cardStore.getFilteredCardsWith(new IdeaAllCards());
 
   return (
-    <section>
-      <div className="mx-auto mt-10 flex flex-col items-center">
-        <h1 className={style.mainTitle}>{Title}</h1>
-        <Divider />
-        <ul className="mt-5 grid w-full gap-3">
-          {ideaCardsAll.map((card) => (
-            <li key={card.id}>
-              <IdeaCard card={card} />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
+    <div className="mx-auto mt-10 flex flex-col items-center">
+      <h1 className={style.mainTitle}>{Title}</h1>
+      <Divider />
+      <ul className="mt-5 grid w-full gap-3">
+        {ideaCardsAll.map((card) => (
+          <li key={card.id}>
+            <IdeaCard card={card} />
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 });

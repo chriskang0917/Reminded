@@ -24,7 +24,7 @@ export const TodayTodo = observer(() => {
 
   return (
     <section className="flex w-full flex-col items-center">
-      <div className="mt-5 flex w-full gap-3">
+      <div className="mt-5 flex w-full flex-col gap-3">
         {todoCards.map((card) => (
           <TodoCard key={card.id} card={card} />
         ))}

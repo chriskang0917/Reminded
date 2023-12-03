@@ -27,7 +27,7 @@ const renderTodoPage = (route: string | undefined) => {
 
 function TodoPage() {
   const { route } = useParams();
-  return <section>{renderTodoPage(route)}</section>;
+  return <section className="relative">{renderTodoPage(route)}</section>;
 }
 
 export default TodoPage;
