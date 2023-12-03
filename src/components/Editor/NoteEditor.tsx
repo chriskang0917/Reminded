@@ -2,7 +2,7 @@ import { ScrollShadow, Spacer } from "@nextui-org/react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { observer } from "mobx-react-lite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ICard } from "../../store/cardStore";
 import { AfterMenu } from "./AfterMenu";
 
@@ -53,8 +53,30 @@ interface NoteEditorProps {
   ) => void;
 }
 
+interface NoteContent {
+  title: string;
+  description: string;
+  noteHTML: string;
+  tags: string[];
+}
+
 const NoteEditor = observer(({ card, onNoteChange }: NoteEditorProps) => {
-  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<NoteContent>({
+    title: "",
+    description: "",
+    noteHTML: "",
+    tags: [],
+  });
+
+  useEffect(() => {
+    onNoteChange &&
+      onNoteChange(
+        content.title,
+        content.description,
+        content.noteHTML,
+        card.tags,
+      );
+  }, [content.title]);
 
   const editor = useEditor({
     extensions,
@@ -67,7 +89,8 @@ const NoteEditor = observer(({ card, onNoteChange }: NoteEditorProps) => {
     onUpdate: ({ editor }) => {
       const description = editor.getText().slice(0, 50);
       const html = editor.getHTML();
-      if (onNoteChange) onNoteChange(title, description, html, card.tags);
+      setContent({ ...content, description, noteHTML: html });
+      onNoteChange && onNoteChange(content.title, description, html, card.tags);
     },
   });
 
@@ -79,9 +102,9 @@ const NoteEditor = observer(({ card, onNoteChange }: NoteEditorProps) => {
     <>
       <input
         className="py-2 text-xl font-bold tracking-wider outline-0"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
         type="text"
+        value={content.title}
+        onChange={(e) => setContent({ ...content, title: e.target.value })}
         placeholder="筆記標題"
       />
       <div className="py-2">

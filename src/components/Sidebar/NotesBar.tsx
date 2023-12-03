@@ -24,7 +24,7 @@ export const NotesBar = observer(() => {
   const NotesButton = ({ children, action, onClick }: IButton) => (
     <Link to={action.path}>
       <button
-        className="flex items-center justify-center bg-zinc-400"
+        className="bg-zinc-400 flex items-center justify-center"
         disabled={location.pathname === action.path}
         onClick={onClick}
       >
@@ -42,6 +42,7 @@ export const NotesBar = observer(() => {
           </NotesButton>
         </li>
       ))}
+      {}
     </SubsideBar>
   );
 });

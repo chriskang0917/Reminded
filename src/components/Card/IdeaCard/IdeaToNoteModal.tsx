@@ -18,7 +18,7 @@ interface IdeaNoteModalProp {
 }
 
 interface NoteContent {
-  title: string;
+  noteTitle: string;
   description: string;
   noteHTML: string;
   tags: string[];
@@ -31,29 +31,29 @@ export const IdeaNoteModal = ({
   onClose,
 }: IdeaNoteModalProp) => {
   const [noteContent, setNoteContent] = useState<NoteContent>({
-    title: "",
+    noteTitle: "",
     description: "",
     noteHTML: "",
     tags: [],
   });
 
   const handleNoteChange = (
-    title: string,
+    noteTitle: string,
     description: string,
     noteHTML: string,
     tags: string[],
   ) => {
-    setNoteContent({ title, description, noteHTML, tags });
+    setNoteContent({ noteTitle, description, noteHTML, tags });
   };
 
   const handleSubmit = () => {
     const note = new NewNote(
-      noteContent.title,
+      noteContent.noteTitle,
       noteContent.description,
       noteContent.noteHTML,
       card.tags,
     );
-    cardStore.addCard(note);
+    cardStore.addNote(note);
     cardStore.addNoteToFireStore(note);
     toast.success("已新增筆記");
     onClose();
@@ -71,7 +71,7 @@ export const IdeaNoteModal = ({
     >
       <ModalContent>
         <ModalHeader className="flex justify-between">
-          <h1 className="text-third tracking-wider">轉換你的靈感...</h1>
+          <h1 className="tracking-wider text-third">轉換你的靈感...</h1>
           <div className="flex gap-2">
             <Button
               className="min-w-[40px] tracking-wider"
