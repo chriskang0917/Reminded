@@ -1,6 +1,6 @@
-import { Button } from "@nextui-org/react";
+import { Button, cn } from "@nextui-org/react";
 import { Editor } from "@tiptap/react";
-import cn from "classnames";
+import { Fragment } from "react";
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from "react-icons/ai";
 import { BiRedo, BiUndo } from "react-icons/bi";
 import { LuQuote } from "react-icons/lu";
@@ -71,7 +71,7 @@ export const AfterMenu = ({ editor }: AfterMenuProps) => {
   return (
     <div className="relative right-6 flex flex-wrap justify-end gap-2 p-2">
       {ButtonList.map((btn) => (
-        <>
+        <Fragment key={btn.label}>
           <Button
             size="sm"
             variant="bordered"
@@ -80,13 +80,12 @@ export const AfterMenu = ({ editor }: AfterMenuProps) => {
               "text-md min-w-[40px] border-none p-0 text-secondary",
               btn.className,
             )}
-            key={btn.label}
             onClick={btn.onPress}
             isDisabled={btn.isDisabled}
           >
             {btn.icon ? btn.icon : btn.label}
           </Button>
-        </>
+        </Fragment>
       ))}
     </div>
   );

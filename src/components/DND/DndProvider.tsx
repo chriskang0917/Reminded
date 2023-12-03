@@ -24,14 +24,15 @@ export const DndProvider = ({ children }: DndContextProps) => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 50,
+        distance: 30,
         delay: 1000,
       },
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
         distance: 10,
-        delay: 1000,
+        delay: 5000,
+        tolerance: 5,
       },
     }),
   );

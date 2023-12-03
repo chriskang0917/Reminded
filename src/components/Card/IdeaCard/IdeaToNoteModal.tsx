@@ -5,7 +5,9 @@ import {
   ModalContent,
   ModalHeader,
 } from "@nextui-org/react";
-import { ICard } from "../../../store/cardStore";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { ICard, NewNote, cardStore } from "../../../store/cardStore";
 import NoteEditor from "../../Editor/NoteEditor";
 
 interface IdeaNoteModalProp {
@@ -15,12 +17,48 @@ interface IdeaNoteModalProp {
   onClose: () => void;
 }
 
+interface NoteContent {
+  title: string;
+  description: string;
+  noteHTML: string;
+  tags: string[];
+}
+
 export const IdeaNoteModal = ({
   card,
   isOpen,
   onOpenChange,
   onClose,
 }: IdeaNoteModalProp) => {
+  const [noteContent, setNoteContent] = useState<NoteContent>({
+    title: "",
+    description: "",
+    noteHTML: "",
+    tags: [],
+  });
+
+  const handleNoteChange = (
+    title: string,
+    description: string,
+    noteHTML: string,
+    tags: string[],
+  ) => {
+    setNoteContent({ title, description, noteHTML, tags });
+  };
+
+  const handleSubmit = () => {
+    const note = new NewNote(
+      noteContent.title,
+      noteContent.description,
+      noteContent.noteHTML,
+      card.tags,
+    );
+    cardStore.addCard(note);
+    cardStore.addNoteToFireStore(note);
+    toast.success("已新增筆記");
+    onClose();
+  };
+
   return (
     <Modal
       className="mx-10 max-w-[600px] p-4"
@@ -49,14 +87,18 @@ export const IdeaNoteModal = ({
               radius="sm"
               color="primary"
               variant="shadow"
-              onPress={onClose}
+              onPress={handleSubmit}
             >
               記錄
             </Button>
           </div>
         </ModalHeader>
         <ModalBody>
-          <NoteEditor card={card} onClose={onClose} />
+          <NoteEditor
+            card={card}
+            onClose={onClose}
+            onNoteChange={handleNoteChange}
+          />
         </ModalBody>
       </ModalContent>
     </Modal>
