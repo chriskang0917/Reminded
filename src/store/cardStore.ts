@@ -257,6 +257,13 @@ export class ActionArchiveCards extends CardsStrategy {
   }
 }
 
+export class NotesAllCards extends CardsStrategy {
+  getCards() {
+    const sortedCards = this.getSortedCardsByOrderList();
+    return sortedCards.filter((card) => card.status === "note");
+  }
+}
+
 /* ===============================
 =========  CardService  ==========
 =============================== */
