@@ -48,6 +48,7 @@ export interface ICardObject {
 interface ICardService {
   getAllTags: string[];
   getFilteredCardsWith: (cardsStrategy: CardsStrategy) => ICard[];
+  getNoteWithId: (noteId: string) => NewNote;
   addCard: (newCard: NewCard, updateCard?: Partial<ICard>) => void;
   addNote: (newNote: NewNote, updateNote?: Partial<ICard>) => void;
   deleteCard: (id: string) => void;
@@ -307,6 +308,10 @@ class CardService implements ICardService {
     return cardStrategy.getCards();
   }
 
+  getNoteWithId(noteId: string) {
+    return cardStore.cards[noteId] as NewNote;
+  }
+
   addCard(newCard: NewCard, updateCard?: Partial<ICard>) {
     const updatedCard = { ...newCard, ...updateCard };
     runInAction(() => {
@@ -561,6 +566,10 @@ class CardStore {
 
   getFilteredCardsWith(cardsStrategy: CardsStrategy) {
     return this.cardService.getFilteredCardsWith(cardsStrategy);
+  }
+
+  getNoteWithId(noteId: string) {
+    return this.cardService.getNoteWithId(noteId);
   }
 
   addCard(newCard: NewCard, updateCard?: Partial<ICard>) {

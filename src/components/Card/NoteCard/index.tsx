@@ -1,5 +1,6 @@
 import { Card, CardBody, Image } from "@nextui-org/react";
 import { format, parseISO } from "date-fns";
+import { Link } from "react-router-dom";
 import { NewNote } from "../../../store/cardStore";
 import BasicCard from "../BasicCard";
 import NoteIcon from "./note-icon.svg";
@@ -21,21 +22,25 @@ export const NoteCard = ({ card }: NoteCardProps) => {
       </Card>
       <section className="ml-10 flex max-w-[60%] flex-col justify-between">
         <div className="flex flex-col gap-1">
-          <h1 className="text-xl font-bold text-primary">
-            {card.noteTitle || ""}
-          </h1>
+          <Link to={`/notes/article/${card.id}`} className="h-full w-full">
+            <h1 className="text-xl font-bold text-primary">
+              {card.noteTitle || ""}
+            </h1>
+          </Link>
           <ul>
             {card.tags.map((tag) => (
-              <li key={tag} className="text-third text-sm opacity-50">
+              <li key={tag} className="text-sm text-third opacity-50">
                 #{tag}
               </li>
             ))}
           </ul>
-          <p className="text-sm tracking-wide text-secondary">
-            {card.content.length < 49 ? card.content : `${card.content}...`}
-          </p>
+          <Link to={`/notes/article/${card.id}`} className="h-full w-full">
+            <p className="text-sm tracking-wide text-secondary">
+              {card.content.length < 49 ? card.content : `${card.content}...`}
+            </p>
+          </Link>
         </div>
-        <span className="text-third text-[0.75rem] opacity-80">
+        <span className="text-[0.75rem] text-third opacity-80">
           {formattedDate}
         </span>
       </section>
