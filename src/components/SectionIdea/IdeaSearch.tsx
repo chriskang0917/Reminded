@@ -1,5 +1,4 @@
 import { Divider } from "@nextui-org/react";
-import cn from "classnames";
 import { observer } from "mobx-react-lite";
 import { useSearch } from "../../hooks/useSearch";
 import { style } from "../../utils/style";
@@ -17,7 +16,7 @@ export const IdeaSearch = observer(() => {
       <IdeaSearchInput searchText={text} onSearch={onSearch} />
       <h2 className={style.subTitle}>Results</h2>
       <Divider />
-      <p className={cn(style.infoTitle, "mt-2")}>{searchCountsText}</p>
+      <p className={style.infoTitle}>{searchCountsText}</p>
       <ul className="mt-5 grid w-full gap-3">
         {results.map((card) => (
           <li key={card.item.id}>

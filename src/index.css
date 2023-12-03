@@ -38,11 +38,11 @@
     margin: 0;
     display: flex;
     align-items: center;
+  }
 
-    &::before {
-      content: "• ";
-      color: #32435F;
-    }
+  ul>li.list-style::before {
+    content: "• ";
+    color: #32435F;
   }
 
   ol>li.list-style {

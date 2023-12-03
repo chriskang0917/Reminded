@@ -1,5 +1,4 @@
-import { Divider } from "@nextui-org/react";
-import cn from "classnames";
+import { Divider, cn } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useSearch } from "../../hooks/useSearch";
 import { style } from "../../utils/style";
