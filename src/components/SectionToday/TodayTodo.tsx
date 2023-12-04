@@ -1,8 +1,10 @@
-import { Card, CardBody, Spacer } from "@nextui-org/react";
+import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { SiStarship } from "react-icons/si";
 import { TodoTodayCards, cardStore } from "../../store/cardStore";
 import { TodoCard } from "../Card";
+import EmptyCard from "../Card/EmptyCard";
+
+const placeholder = "享受你的個人時光吧！";
 
 export const TodayTodo = observer(() => {
   const todoCards = cardStore.getFilteredCardsWith(new TodoTodayCards());
@@ -10,13 +12,7 @@ export const TodayTodo = observer(() => {
   if (todoCards.length === 0) {
     return (
       <section className="flex flex-col items-center">
-        <Card className="text-md mt-2 flex w-full flex-col items-center gap-2 tracking-wide">
-          <CardBody className="my-5 flex flex-col items-center gap-2">
-            <SiStarship className="text-5xl" />
-            <Spacer y={1} />
-            <span className="text-secondary">享受你的個人時光吧！</span>
-          </CardBody>
-        </Card>
+        <EmptyCard placeholder={placeholder} />
         <Spacer y={10} />
       </section>
     );

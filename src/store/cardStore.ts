@@ -269,6 +269,18 @@ export class ActionTodoCards extends CardsStrategy {
   }
 }
 
+export class TodoAndActionAllCards extends CardsStrategy {
+  getCards() {
+    const sortedCards = this.getSortedCardsByOrderList();
+    return sortedCards.filter(
+      (card) =>
+        (card.status === "todo" || card.status === "action") &&
+        card.dueDate &&
+        !card.isArchived,
+    );
+  }
+}
+
 export class ExecutedActionCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
