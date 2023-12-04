@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const { nextui } = require("@nextui-org/react");
+const colors = require("tailwindcss/colors");
 
 export default {
   content: [
@@ -9,12 +10,21 @@ export default {
   ],
   theme: {
     colors: {
+      transparent: "transparent",
+      current: "currentColor",
+      white: colors.white,
+      black: colors.black,
+      gray: colors.slate,
+      green: colors.emerald,
+      purple: colors.violet,
+      yellow: colors.amber,
+      pink: colors.fuchsia,
       primary: "#32435F",
       secondary: "#8F8681",
       third: "#A67F78",
+      thirdDark: "#70665f",
       fourth: "#E1DCD9",
-      white: "#ffffff",
-      black: "#000000",
+      fourthDark: "#b4ada9",
     },
     extend: {},
   },

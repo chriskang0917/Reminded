@@ -1,48 +1,49 @@
+import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { Link, useLocation } from "react-router-dom";
+import { BsCalendar2Week } from "react-icons/bs";
+import { FcParallelTasks } from "react-icons/fc";
+import { GrTransaction } from "react-icons/gr";
+import { IoIosSearch } from "react-icons/io";
+import { IoArchiveOutline } from "react-icons/io5";
 import { SubsideBar } from "./SubsideBar";
+import SubsideButton from "./SubsideBarButton";
 
 interface IAction {
   label: string;
   path: string;
+  icon?: React.ReactNode;
 }
 
 const ideaActionList: IAction[] = [
-  { label: "本週靈感", path: "/idea/week" },
-  { label: "搜尋靈感", path: "/idea/search" },
-  { label: "靈感池", path: "/idea/pools" },
-  { label: "已轉換", path: "/idea/action" },
-  { label: "已封存", path: "/idea/archive" },
+  { label: "搜尋靈感", path: "/idea/search", icon: <IoIosSearch /> },
+  { label: "靈感池", path: "/idea/pools", icon: <FcParallelTasks /> },
+  { label: "已轉換", path: "/idea/action", icon: <GrTransaction /> },
+  { label: "已封存", path: "/idea/archive", icon: <IoArchiveOutline /> },
 ];
 
-interface IButton {
-  children: React.ReactNode;
-  action: IAction;
-  onClick?: () => void;
-}
-
 export const IdeaBar = observer(() => {
-  const location = useLocation();
-
-  const IdeaButton = ({ children, action, onClick }: IButton) => (
-    <Link to={action.path}>
-      <button
-        className="flex items-center justify-center bg-zinc-400"
-        disabled={location.pathname === action.path}
-        onClick={onClick}
-      >
-        {children}
-      </button>
-    </Link>
-  );
-
   return (
     <SubsideBar>
+      <li>
+        <SubsideButton
+          className="h-12"
+          action={{ label: "本週靈感", path: "/idea/week" }}
+        >
+          <div className="flex h-full items-center justify-center gap-3">
+            <BsCalendar2Week />
+            <span className="text-sm">本週靈感</span>
+          </div>
+        </SubsideButton>
+      </li>
+      <Divider className="w-[80%]" />
       {ideaActionList.map((action) => (
         <li key={action.label}>
-          <IdeaButton key={action.label} action={action}>
-            {action.label}
-          </IdeaButton>
+          <SubsideButton key={action.label} action={action}>
+            <div className="flex h-full items-center justify-center gap-3">
+              <span>{action.icon}</span>
+              <span className="text-sm">{action.label}</span>
+            </div>
+          </SubsideButton>
         </li>
       ))}
     </SubsideBar>
