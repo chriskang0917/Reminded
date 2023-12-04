@@ -44,8 +44,8 @@
     content: "• ";
     color: #32435F;
     position: relative;
-    top: 1.25rem;
-    right: 0.5rem;
+    top: 0.25rem;
+    right: 0rem;
   }
 
   ol>li.list-style {
