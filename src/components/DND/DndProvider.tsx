@@ -12,6 +12,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { ICard, cardStatus, cardStore } from "../../store/cardStore";
+import { cardUtils } from "../../utils/cardUtils";
 import { ActionCard, IdeaCard, TodoCard } from "../Card";
 
 interface DndContextProps {
@@ -45,11 +46,59 @@ export const DndProvider = ({ children }: DndContextProps) => {
     setActiveCard(null);
     if (!over) return;
 
+    if (
+      (over.id === "todo-tomorrow" ||
+        over.data.current?.card.status === "todo" ||
+        over.data.current?.card.status === "action") &&
+      !active.data.current?.card.dueDate
+    ) {
+      const cardOrderList = cardStore.cardOrderList;
+      const activeCardIndex = cardOrderList.indexOf(
+        active.data.current?.card.id,
+      );
+      cardStore.updateCard(active.data.current?.card.id, {
+        dueDate: cardUtils.generateTomorrowDate().toISOString(),
+      });
+      cardStore.updateCardToFirebase(active.data.current?.card.id, {
+        dueDate: cardUtils.generateTomorrowDate().toISOString(),
+      });
+
+      const movedArray = arrayMove(
+        cardOrderList,
+        activeCardIndex,
+        activeCardIndex,
+      );
+      cardStore.updateCardOrderList(movedArray);
+      cardStore.updateCardOrderListToFirebase(movedArray);
+      return;
+    }
+
+    if (over.id === "action") {
+      const cardOrderList = cardStore.cardOrderList;
+      const activeCardIndex = cardOrderList.indexOf(
+        active.data.current?.card.id,
+      );
+      cardStore.updateCard(active.data.current?.card.id, {
+        status: "action",
+        dueDate: null,
+      });
+
+      const movedArray = arrayMove(
+        cardOrderList,
+        activeCardIndex,
+        activeCardIndex,
+      );
+      cardStore.updateCardOrderList(movedArray);
+      cardStore.updateCardOrderListToFirebase(movedArray);
+      return;
+    }
+
+    console.log(active.data.current?.card);
+
     const activeCard = active.data.current?.card;
     const overCard = over.data.current?.card;
 
     if (activeCard.id === overCard.id) return;
-    if (activeCard.status !== overCard.status) return;
 
     const cardOrderList = cardStore.cardOrderList;
     const activeCardIndex = cardOrderList.indexOf(activeCard.id);
