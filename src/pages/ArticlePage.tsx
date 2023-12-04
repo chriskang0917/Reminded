@@ -1,9 +1,16 @@
-import { Button, Card, Divider } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  Divider,
+  Spacer,
+  useDisclosure,
+} from "@nextui-org/react";
 import { format, parseISO } from "date-fns";
 import parse from "html-react-parser";
 import { observer } from "mobx-react-lite";
 import { Navigate, useParams } from "react-router-dom";
 import CardTags from "../components/Card/CardTags";
+import ModalEditor from "../components/Editor/ModalEditor";
 import { cardStore } from "../store/cardStore";
 
 const ArticlePage = observer(() => {
@@ -20,6 +27,12 @@ const ArticlePage = observer(() => {
   const parsedHTML = parse(noteHTML);
   const parsedDate = parseISO(note.createdTime);
   const formattedDate = format(parsedDate, "yyyy-MM-dd");
+
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
+  const handleEdit = () => {
+    onOpen();
+  };
 
   return (
     <section className="pb-5">
@@ -41,6 +54,7 @@ const ArticlePage = observer(() => {
             color="secondary"
             size="sm"
             className="font-thin tracking-widest"
+            onPress={handleEdit}
           >
             編輯
           </Button>
@@ -49,8 +63,16 @@ const ArticlePage = observer(() => {
           {formattedDate}
         </span>
         <Divider />
+        <Spacer y={1} />
         <div>{parsedHTML}</div>
       </Card>
+      <ModalEditor
+        card={note}
+        contentHTML={noteHTML}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        onClose={onClose}
+      />
     </section>
   );
 });

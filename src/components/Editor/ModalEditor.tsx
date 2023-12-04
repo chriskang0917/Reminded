@@ -11,8 +11,9 @@ import toast from "react-hot-toast";
 import { ICard, NewNote, cardStore } from "../../store/cardStore";
 import NoteEditor from "./NoteEditor";
 
-interface IdeaNoteModalProp {
+interface ModalEditorProp {
   pageTitle?: string;
+  contentHTML?: string;
   card: ICard;
   isOpen: boolean;
   onOpenChange: () => void;
@@ -26,8 +27,8 @@ interface NoteContent {
   tags: string[];
 }
 
-const ModalEditor = observer((prop: IdeaNoteModalProp) => {
-  const { pageTitle, card, isOpen, onOpenChange, onClose } = prop;
+const ModalEditor = observer((prop: ModalEditorProp) => {
+  const { pageTitle, contentHTML, card, isOpen, onOpenChange, onClose } = prop;
 
   const [noteContent, setNoteContent] = useState<NoteContent>({
     noteTitle: "",
@@ -98,6 +99,7 @@ const ModalEditor = observer((prop: IdeaNoteModalProp) => {
           <NoteEditor
             card={card}
             onClose={onClose}
+            contentHTML={contentHTML}
             onNoteChange={handleNoteChange}
           />
         </ModalBody>
