@@ -24,7 +24,7 @@ export const SortableItem = observer(
       transform: CSS.Transform.toString(transform),
       transition,
       opacity: isDragging ? 0.3 : 1,
-      touchAction: "manipulation",
+      touchAction: "none",
       width: "100%",
     };
 
