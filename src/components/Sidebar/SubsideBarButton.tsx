@@ -24,7 +24,7 @@ const SubsideButton = ({ className, children, action, onClick }: IButton) => {
         isBlurred
         radius="sm"
         className={cn(
-          "my-1 flex h-10 w-[120px] items-center",
+          "my-1 flex h-10 w-[120px] cursor-pointer items-center text-primary",
           "hover:bg-fourthDark transition-all hover:text-white",
           className,
           location.pathname === action.path && "bg-fourthDark text-white",
