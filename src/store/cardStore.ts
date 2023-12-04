@@ -340,6 +340,14 @@ class CardService implements ICardService {
     runInAction(() => (cardStore.cards[id] = updatedCard));
   }
 
+  updateNote(id: string, updateNote: Partial<NewNote>) {
+    const card = cardStore.cards[id];
+    if (!card) return;
+    const updatedTime = new Date().toISOString();
+    const updatedNote = { ...card, ...updateNote, updatedTime };
+    runInAction(() => (cardStore.cards[id] = updatedNote));
+  }
+
   deleteCard(id: string) {
     runInAction(() => {
       delete cardStore.cards[id];
@@ -489,15 +497,15 @@ class FirebaseService implements IFirebaseService {
     }
   }
 
-  async deleteCardFromFireStore(cardId: string) {
+  async updateNoteToFirebase(noteId: string, updateNote: Partial<NewNote>) {
     try {
       const uid = this.getUid();
       if (!uid) return;
 
-      const cardsRef = doc(db, "user_cards", uid, "cards", cardId);
-      await deleteDoc(cardsRef);
+      const cardsRef = doc(db, "user_cards", uid, "cards", noteId);
+      await setDoc(cardsRef, { ...updateNote }, { merge: true });
     } catch (error) {
-      console.error(error);
+      console.error("update_note_error", error);
     }
   }
 
@@ -510,6 +518,18 @@ class FirebaseService implements IFirebaseService {
       await setDoc(cardOrderListRef, { cardOrderList });
     } catch (error) {
       console.error("updateCardOrderList_error", error);
+    }
+  }
+
+  async deleteCardFromFireStore(cardId: string) {
+    try {
+      const uid = this.getUid();
+      if (!uid) return;
+
+      const cardsRef = doc(db, "user_cards", uid, "cards", cardId);
+      await deleteDoc(cardsRef);
+    } catch (error) {
+      console.error(error);
     }
   }
 }
@@ -544,16 +564,20 @@ class CardStore {
     this.firebaseService.getExecutedActionCards();
   }
 
-  async updateCardToFirebase(cardId: string, updateCard: Partial<ICard>) {
-    this.firebaseService.updateCardToFirebase(cardId, updateCard);
-  }
-
   async addCardToFireStore(card: ICard, updateCard?: Partial<ICard>) {
     this.firebaseService.addCardToFireStore(card, updateCard);
   }
 
   async addNoteToFireStore(note: NewNote, updateNote?: Partial<NewNote>) {
     this.firebaseService.addNoteToFireStore(note, updateNote);
+  }
+
+  async updateCardToFirebase(cardId: string, updateCard: Partial<ICard>) {
+    this.firebaseService.updateCardToFirebase(cardId, updateCard);
+  }
+
+  async updateNoteToFirebase(noteId: string, updateNote: Partial<NewNote>) {
+    this.firebaseService.updateNoteToFirebase(noteId, updateNote);
   }
 
   async deleteCardFromFireStore(cardId: string) {
@@ -586,6 +610,10 @@ class CardStore {
 
   updateCard(id: string, updateCard: Partial<ICard>) {
     this.cardService.updateCard(id, updateCard);
+  }
+
+  updateNote(id: string, updateNote: Partial<NewNote>) {
+    this.cardService.updateNote(id, updateNote);
   }
 
   deleteCard(id: string) {

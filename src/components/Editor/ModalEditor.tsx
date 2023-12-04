@@ -8,13 +8,13 @@ import {
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { ICard, NewNote, cardStore } from "../../store/cardStore";
+import { NewNote, cardStore } from "../../store/cardStore";
 import NoteEditor from "./NoteEditor";
 
 interface ModalEditorProp {
   pageTitle?: string;
-  contentHTML?: string;
-  card: ICard;
+
+  card: NewNote;
   isOpen: boolean;
   onOpenChange: () => void;
   onClose: () => void;
@@ -28,13 +28,13 @@ interface NoteContent {
 }
 
 const ModalEditor = observer((prop: ModalEditorProp) => {
-  const { pageTitle, contentHTML, card, isOpen, onOpenChange, onClose } = prop;
+  const { pageTitle, card, isOpen, onOpenChange, onClose } = prop;
 
   const [noteContent, setNoteContent] = useState<NoteContent>({
-    noteTitle: "",
-    description: "",
-    noteHTML: "",
-    tags: [],
+    noteTitle: card.noteTitle,
+    description: card.content,
+    noteHTML: card.noteHTML || "",
+    tags: card.tags,
   });
 
   const handleNoteChange = (
@@ -47,6 +47,24 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
   };
 
   const handleSubmit = () => {
+    if (card.noteHTML) {
+      cardStore.updateNote(card.id, {
+        noteTitle: noteContent.noteTitle,
+        content: noteContent.description,
+        noteHTML: noteContent.noteHTML,
+        tags: noteContent.tags,
+      });
+      cardStore.updateNoteToFirebase(card.id, {
+        noteTitle: noteContent.noteTitle,
+        content: noteContent.description,
+        noteHTML: noteContent.noteHTML,
+        tags: noteContent.tags,
+      });
+      toast.success("已更新筆記");
+      onClose();
+      return;
+    }
+
     const note = new NewNote(
       noteContent.noteTitle,
       noteContent.description,
@@ -97,9 +115,8 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
         </ModalHeader>
         <ModalBody>
           <NoteEditor
-            card={card}
+            card={card as NewNote}
             onClose={onClose}
-            contentHTML={contentHTML}
             onNoteChange={handleNoteChange}
           />
         </ModalBody>

@@ -15,6 +15,7 @@ import { cardStore } from "../store/cardStore";
 
 const ArticlePage = observer(() => {
   const { id } = useParams();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
   if (!id) return <Navigate to="/notes/all" />;
 
@@ -28,11 +29,7 @@ const ArticlePage = observer(() => {
   const parsedDate = parseISO(note.createdTime);
   const formattedDate = format(parsedDate, "yyyy-MM-dd");
 
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-
-  const handleEdit = () => {
-    onOpen();
-  };
+  const handleEdit = () => onOpen();
 
   return (
     <section className="pb-5">
@@ -67,8 +64,8 @@ const ArticlePage = observer(() => {
         <div>{parsedHTML}</div>
       </Card>
       <ModalEditor
+        pageTitle="編輯筆記"
         card={note}
-        contentHTML={noteHTML}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         onClose={onClose}
