@@ -1,4 +1,4 @@
-import { ICard } from "../../../store/cardStore";
+import { ICard, NewNote } from "../../../store/cardStore";
 import ModalEditor from "../../Editor/ModalEditor";
 
 interface IdeaNoteModalProp {
@@ -16,7 +16,7 @@ export const IdeaNoteModal = (prop: IdeaNoteModalProp) => {
   return (
     <ModalEditor
       pageTitle={pageTitle}
-      card={card}
+      card={card as NewNote}
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       onClose={onClose}
