@@ -1,4 +1,4 @@
-import { Card, Divider, Image } from "@nextui-org/react";
+import { Button, Card, Divider, Image } from "@nextui-org/react";
 import { format, parseISO } from "date-fns";
 import parse from "html-react-parser";
 import { observer } from "mobx-react-lite";
@@ -37,7 +37,16 @@ const ArticlePage = observer(() => {
       />
       <Card className="relative top-12 z-10 mx-auto mb-10 w-[95%] px-6 py-5">
         {note.tags.length ? <CardTags card={note} /> : ""}
-        <h1 className="my-4 text-2xl font-bold text-primary">{title}</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="my-4 text-2xl font-bold text-primary">{title}</h1>
+          <Button
+            color="secondary"
+            size="sm"
+            className="font-thin tracking-widest"
+          >
+            編輯
+          </Button>
+        </div>
         <span className="mb-3 text-sm text-third opacity-80">
           {formattedDate}
         </span>
