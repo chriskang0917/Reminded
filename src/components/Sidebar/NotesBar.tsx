@@ -1,45 +1,31 @@
 import { observer } from "mobx-react-lite";
-import { Link, useLocation } from "react-router-dom";
+import { FcParallelTasks } from "react-icons/fc";
+import { IoIosSearch } from "react-icons/io";
 import { SubsideBar } from "./SubsideBar";
+import SubsideButton from "./SubsideBarButton";
 
 interface IAction {
   label: string;
   path: string;
+  icon?: React.ReactNode;
 }
 
 const ideaActionList: IAction[] = [
-  { label: "所有筆記", path: "/notes/all" },
-  { label: "搜尋筆記", path: "/notes/search" },
+  { label: "所有筆記", path: "/notes/all", icon: <FcParallelTasks /> },
+  { label: "搜尋筆記", path: "/notes/search", icon: <IoIosSearch /> },
 ];
 
-interface IButton {
-  children: React.ReactNode;
-  action: IAction;
-  onClick?: () => void;
-}
-
 export const NotesBar = observer(() => {
-  const location = useLocation();
-
-  const NotesButton = ({ children, action, onClick }: IButton) => (
-    <Link to={action.path}>
-      <button
-        className="bg-zinc-400 flex items-center justify-center"
-        disabled={location.pathname === action.path}
-        onClick={onClick}
-      >
-        {children}
-      </button>
-    </Link>
-  );
-
   return (
     <SubsideBar>
       {ideaActionList.map((action) => (
         <li key={action.label}>
-          <NotesButton key={action.label} action={action}>
-            {action.label}
-          </NotesButton>
+          <SubsideButton key={action.label} action={action}>
+            <div className="flex h-full items-center justify-center gap-3">
+              <span>{action.icon}</span>
+              <span className="text-sm">{action.label}</span>
+            </div>
+          </SubsideButton>
         </li>
       ))}
       {}
