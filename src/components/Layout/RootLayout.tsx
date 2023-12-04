@@ -13,7 +13,7 @@ const RootLayout = observer(() => {
     <DndProvider>
       <Sidebar />
       <SortableProvider>
-        <main className="ml-52 mt-10 h-[100vh] bg-background text-foreground">
+        <main className="ml-64 mt-10 h-[100vh] bg-background text-foreground">
           <div className="mx-auto max-w-[550px]">
             {uid && isLogin ? <Outlet /> : <Navigate to="/login" replace />}
           </div>

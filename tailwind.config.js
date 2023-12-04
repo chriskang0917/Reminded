@@ -24,6 +24,7 @@ export default {
       third: "#A67F78",
       thirdDark: "#70665f",
       fourth: "#E1DCD9",
+      fourthDark: "#b4ada9",
     },
     extend: {},
   },
