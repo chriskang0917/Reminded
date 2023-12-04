@@ -12,22 +12,20 @@ export const ActionArchive = observer(() => {
   );
 
   return (
-    <section>
-      <div className="mx-auto mt-10 flex flex-col items-center">
-        <h1 className={style.mainTitle}>{Title}</h1>
-        <Divider />
-        <Spacer y={5} />
-        <div className="grid w-full gap-3">
-          <ul className="mt-5 grid w-full gap-3">
-            {actionTodoCards.map((card) => (
-              <li key={card.id}>
-                <ActionCard card={card} />
-              </li>
-            ))}
-          </ul>
-        </div>
-        <Spacer y={10} />
+    <div className="mx-auto mt-10 flex flex-col items-center">
+      <h1 className={style.mainTitle}>{Title}</h1>
+      <Divider />
+      <Spacer y={5} />
+      <div className="grid w-full gap-3">
+        <ul className="mt-5 grid w-full gap-3">
+          {actionTodoCards.map((card) => (
+            <li key={card.id}>
+              <ActionCard card={card} />
+            </li>
+          ))}
+        </ul>
       </div>
-    </section>
+      <Spacer y={10} />
+    </div>
   );
 });

@@ -32,7 +32,7 @@ export const TodoCard = ({ card }: CardToolProps) => {
   return (
     <BasicCard card={card}>
       <div className="flex items-center justify-between">
-        <div className="flex">
+        <div className="flex flex-grow">
           <Checkbox
             size="sm"
             radius="sm"

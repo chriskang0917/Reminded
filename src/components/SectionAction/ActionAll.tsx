@@ -27,32 +27,30 @@ export const ActionAll = observer(() => {
   ];
 
   return (
-    <section>
-      <div className="mx-auto mt-10 flex flex-col items-center">
-        <h1 className={style.mainTitle}>{Title}</h1>
-        <Divider />
-        <Spacer y={5} />
-        <ul className="w-full">
-          {actionAllList.map((list) => (
-            <li key={list.label} className="flex w-full flex-col items-center">
-              <div className="flex w-full justify-between">
-                <h2 className={style.subTitle}>{list.label}</h2>
-              </div>
-              <Divider />
-              <div className="grid w-full gap-3">
-                <ul className="mt-5 grid w-full gap-3">
-                  {list.cards.map((card) => (
-                    <li key={card.id}>
-                      <ActionCard card={card} />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <Spacer y={10} />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
+    <div className="mx-auto mt-10 flex flex-col items-center">
+      <h1 className={style.mainTitle}>{Title}</h1>
+      <Divider />
+      <Spacer y={5} />
+      <ul className="w-full">
+        {actionAllList.map((list) => (
+          <li key={list.label} className="flex w-full flex-col items-center">
+            <div className="flex w-full justify-between">
+              <h2 className={style.subTitle}>{list.label}</h2>
+            </div>
+            <Divider />
+            <div className="grid w-full gap-3">
+              <ul className="mt-5 grid w-full gap-3">
+                {list.cards.map((card) => (
+                  <li key={card.id}>
+                    <ActionCard card={card} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <Spacer y={10} />
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 });

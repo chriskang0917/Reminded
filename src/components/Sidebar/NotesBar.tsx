@@ -8,11 +8,8 @@ interface IAction {
 }
 
 const ideaActionList: IAction[] = [
-  { label: "所有行動", path: "/action/all" },
-  { label: "搜尋行動", path: "/action/search" },
-  { label: "已過期行動", path: "/action/expire" },
-  { label: "已執行行動", path: "/action/executed" },
-  { label: "封存行動", path: "/action/archive" },
+  { label: "所有筆記", path: "/notes/all" },
+  { label: "搜尋筆記", path: "/notes/search" },
 ];
 
 interface IButton {
@@ -21,13 +18,13 @@ interface IButton {
   onClick?: () => void;
 }
 
-export const ActionBar = observer(() => {
+export const NotesBar = observer(() => {
   const location = useLocation();
 
-  const IdeaButton = ({ children, action, onClick }: IButton) => (
+  const NotesButton = ({ children, action, onClick }: IButton) => (
     <Link to={action.path}>
       <button
-        className="flex items-center justify-center bg-zinc-400"
+        className="bg-zinc-400 flex items-center justify-center"
         disabled={location.pathname === action.path}
         onClick={onClick}
       >
@@ -40,11 +37,12 @@ export const ActionBar = observer(() => {
     <SubsideBar>
       {ideaActionList.map((action) => (
         <li key={action.label}>
-          <IdeaButton key={action.label} action={action}>
+          <NotesButton key={action.label} action={action}>
             {action.label}
-          </IdeaButton>
+          </NotesButton>
         </li>
       ))}
+      {}
     </SubsideBar>
   );
 });
