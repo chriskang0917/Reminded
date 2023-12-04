@@ -14,6 +14,8 @@ import { SortableItem } from "../DND/SortableItem";
 import { TodoInput } from "../Input";
 
 const Title = "明日待辦";
+const todoPlaceholder = "享受你的個人時光吧！";
+const actionPlaceholder = "繼續累積你的行動吧！";
 
 export const TodoTomorrow = observer(() => {
   const todoAndActionAll = cardStore.getFilteredCardsWith(
@@ -35,7 +37,9 @@ export const TodoTomorrow = observer(() => {
       <TodoInput />
       <Divider className="my-2" />
       <div ref={setNodeRef} className="w-full">
-        {todoAndActionAll.length === 0 && <EmptyCard />}
+        {todoAndActionAll.length === 0 && (
+          <EmptyCard placeholder={todoPlaceholder} />
+        )}
         <SortableProvider>
           <ul
             className={cn(
@@ -61,7 +65,7 @@ export const TodoTomorrow = observer(() => {
           <div ref={setNodeRef2} className="flex w-full flex-col gap-3">
             <SortableProvider>
               {actionCards.length === 0 ? (
-                <EmptyCard />
+                <EmptyCard placeholder={actionPlaceholder} />
               ) : (
                 actionCards.map((card) => (
                   <TodoCard key={card.id} card={card} />
