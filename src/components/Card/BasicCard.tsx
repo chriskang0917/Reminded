@@ -1,6 +1,6 @@
 import { Card, CardBody, cn } from "@nextui-org/react";
 import { ICard } from "../../store/cardStore";
-import { SortableItem } from "../DND/SortableItem";
+import { SortableItem } from "../DND";
 
 interface BasicCardProps {
   card: ICard;
