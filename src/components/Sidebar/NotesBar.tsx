@@ -1,15 +1,8 @@
-import {
-  Divider,
-  Listbox,
-  ListboxItem,
-  ScrollShadow,
-  Spinner,
-  cn,
-} from "@nextui-org/react";
+import { Card, Divider, ScrollShadow, Spinner, cn } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { FcParallelTasks } from "react-icons/fc";
 import { IoIosSearch } from "react-icons/io";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { NewNote, NotesAllCards, cardStore } from "../../store/cardStore";
 import { SubsideBar } from "./SubsideBar";
 import SubsideButton from "./SubsideBarButton";
@@ -45,23 +38,36 @@ export const NotesBar = observer(() => {
         </li>
       ))}
       <Divider className="w-[80%]" />
-      <ScrollShadow className="h-[400px]">
+      <ScrollShadow className="h-[400px]" hideScrollBar size={30}>
         {notes.length === 0 && (
           <div className="mt-2 flex justify-center">
             <Spinner />
           </div>
         )}
-        <Listbox aria-label="Notes List" variant="flat" items={notes}>
+        <ul aria-label="Notes List" className="inline-block w-[90%]">
           {notes.map((note) => (
-            <ListboxItem
-              className={cn("mx-auto w-[90%]", id === note.id && "bg-third")}
-              key={note.id}
-              href={`/notes/article/${note.id}`}
-            >
-              {note.noteTitle}
-            </ListboxItem>
+            <li key={note.id} className="mx-2">
+              <Card
+                className={cn(
+                  "mx-auto my-2 h-10 w-[120px] bg-fourth",
+                  "flex items-center justify-center",
+                  id === note.id && "bg-third",
+                )}
+                radius="sm"
+                shadow="sm"
+              >
+                <Link
+                  to={`/notes/article/${note.id}`}
+                  className="block w-full text-center"
+                >
+                  {note.noteTitle.length > 5
+                    ? note.noteTitle.slice(0, 5) + "..."
+                    : note.noteTitle}
+                </Link>
+              </Card>
+            </li>
           ))}
-        </Listbox>
+        </ul>
       </ScrollShadow>
       <Divider className="w-[80%]" />
     </SubsideBar>
