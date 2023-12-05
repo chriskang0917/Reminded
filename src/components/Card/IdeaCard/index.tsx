@@ -60,7 +60,7 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
             ref={inputRef}
           />
         </Editable>
-        <div className="flex w-24 items-center justify-between">
+        <div className="ml-2 flex min-w-unit-24 items-center justify-between">
           {settingList.map((setting) => (
             <IdeaCardTool key={setting.label} card={card} setting={setting} />
           ))}
