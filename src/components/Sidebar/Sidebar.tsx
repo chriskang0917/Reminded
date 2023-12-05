@@ -9,15 +9,38 @@ import { Link, useLocation } from "react-router-dom";
 import { authStore } from "../../store/authStore";
 
 const actionList = [
-  { label: "今日", path: "/", icon: <IoHomeOutline /> },
-  { label: "待辦", path: "/todo/today", icon: <BsListTask /> },
-  { label: "行動", path: "/action/all", icon: <AiOutlineInteraction /> },
-  { label: "靈感", path: "/idea/week", icon: <FaRegLightbulb /> },
-  { label: "筆記", path: "/notes/all", icon: <FaRegStickyNote /> },
+  { label: "今日", page: "/", path: "/", icon: <IoHomeOutline /> },
+  { label: "待辦", page: "/todo/", path: "/todo/today", icon: <BsListTask /> },
+  {
+    label: "行動",
+    page: "/action/",
+    path: "/action/all",
+    icon: <AiOutlineInteraction />,
+  },
+  {
+    label: "靈感",
+    page: "/idea/",
+    path: "/idea/week",
+    icon: <FaRegLightbulb />,
+  },
+  {
+    label: "筆記",
+    page: "/notes/",
+    path: "/notes/all",
+    icon: <FaRegStickyNote />,
+  },
 ];
 
 export const Sidebar = () => {
   const location = useLocation();
+  const pathname = location.pathname;
+
+  const isNoteHomePage = (page: string) => {
+    return pathname.includes(page) && pathname !== "/" && page !== "/";
+  };
+  const isHomePage = (page: string) => {
+    return pathname === "/" && page === "/";
+  };
 
   return (
     <nav className="fixed left-0 top-0 flex h-[100svh] w-36 flex-col items-center justify-between bg-secondary pr-10 opacity-70">
@@ -38,10 +61,12 @@ export const Sidebar = () => {
                   classNames={{
                     base: "h-10 w-10 rounded-xl drop-shadow-2xl",
                     body: cn(
-                      location.pathname === action.path
-                        ? "bg-primary text-white"
-                        : "bg-thirdDark text-black",
                       "hover:bg-primary hover:text-white transition-all",
+                      isNoteHomePage(action.page)
+                        ? "bg-primary text-white"
+                        : isHomePage(action.page)
+                          ? "bg-primary text-white"
+                          : "bg-thirdDark text-black",
                     ),
                   }}
                 >
@@ -71,7 +96,7 @@ export const Sidebar = () => {
                 ),
               }}
               name={authStore.name || undefined}
-              fallback={<RxAvatar className="text-gray-400 h-8 w-8" />}
+              fallback={<RxAvatar className="h-8 w-8 text-gray-400" />}
             />
           </Link>
         </li>
