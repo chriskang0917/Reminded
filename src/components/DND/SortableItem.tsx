@@ -3,6 +3,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import { ICard } from "../../store/cardStore";
+import { uiStore } from "../../store/uiStore";
 
 interface SortableItemProps {
   card: ICard;
@@ -18,7 +19,11 @@ export const SortableItem = observer(
       listeners,
       transform,
       transition,
-    } = useSortable({ id: card.id, data: { card: toJS(card) } });
+    } = useSortable({
+      id: card.id,
+      data: { card: toJS(card) },
+      disabled: uiStore.isDndDisabled,
+    });
 
     const style = {
       transform: CSS.Transform.toString(transform),

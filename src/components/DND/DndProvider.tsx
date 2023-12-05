@@ -93,8 +93,6 @@ export const DndProvider = ({ children }: DndContextProps) => {
       return;
     }
 
-    console.log(active.data.current?.card);
-
     const activeCard = active.data.current?.card;
     const overCard = over.data.current?.card;
 

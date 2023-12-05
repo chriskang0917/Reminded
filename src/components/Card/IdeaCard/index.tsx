@@ -1,9 +1,10 @@
 import { useDisclosure } from "@nextui-org/react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { GrTransaction } from "react-icons/gr";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { PiNoteBlankThin } from "react-icons/pi";
 import { ICard } from "../../../store/cardStore";
+import { uiStore } from "../../../store/uiStore";
 import Editable from "../../Editable";
 import BasicCard from "../BasicCard";
 import CardTags from "../CardTags";
@@ -25,6 +26,11 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
     onOpenChange: onOpenChangeNote,
     onClose: onCloseNote,
   } = useDisclosure();
+
+  useEffect(() => {
+    if (isOpenNote || isOpenAction) return uiStore.disableDnd();
+    uiStore.enableDnd();
+  }, [isOpenNote, isOpenAction]);
 
   const settingList = [
     { icon: <PiNoteBlankThin />, label: "note", onClick: onOpenNote },
