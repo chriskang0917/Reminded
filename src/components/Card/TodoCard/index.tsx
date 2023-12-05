@@ -33,15 +33,17 @@ export const TodoCard = ({ card }: CardToolProps) => {
     <BasicCard card={card}>
       <div className="flex items-center justify-between">
         <div className="flex flex-grow">
-          <Checkbox
-            size="sm"
-            radius="sm"
-            name="checkbox"
-            onValueChange={handleComplete}
-            isSelected={isSelect}
-            lineThrough
-            defaultSelected
-          ></Checkbox>
+          {card.dueDate && (
+            <Checkbox
+              size="sm"
+              radius="sm"
+              name="checkbox"
+              onValueChange={handleComplete}
+              isSelected={isSelect}
+              lineThrough
+              defaultSelected
+            ></Checkbox>
+          )}
           <Editable
             id={card.id}
             text={card.content}

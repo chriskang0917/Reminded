@@ -11,13 +11,58 @@ import {
 import { arrayMove } from "@dnd-kit/sortable";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { ICard, cardStatus, cardStore } from "../../store/cardStore";
+import { ICard, NewNote, cardStatus, cardStore } from "../../store/cardStore";
 import { cardUtils } from "../../utils/cardUtils";
 import { ActionCard, IdeaCard, TodoCard } from "../Card";
 
 interface DndContextProps {
   children: React.ReactNode;
 }
+
+const actionToTodoTomorrow = (activeCard: ICard) => {
+  const cardOrderList = cardStore.cardOrderList;
+  const activeCardIndex = cardOrderList.indexOf(activeCard.id);
+  const tomorrow = cardUtils.generateTomorrowDate().toISOString();
+  cardStore.updateCard(activeCard.id, { dueDate: tomorrow });
+  cardStore.updateCardToFirebase(activeCard.id, { dueDate: tomorrow });
+
+  const movedArray = arrayMove(cardOrderList, activeCardIndex, activeCardIndex);
+  cardStore.updateCardOrderList(movedArray);
+  cardStore.updateCardOrderListToFirebase(movedArray);
+};
+
+const todoTomorrowToAction = (activeCard: ICard) => {
+  const cardOrderList = cardStore.cardOrderList;
+  const activeCardIndex = cardOrderList.indexOf(activeCard.id);
+  cardStore.updateCard(activeCard.id, { status: "action", dueDate: null });
+  cardStore.updateCardToFirebase(activeCard.id, {
+    status: "action",
+    dueDate: null,
+  });
+
+  const movedArray = arrayMove(cardOrderList, activeCardIndex, activeCardIndex);
+  cardStore.updateCardOrderList(movedArray);
+  cardStore.updateCardOrderListToFirebase(movedArray);
+};
+
+const defaultSwitch = (
+  activeCard: ICard | NewNote,
+  overCard: ICard | NewNote,
+) => {
+  const cardOrderList = cardStore.cardOrderList;
+  const activeCardIndex = cardOrderList.indexOf(activeCard.id);
+  const overCardIndex = cardOrderList.indexOf(overCard?.id);
+
+  const movedArray = arrayMove(cardOrderList, activeCardIndex, overCardIndex);
+  cardStore.updateCardOrderList(movedArray);
+  cardStore.updateCardOrderListToFirebase(movedArray);
+};
+
+const switchStrategy = {
+  action_to_todo_tomorrow: actionToTodoTomorrow,
+  todo_tomorrow_to_action: todoTomorrowToAction,
+  default: defaultSwitch,
+};
 
 export const DndProvider = ({ children }: DndContextProps) => {
   const [activeCard, setActiveCard] = useState<ICard | null>(null);
@@ -46,65 +91,29 @@ export const DndProvider = ({ children }: DndContextProps) => {
     setActiveCard(null);
     if (!over) return;
 
-    if (
-      (over.id === "todo-tomorrow" ||
-        over.data.current?.card.status === "todo" ||
-        over.data.current?.card.status === "action") &&
-      !active.data.current?.card.dueDate
-    ) {
-      const cardOrderList = cardStore.cardOrderList;
-      const activeCardIndex = cardOrderList.indexOf(
-        active.data.current?.card.id,
-      );
-      cardStore.updateCard(active.data.current?.card.id, {
-        dueDate: cardUtils.generateTomorrowDate().toISOString(),
-      });
-      cardStore.updateCardToFirebase(active.data.current?.card.id, {
-        dueDate: cardUtils.generateTomorrowDate().toISOString(),
-      });
-
-      const movedArray = arrayMove(
-        cardOrderList,
-        activeCardIndex,
-        activeCardIndex,
-      );
-      cardStore.updateCardOrderList(movedArray);
-      cardStore.updateCardOrderListToFirebase(movedArray);
-      return;
-    }
-
-    if (over.id === "action") {
-      const cardOrderList = cardStore.cardOrderList;
-      const activeCardIndex = cardOrderList.indexOf(
-        active.data.current?.card.id,
-      );
-      cardStore.updateCard(active.data.current?.card.id, {
-        status: "action",
-        dueDate: null,
-      });
-
-      const movedArray = arrayMove(
-        cardOrderList,
-        activeCardIndex,
-        activeCardIndex,
-      );
-      cardStore.updateCardOrderList(movedArray);
-      cardStore.updateCardOrderListToFirebase(movedArray);
-      return;
-    }
-
-    const activeCard = active.data.current?.card;
+    const overId = over.id;
     const overCard = over.data.current?.card;
+    const activeCard = active.data.current?.card;
 
-    if (activeCard.id === overCard.id) return;
+    const isOverTodoTomorrow = overId === "todo_tomorrow_section";
+    const isOverActionCard = overCard?.status === "action";
+    const isOverTodoCard = overCard?.status === "todo";
+    const hasActiveCardDueDate = activeCard?.dueDate;
 
-    const cardOrderList = cardStore.cardOrderList;
-    const activeCardIndex = cardOrderList.indexOf(activeCard.id);
-    const overCardIndex = cardOrderList.indexOf(overCard.id);
+    if (
+      isOverTodoTomorrow ||
+      ((isOverActionCard || isOverTodoCard) && !hasActiveCardDueDate)
+    ) {
+      return switchStrategy.action_to_todo_tomorrow(activeCard);
+    }
 
-    const movedArray = arrayMove(cardOrderList, activeCardIndex, overCardIndex);
-    cardStore.updateCardOrderList(movedArray);
-    cardStore.updateCardOrderListToFirebase(movedArray);
+    if (overId === "action_section" || isOverActionCard) {
+      return switchStrategy.todo_tomorrow_to_action(activeCard);
+    }
+
+    if (activeCard.id === overCard?.id) return;
+
+    return switchStrategy.default(activeCard, overCard);
   };
 
   const getCardType = (cardStatus: cardStatus) => {

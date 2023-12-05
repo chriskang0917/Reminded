@@ -3,7 +3,7 @@ import { Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import {
   ActionAllCards,
-  TodoAndActionAllCards,
+  TodoAndActionTomorrowCards,
   cardStore,
 } from "../../store/cardStore";
 import { style } from "../../utils/style";
@@ -17,16 +17,16 @@ const actionPlaceholder = "繼續累積你的行動吧！";
 
 export const TodoTomorrow = observer(() => {
   const todoAndActionAll = cardStore.getFilteredCardsWith(
-    new TodoAndActionAllCards(),
+    new TodoAndActionTomorrowCards(),
   );
   const actionCards = cardStore.getFilteredCardsWith(new ActionAllCards());
 
-  const { setNodeRef } = useDroppable({
-    id: "todo-tomorrow",
+  const { setNodeRef: todoTomorrowRef } = useDroppable({
+    id: "todo_tomorrow_section",
   });
 
-  const { setNodeRef: setNodeRef2 } = useDroppable({
-    id: "action",
+  const { setNodeRef: actionRef } = useDroppable({
+    id: "action_section",
   });
 
   return (
@@ -34,7 +34,7 @@ export const TodoTomorrow = observer(() => {
       <h1 className={style.mainTitle}>{Title}</h1>
       <TodoInput />
       <Divider />
-      <div ref={setNodeRef} className="w-full">
+      <div ref={todoTomorrowRef} className="w-full">
         {todoAndActionAll.length === 0 && (
           <EmptyCard placeholder={todoPlaceholder} />
         )}
@@ -51,7 +51,7 @@ export const TodoTomorrow = observer(() => {
         <div className="flex w-full flex-col">
           <h2 className={style.subTitle}>所有行動</h2>
           <Divider className="mb-5" />
-          <div ref={setNodeRef2} className="flex w-full flex-col gap-3">
+          <div ref={actionRef} className="flex w-full flex-col gap-3">
             {actionCards.length !== 0 ? (
               actionCards.map((card) => <TodoCard key={card.id} card={card} />)
             ) : (

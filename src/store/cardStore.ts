@@ -269,13 +269,17 @@ export class ActionTodoCards extends CardsStrategy {
   }
 }
 
-export class TodoAndActionAllCards extends CardsStrategy {
+export class TodoAndActionTomorrowCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
+    const isDateTomorrow = (dueDate: string | null) => {
+      if (!dueDate) return null;
+      return cardUtils.isTomorrow(dueDate);
+    };
     return sortedCards.filter(
       (card) =>
         (card.status === "todo" || card.status === "action") &&
-        card.dueDate &&
+        isDateTomorrow(card.dueDate) &&
         !card.isArchived,
     );
   }
