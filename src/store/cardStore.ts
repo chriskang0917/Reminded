@@ -223,6 +223,19 @@ export class IdeaAllCards extends CardsStrategy {
   }
 }
 
+export class IdeaTodayCards extends CardsStrategy {
+  getCards() {
+    const sortedCards = this.getSortedCardsByOrderList();
+    return sortedCards.filter((card) => {
+      return (
+        card.status === "idea" &&
+        cardUtils.isToday(card.createdTime) &&
+        !card.isArchived
+      );
+    });
+  }
+}
+
 export class IdeaThisWeekCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
