@@ -1,5 +1,5 @@
 import { useDroppable } from "@dnd-kit/core";
-import { Divider, Spacer, cn } from "@nextui-org/react";
+import { Divider, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import {
   ActionAllCards,
@@ -9,8 +9,6 @@ import {
 import { style } from "../../utils/style";
 import { TodoCard } from "../Card";
 import EmptyCard from "../Card/EmptyCard";
-import { SortableProvider } from "../DND";
-import { SortableItem } from "../DND/SortableItem";
 import { TodoInput } from "../Input";
 
 const Title = "明日待辦";
@@ -40,38 +38,25 @@ export const TodoTomorrow = observer(() => {
         {todoAndActionAll.length === 0 && (
           <EmptyCard placeholder={todoPlaceholder} />
         )}
-        <SortableProvider>
-          <ul
-            className={cn(
-              "mt-5 grid w-full gap-3",
-              `min-h-[${todoAndActionAll.length * 112 + 20}px]`,
-            )}
-          >
-            {todoAndActionAll.map((card) => (
-              <li key={card.id}>
-                <SortableItem card={card}>
-                  <TodoCard card={card} />
-                </SortableItem>
-              </li>
-            ))}
-          </ul>
-        </SortableProvider>
       </div>
+      <ul className="mt-5 grid w-full gap-3">
+        {todoAndActionAll.map((card) => (
+          <li key={card.id}>
+            <TodoCard card={card} />
+          </li>
+        ))}
+      </ul>
       <Spacer y={10} />
-      <section className="w-full">
+      <section className="mb-12 w-full">
         <div className="flex w-full flex-col">
           <h2 className={style.subTitle}>所有行動</h2>
           <Divider className="mb-5" />
           <div ref={setNodeRef2} className="flex w-full flex-col gap-3">
-            <SortableProvider>
-              {actionCards.length === 0 ? (
-                <EmptyCard placeholder={actionPlaceholder} />
-              ) : (
-                actionCards.map((card) => (
-                  <TodoCard key={card.id} card={card} />
-                ))
-              )}
-            </SortableProvider>
+            {actionCards.length !== 0 ? (
+              actionCards.map((card) => <TodoCard key={card.id} card={card} />)
+            ) : (
+              <EmptyCard placeholder={actionPlaceholder} />
+            )}
           </div>
         </div>
       </section>
