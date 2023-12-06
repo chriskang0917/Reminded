@@ -41,7 +41,7 @@ function DatePicker({ card, date, setDate }: DatePickerProps) {
       <Button size="sm" variant="light" onPress={handleReturnToday}>
         今天
       </Button>
-      <Button size="sm" variant="ghost" onPress={handleConfirmDate}>
+      <Button size="sm" variant="shadow" onPress={handleConfirmDate}>
         確認日期
       </Button>
       <Button size="sm" variant="light" onPress={handleRemoveDate}>
@@ -56,6 +56,16 @@ function DatePicker({ card, date, setDate }: DatePickerProps) {
     <DayPicker
       className="bg-gray"
       mode="single"
+      modifiersStyles={{
+        today: {
+          color: "#fff",
+          backgroundColor: "#E1DCD9",
+        },
+        selected: {
+          color: "#fff",
+          backgroundColor: "#A67F78",
+        },
+      }}
       selected={parsedDate}
       onSelect={handleSelectDate as (date: Date | undefined) => void}
       footer={DatePickerFooter}
