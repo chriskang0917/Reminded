@@ -265,8 +265,6 @@ export class ActionExpiredCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     if (sortedCards.length === 0) return [];
-    console.log(sortedCards[0]);
-    console.log(cardUtils.isExceedToday(sortedCards[0].dueDate as string));
     return sortedCards.filter(
       (card) =>
         card.status === "action" &&
