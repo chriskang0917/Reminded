@@ -62,9 +62,9 @@ interface NoteContent {
 
 const NoteEditor = observer(({ card, onNoteChange }: NoteEditorProps) => {
   const [content, setContent] = useState<NoteContent>({
-    title: card.noteTitle,
+    title: card?.noteTitle || "",
     description: "",
-    noteHTML: card.noteHTML,
+    noteHTML: card?.noteHTML,
     tags: [],
   });
 
@@ -74,13 +74,13 @@ const NoteEditor = observer(({ card, onNoteChange }: NoteEditorProps) => {
         content.title,
         content.description,
         content.noteHTML,
-        card.tags,
+        card?.tags || [],
       );
   }, [content.title]);
 
   const editor = useEditor({
     extensions,
-    content: card.noteHTML || card.content,
+    content: card?.noteHTML || card?.content,
     editorProps: {
       attributes: {
         class: "py-2 outline-none min-h-[250px] text-primary",
@@ -90,7 +90,8 @@ const NoteEditor = observer(({ card, onNoteChange }: NoteEditorProps) => {
       const description = editor.getText().slice(0, 50);
       const html = editor.getHTML();
       setContent({ ...content, description, noteHTML: html });
-      onNoteChange && onNoteChange(content.title, description, html, card.tags);
+      onNoteChange &&
+        onNoteChange(content.title, description, html, card?.tags);
     },
   });
 

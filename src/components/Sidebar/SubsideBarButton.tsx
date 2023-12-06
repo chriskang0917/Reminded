@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 
 interface ITodo {
   label: string;
-  path: string;
+  path?: string;
   icon?: React.ReactNode;
 }
 
@@ -19,14 +19,14 @@ const SubsideButton = ({ className, children, action, onClick }: IButton) => {
   const location = useLocation();
 
   return (
-    <Link to={action.path}>
+    <Link to={action.path || ""}>
       <Card
         isBlurred
         radius="sm"
         className={cn(
           "my-1 flex h-10 w-[120px] cursor-pointer items-center text-primary",
           "text-xs font-semibold tracking-wider",
-          "hover:bg-fourthDark transition-all hover:text-white",
+          "transition-all hover:bg-fourthDark hover:text-white",
           className,
           location.pathname === action.path && "bg-fourthDark text-white",
         )}
