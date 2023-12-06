@@ -25,6 +25,18 @@ export const TodoCard = ({ card }: CardToolProps) => {
 
   const handleComplete = () => {
     setIsSelect(!isSelect);
+    if (card.status === "action") {
+      cardStore.updateCard(card.id, {
+        status: "execute",
+        isArchived: true,
+      });
+      cardStore.updateCardToFirebase(card.id, {
+        status: "execute",
+        isArchived: true,
+      });
+      return;
+    }
+
     cardStore.updateCard(card.id, { isArchived: !isSelect });
     cardStore.updateCardToFirebase(card.id, { isArchived: !isSelect });
   };
@@ -32,16 +44,18 @@ export const TodoCard = ({ card }: CardToolProps) => {
   return (
     <BasicCard card={card}>
       <div className="flex items-center justify-between">
-        <div className="flex">
-          <Checkbox
-            size="sm"
-            radius="sm"
-            name="checkbox"
-            onValueChange={handleComplete}
-            isSelected={isSelect}
-            lineThrough
-            defaultSelected
-          ></Checkbox>
+        <div className="flex flex-grow">
+          {card.dueDate && (
+            <Checkbox
+              size="sm"
+              radius="sm"
+              name="checkbox"
+              onValueChange={handleComplete}
+              isSelected={isSelect}
+              lineThrough
+              defaultSelected
+            ></Checkbox>
+          )}
           <Editable
             id={card.id}
             text={card.content}
@@ -50,7 +64,7 @@ export const TodoCard = ({ card }: CardToolProps) => {
             type="input"
           >
             <input
-              className="inline-block w-[300px] bg-transparent tracking-wide outline-none"
+              className="inline-block bg-transparent tracking-wide outline-none"
               type="text"
               name={card.status}
               defaultValue={card.content}
@@ -58,7 +72,7 @@ export const TodoCard = ({ card }: CardToolProps) => {
             />
           </Editable>
         </div>
-        <div className="relative flex items-center justify-end gap-6">
+        <div className="ml-2 flex min-w-unit-24 items-center justify-between">
           {settingList.map((setting) => (
             <TodoCardTool key={setting.label} setting={setting} card={card} />
           ))}

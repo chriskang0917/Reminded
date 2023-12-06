@@ -1,21 +1,26 @@
-import { Divider, Spacer } from "@nextui-org/react";
+import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { IoFilterOutline } from "react-icons/io5";
 import { TodoTodayCards, cardStore } from "../../store/cardStore";
-import { style } from "../../utils/style";
 import { TodoCard } from "../Card";
+import EmptyCard from "../Card/EmptyCard";
+
+const placeholder = "享受你的個人時光吧！";
 
 export const TodayTodo = observer(() => {
   const todoCards = cardStore.getFilteredCardsWith(new TodoTodayCards());
 
+  if (todoCards.length === 0) {
+    return (
+      <section className="flex flex-col items-center">
+        <EmptyCard placeholder={placeholder} />
+        <Spacer y={10} />
+      </section>
+    );
+  }
+
   return (
     <section className="flex w-full flex-col items-center">
-      <div className="flex w-full items-center justify-between">
-        <h1 className={style.mainTitle}>Today's Task</h1>
-        <IoFilterOutline className="text-lg" />
-      </div>
-      <Divider />
-      <div className="mt-5 grid w-full gap-3">
+      <div className="mt-5 flex w-full flex-col gap-3">
         {todoCards.map((card) => (
           <TodoCard key={card.id} card={card} />
         ))}

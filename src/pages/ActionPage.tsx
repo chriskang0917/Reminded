@@ -28,7 +28,7 @@ const renderActionPage = (route: string | undefined) => {
 function ActionPage() {
   const { route } = useParams();
 
-  return <section>{renderActionPage(route)}</section>;
+  return <section className="relative">{renderActionPage(route)}</section>;
 }
 
 export default ActionPage;

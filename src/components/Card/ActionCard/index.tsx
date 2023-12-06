@@ -53,7 +53,7 @@ export const ActionCard = ({ card }: CardToolProps) => {
   return (
     <BasicCard card={card}>
       <div className="flex items-center justify-between">
-        <div className="flex">
+        <div className="flex w-full">
           {isTodo && (
             <Checkbox
               size="sm"
@@ -73,7 +73,7 @@ export const ActionCard = ({ card }: CardToolProps) => {
             type="input"
           >
             <input
-              className="inline-block w-[300px] bg-transparent tracking-wide outline-none"
+              className="inline-block bg-transparent tracking-wide outline-none"
               type="text"
               name={card.status}
               defaultValue={card.content}
@@ -81,7 +81,7 @@ export const ActionCard = ({ card }: CardToolProps) => {
             />
           </Editable>
         </div>
-        <div className="relative flex items-center justify-end gap-6">
+        <div className="ml-2 flex min-w-unit-24 items-center justify-between">
           {settingList.map((setting) => (
             <ActionCardTool key={setting.label} setting={setting} card={card} />
           ))}

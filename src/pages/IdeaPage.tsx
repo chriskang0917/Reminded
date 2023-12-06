@@ -27,7 +27,7 @@ const renderIdeaPage = (route: string | undefined) => {
 
 function IdeaPage() {
   const { route } = useParams();
-  return <section>{renderIdeaPage(route)}</section>;
+  return <section className="relative">{renderIdeaPage(route)}</section>;
 }
 
 export default IdeaPage;

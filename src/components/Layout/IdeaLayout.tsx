@@ -1,11 +1,14 @@
 import { Outlet } from "react-router-dom";
-import { IdeaBar } from "../Sidebar/IdeaBar";
+import { IdeaBar } from "../Sidebar";
+import MainBackdrop from "./MainBackdrop";
 
 function IdeaLayout() {
   return (
     <>
       <IdeaBar />
-      <Outlet />
+      <MainBackdrop>
+        <Outlet />
+      </MainBackdrop>
     </>
   );
 }

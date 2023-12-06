@@ -43,9 +43,14 @@ export const cardUtils = {
     });
   },
   isExceedToday(date: string) {
-    const dueDate = parseISO(format(parseISO(date), this.dateFormat));
     const today = parseISO(format(Date.now(), this.dateFormat));
-    return isBefore(dueDate, today);
+    return isBefore(parseISO(date), today) && !this.isToday(date);
+  },
+  generateTomorrowDate() {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow;
   },
   sortCardsDescBy(strategy: string, cards: ICard[]) {
     switch (strategy) {

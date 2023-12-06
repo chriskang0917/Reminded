@@ -1,11 +1,14 @@
 import { Outlet } from "react-router-dom";
-import { ActionBar } from "../Sidebar/ActionBar";
+import { ActionBar } from "../Sidebar";
+import MainBackdrop from "./MainBackdrop";
 
 function ActionLayout() {
   return (
     <>
       <ActionBar />
-      <Outlet />
+      <MainBackdrop>
+        <Outlet />
+      </MainBackdrop>
     </>
   );
 }
