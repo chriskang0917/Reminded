@@ -155,7 +155,10 @@ export class AllCards extends CardsStrategy {
 export class TodoAllCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList().filter(
-      (card) => card.status === "todo" && !card.isArchived,
+      (card) =>
+        (card.status === "todo" || card.status === "action") &&
+        card.dueDate &&
+        !card.isArchived,
     );
     const descSortedCards = cardUtils.sortCardsDescBy("dueDate", sortedCards);
     return descSortedCards;
@@ -168,7 +171,7 @@ export class TodoTodayCards extends CardsStrategy {
     return sortedCards.filter((card) => {
       if (!card.dueDate) return false;
       return (
-        card.status === "todo" &&
+        (card.status === "todo" || card.status === "action") &&
         cardUtils.isToday(card.dueDate) &&
         !card.isArchived
       );
@@ -261,6 +264,9 @@ export class ActionAllCards extends CardsStrategy {
 export class ActionExpiredCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
+    if (sortedCards.length === 0) return [];
+    console.log(sortedCards[0]);
+    console.log(cardUtils.isExceedToday(sortedCards[0].dueDate as string));
     return sortedCards.filter(
       (card) =>
         card.status === "action" &&
