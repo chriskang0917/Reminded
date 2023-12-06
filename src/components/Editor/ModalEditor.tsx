@@ -13,8 +13,7 @@ import NoteEditor from "./NoteEditor";
 
 interface ModalEditorProp {
   pageTitle?: string;
-
-  card: NewNote;
+  card?: NewNote;
   isOpen: boolean;
   onOpenChange: () => void;
   onClose: () => void;
@@ -31,10 +30,10 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
   const { pageTitle, card, isOpen, onOpenChange, onClose } = prop;
 
   const [noteContent, setNoteContent] = useState<NoteContent>({
-    noteTitle: card.noteTitle,
-    description: card.content,
-    noteHTML: card.noteHTML || "",
-    tags: card.tags,
+    noteTitle: card?.noteTitle || "",
+    description: card?.content || "",
+    noteHTML: card?.noteHTML || "",
+    tags: card?.tags || [],
   });
 
   const handleNoteChange = (
@@ -47,7 +46,7 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
   };
 
   const handleSubmit = () => {
-    if (card.noteHTML) {
+    if (card?.noteHTML) {
       cardStore.updateNote(card.id, {
         noteTitle: noteContent.noteTitle,
         content: noteContent.description,
@@ -69,7 +68,7 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
       noteContent.noteTitle,
       noteContent.description,
       noteContent.noteHTML,
-      card.tags,
+      card?.tags || [],
     );
     cardStore.addNote(note);
     cardStore.addNoteToFireStore(note);
