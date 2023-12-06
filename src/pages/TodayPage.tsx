@@ -25,18 +25,6 @@ const Homepage = observer(() => {
       >
         <Tab
           className="h-12 w-full"
-          key="todo"
-          title={
-            <div className="flex items-center gap-2">
-              今日待辦
-              <CountBadge num={countTodo} />
-            </div>
-          }
-        >
-          <TodayTodo />
-        </Tab>
-        <Tab
-          className="h-12 w-full"
           key="idea"
           title={
             <div className="flex items-center gap-2">
@@ -46,6 +34,18 @@ const Homepage = observer(() => {
           }
         >
           <TodayIdea />
+        </Tab>
+        <Tab
+          className="h-12 w-full"
+          key="todo"
+          title={
+            <div className="flex items-center gap-2">
+              今日待辦
+              <CountBadge num={countTodo} />
+            </div>
+          }
+        >
+          <TodayTodo />
         </Tab>
       </Tabs>
     </div>
