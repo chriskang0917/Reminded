@@ -126,12 +126,36 @@ const LoginPage = observer(() => {
 
   if (isRedirect) return <Navigate to="/" replace />;
 
+  const bgVideoUrl = "https://www.pexels.com/download/video/2795165/";
+
+  const BackdropBlur = () => (
+    <div className="absolute left-0 top-0 z-10 h-[100vh] w-full backdrop-blur-lg" />
+  );
+
   return (
     <main className="flex h-[100svh] items-center justify-center">
-      <Card className="h-[400px] w-3/5 max-w-[500px]">
+      <div className="fixed left-0 top-0 h-[100svh] w-full bg-black backdrop-blur">
+        <video
+          className="absolute z-0 h-[100vh] w-[100vw] object-cover opacity-50"
+          muted
+          loop
+          autoPlay
+        >
+          <source src={bgVideoUrl} type="video/mp4" />
+        </video>
+      </div>
+      <BackdropBlur />
+      <h1 className="fixed top-36 z-30 text-4xl font-bold text-fourth">
+        現在，就開始捕捉
+        <span className="underline decoration-yellow-600 decoration-8">
+          你的靈感
+        </span>
+        。
+      </h1>
+      <Card className="relative z-20 h-[400px] w-3/5 max-w-[500px]">
         <CardHeader className="flex w-full flex-col items-center">
           <h1 className="my-2 text-center text-2xl font-bold">Reminded</h1>
-          <p>現在，就開始捕捉你的靈感。</p>
+          <p>用靈感，開始你改變的旅程。</p>
         </CardHeader>
         <CardBody className="">
           <form onSubmit={handleLoginSubmit}>
@@ -169,7 +193,7 @@ const LoginPage = observer(() => {
             {loginState.isLoginPage ? "登入" : "註冊"}
           </Button>
           <div>
-            <span className=" font-light text-slate-700">
+            <span className=" text-slate-700 font-light">
               {loginState.isLoginPage ? "還沒有帳號嗎？ " : "已經有帳號了嗎？ "}
             </span>
             <Link
