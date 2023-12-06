@@ -6,13 +6,13 @@ import { IdeaCard } from "../Card";
 import { IdeaSearchInput } from "../Input";
 
 export const IdeaSearch = observer(() => {
-  const { text, ideaCountsText, searchCountsText, onSearch, results } =
+  const { text, totalCountsText, searchCountsText, onSearch, results } =
     useSearch("idea");
 
   return (
     <div className="mx-auto mt-10 flex flex-col items-center">
       <h1 className={style.mainTitle}>Search Your Idea</h1>
-      <p className={style.infoTitle}>{ideaCountsText}</p>
+      <p className={style.infoTitle}>{totalCountsText}</p>
       <IdeaSearchInput searchText={text} onSearch={onSearch} />
       <h2 className={style.subTitle}>Results</h2>
       <Divider />

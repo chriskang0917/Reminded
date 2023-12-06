@@ -8,6 +8,7 @@ import IdeaLayout from "./components/Layout/IdeaLayout";
 import NotesLayout from "./components/Layout/NotesLayout";
 import RootLayout from "./components/Layout/RootLayout";
 import TodoLayout from "./components/Layout/TodoLayout";
+import { NoteSearch } from "./components/SectionNotes/NoteSearch";
 import ActionPage from "./pages/ActionPage";
 import ArticlePage from "./pages/ArticlePage";
 import ErrorPage from "./pages/ErrorPage";
@@ -58,6 +59,7 @@ const router = createBrowserRouter([
             path: "article/:id",
             element: <ArticlePage />,
           },
+          { path: "search", element: <NoteSearch /> },
           { path: ":route", element: <NotesPage /> },
         ],
       },
