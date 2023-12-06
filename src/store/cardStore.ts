@@ -304,7 +304,7 @@ export class TodoAndActionTomorrowCards extends CardsStrategy {
   }
 }
 
-export class ExecutedActionCards extends CardsStrategy {
+export class ActionExecutedCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     const justArchived = sortedCards.filter(
