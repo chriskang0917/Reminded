@@ -23,7 +23,7 @@ export const getFusedResults = (ideaCards: ICard[], searchText: string) => {
     includeMatches: true,
     findAllMatches: true,
     shouldSort: true,
-    keys: ["content", "tags"],
+    keys: ["content", "tags", "noteTitle", "noteHTML"],
   };
   const fuse = new Fuse(ideaCards, fuseOptions);
   return fuse.search(searchText);

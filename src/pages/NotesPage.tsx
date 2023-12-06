@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { NotesAll } from "../components/SectionNotes";
+import { NoteSearch, NotesAll } from "../components/SectionNotes";
 import ErrorPage from "./ErrorPage";
 
 const renderIdeaPage = (route: string | undefined) => {
@@ -7,7 +7,7 @@ const renderIdeaPage = (route: string | undefined) => {
     case "all":
       return <NotesAll />;
     case "search":
-      return <div>Search</div>;
+      return <NoteSearch />;
     default:
       return <ErrorPage />;
   }

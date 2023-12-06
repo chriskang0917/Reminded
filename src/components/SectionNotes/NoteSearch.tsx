@@ -1,17 +1,18 @@
 import { Divider, cn } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useSearch } from "../../hooks/useSearch";
+import { NewNote } from "../../store/cardStore";
 import { style } from "../../utils/style";
-import { IdeaCard } from "../Card";
+import { NoteCard } from "../Card/NoteCard";
 import { IdeaSearchInput } from "../Input";
 
-export const ActionSearch = observer(() => {
+export const NoteSearch = observer(() => {
   const { text, totalCountsText, searchCountsText, onSearch, results } =
-    useSearch("action");
+    useSearch("note");
 
   return (
-    <div className="mx-auto mt-10 flex flex-col items-center">
-      <h1 className={style.mainTitle}>Search Your Actions</h1>
+    <div className="relative mx-auto mt-10 flex flex-col items-center">
+      <h1 className={style.mainTitle}>Search Your Notes</h1>
       <p className={style.infoTitle}>{totalCountsText}</p>
       <IdeaSearchInput searchText={text} onSearch={onSearch} />
       <h2 className={style.subTitle}>Results</h2>
@@ -20,7 +21,7 @@ export const ActionSearch = observer(() => {
       <ul className="mt-5 grid w-full gap-3">
         {results.map((card) => (
           <li key={card.item.id}>
-            <IdeaCard card={card.item} />
+            <NoteCard note={card.item as NewNote} />
           </li>
         ))}
       </ul>
