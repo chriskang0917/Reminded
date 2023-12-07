@@ -1,4 +1,4 @@
-import { Checkbox } from "@nextui-org/react";
+import { Checkbox, useDisclosure } from "@nextui-org/react";
 import { useRef, useState } from "react";
 import { CiCalendarDate } from "react-icons/ci";
 import { HiOutlineDotsVertical } from "react-icons/hi";
@@ -7,6 +7,7 @@ import { ICard, cardStore } from "../../../store/cardStore";
 import Editable from "../../Editable";
 import BasicCard from "../BasicCard";
 import CardTags from "../CardTags";
+import { IdeaNoteModal } from "../IdeaCard/IdeaToNoteModal";
 import { ActionCardTool } from "./ActionCardTool";
 
 const settingList = [
@@ -22,6 +23,12 @@ interface CardToolProps {
 export const ActionCard = ({ card }: CardToolProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isSelect, setIsSelect] = useState(card.isArchived);
+  const {
+    isOpen: isOpenNote,
+    onOpen: onOpenNote,
+    onOpenChange: onOpenChangeNote,
+    onClose: onCloseNote,
+  } = useDisclosure();
 
   const handleComplete = () => {
     setIsSelect(!isSelect);
@@ -83,9 +90,20 @@ export const ActionCard = ({ card }: CardToolProps) => {
         </div>
         <div className="ml-2 flex min-w-unit-24 items-center justify-between">
           {settingList.map((setting) => (
-            <ActionCardTool key={setting.label} setting={setting} card={card} />
+            <ActionCardTool
+              key={setting.label}
+              setting={setting}
+              onOpen={onOpenNote}
+              card={card}
+            />
           ))}
         </div>
+        <IdeaNoteModal
+          card={card}
+          isOpen={isOpenNote}
+          onOpenChange={onOpenChangeNote}
+          onClose={onCloseNote}
+        />
       </div>
       <div className="mt-2 flex flex-wrap items-center gap-x-2">
         <CardTags card={card} />
