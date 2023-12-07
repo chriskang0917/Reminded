@@ -16,7 +16,7 @@ interface IAction {
 
 const ideaActionList: IAction[] = [
   { label: "搜尋靈感", path: "/idea/search", icon: <IoIosSearch /> },
-  { label: "靈感池", path: "/idea/pools", icon: <FcParallelTasks /> },
+  { label: "所有靈感", path: "/idea/pools", icon: <FcParallelTasks /> },
   { label: "已轉換", path: "/idea/action", icon: <GrTransaction /> },
   { label: "已封存", path: "/idea/archive", icon: <IoArchiveOutline /> },
 ];

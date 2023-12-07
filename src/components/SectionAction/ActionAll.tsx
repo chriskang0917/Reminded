@@ -1,19 +1,19 @@
-import { Divider, Spacer } from "@nextui-org/react";
+import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { ActionAllCards, cardStore } from "../../store/cardStore";
-import { style } from "../../utils/style";
 import { ActionCard } from "../Card";
+import { Heading, HeadingDivider } from "../Heading";
 
-const Title = "所有行動";
+const title = "所有行動";
+const subtitle = "行動";
 
 export const ActionAll = observer(() => {
   const actionCards = cardStore.getFilteredCardsWith(new ActionAllCards());
 
   return (
     <div className="mx-auto mt-10 flex flex-col items-center">
-      <h1 className={style.pageTitle}>{Title}</h1>
-      <Divider />
-      <Spacer y={3} />
+      <Heading title={title} subtitle={subtitle} counts={actionCards.length} />
+      <HeadingDivider />
       <div className="grid w-full gap-3">
         <ul className="mt-5 grid w-full gap-3">
           {actionCards.map((card) => (

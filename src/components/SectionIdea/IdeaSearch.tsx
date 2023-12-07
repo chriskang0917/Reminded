@@ -4,7 +4,7 @@ import { IdeaCard } from "../Card";
 import { Heading, HeadingDivider } from "../Heading";
 import { IdeaSearchInput } from "../Input";
 
-const title = "靈感搜尋";
+const title = "搜尋靈感";
 const subtitle = "靈感";
 
 export const IdeaSearch = observer(() => {

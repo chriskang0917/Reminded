@@ -5,16 +5,17 @@ import { CiSearch } from "react-icons/ci";
 interface IdeaSearchInputProps {
   searchText: string;
   onSearch: (text: string) => void;
+  placeholder?: string;
 }
 
 export const IdeaSearchInput = observer(
-  ({ searchText, onSearch }: IdeaSearchInputProps) => {
+  ({ searchText, onSearch, placeholder }: IdeaSearchInputProps) => {
     return (
       <div className="my-4 w-full items-center justify-center gap-2">
         <Input
           value={searchText}
           onValueChange={onSearch}
-          placeholder="尋找你的靈感..."
+          placeholder={placeholder || "請輸入關鍵字..."}
           startContent={<CiSearch />}
           size="sm"
           variant="bordered"
