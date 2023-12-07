@@ -13,7 +13,7 @@ export const Heading = ({ title, subtitle, counts, gif }: HeadingProps) => {
     <>
       <Card className="flex h-20 w-full items-center bg-fourthDark">
         <CardBody className="flex flex-row justify-between overflow-hidden px-8">
-          <div className="flex items-center justify-start gap-4">
+          <section className="flex items-center justify-start gap-4">
             <h1 className="text-stone-100 text-3xl font-bold tracking-wide">
               {title}
             </h1>
@@ -25,7 +25,7 @@ export const Heading = ({ title, subtitle, counts, gif }: HeadingProps) => {
               </span>
               個{subtitle}
             </h2>
-          </div>
+          </section>
           <figure className="h-28 w-28 -translate-y-2">
             <img src={gif || Animation} alt="An animation gif" />
           </figure>

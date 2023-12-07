@@ -1,27 +1,31 @@
-import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { TodoTodayCards, cardStore } from "../../store/cardStore";
-import { style } from "../../utils/style";
 import { TodoCard } from "../Card";
+import { Heading, HeadingDivider } from "../Heading";
 import { TodoInput } from "../Input";
 
-const Title = "今日待辦";
+const title = "今日待辦";
+const subtitle = "待辦";
 
 export const TodoToday = observer(() => {
   const todoTodayCards = cardStore.getFilteredCardsWith(new TodoTodayCards());
 
   return (
-    <div className="mx-auto mt-10 flex flex-col items-center">
-      <h1 className={style.pageTitle}>{Title}</h1>
+    <>
+      <Heading
+        title={title}
+        subtitle={subtitle}
+        counts={todoTodayCards.length}
+      />
       <TodoInput />
-      <Divider />
-      <ul className="mt-5 grid w-full gap-3">
+      <HeadingDivider />
+      <ul className="grid w-full gap-3">
         {todoTodayCards.map((card) => (
           <li key={card.id}>
             <TodoCard card={card} />
           </li>
         ))}
       </ul>
-    </div>
+    </>
   );
 });

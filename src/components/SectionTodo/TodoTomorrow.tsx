@@ -9,9 +9,11 @@ import {
 import { style } from "../../utils/style";
 import { TodoCard } from "../Card";
 import EmptyCard from "../Card/EmptyCard";
+import { Heading, HeadingDivider } from "../Heading";
 import { TodoInput } from "../Input";
 
-const Title = "明日待辦";
+const title = "明日待辦";
+const subtitle = "待辦";
 const todoPlaceholder = "享受你的個人時光吧！";
 const actionPlaceholder = "繼續累積你的行動吧！";
 
@@ -30,10 +32,14 @@ export const TodoTomorrow = observer(() => {
   });
 
   return (
-    <div className="mx-auto mt-10 flex flex-col items-center">
-      <h1 className={style.pageTitle}>{Title}</h1>
+    <>
+      <Heading
+        title={title}
+        subtitle={subtitle}
+        counts={todoAndActionAll.length}
+      />
       <TodoInput />
-      <Divider />
+      <HeadingDivider />
       <div ref={todoTomorrowRef} className="w-full">
         {todoAndActionAll.length === 0 && (
           <EmptyCard placeholder={todoPlaceholder} />
@@ -60,6 +66,6 @@ export const TodoTomorrow = observer(() => {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 });
