@@ -87,11 +87,6 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
       color: "default",
       onPress: () => handleUpdateStatus("idea"),
     },
-    {
-      label: "筆記",
-      color: "success",
-      onPress: () => handleUpdateStatus("note"),
-    },
   ];
 
   const formatDate = (date: Date | undefined) => {
