@@ -15,7 +15,7 @@ export const IdeaArchive = observer(() => {
   const counts = cardStore.archivedCards.length;
 
   return (
-    <div className="mx-auto mt-10 flex flex-col items-center">
+    <>
       <Heading title={title} subtitle={subtitle} counts={counts} />
       <HeadingDivider />
       <ul className="grid w-full gap-3">
@@ -25,6 +25,6 @@ export const IdeaArchive = observer(() => {
           </li>
         ))}
       </ul>
-    </div>
+    </>
   );
 });

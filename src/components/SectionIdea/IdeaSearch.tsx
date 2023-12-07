@@ -12,7 +12,7 @@ export const IdeaSearch = observer(() => {
     useSearch("idea");
 
   return (
-    <div className="mx-auto mt-10 flex flex-col items-center">
+    <>
       <Heading title={title} subtitle={subtitle} counts={total} />
       <IdeaSearchInput searchText={text} onSearch={onSearch} />
       <p className="self-start text-sm text-gray-400">{searchCountsText}</p>
@@ -24,6 +24,6 @@ export const IdeaSearch = observer(() => {
           </li>
         ))}
       </ul>
-    </div>
+    </>
   );
 });

@@ -10,7 +10,7 @@ export const IdeaAll = observer(() => {
   const ideaCardsAll = cardStore.getFilteredCardsWith(new IdeaAllCards());
 
   return (
-    <div className="mx-auto mt-10 flex flex-col items-center">
+    <>
       <Heading title={title} subtitle={subtitle} counts={ideaCardsAll.length} />
       <HeadingDivider />
       <ul className="grid w-full gap-3">
@@ -20,6 +20,6 @@ export const IdeaAll = observer(() => {
           </li>
         ))}
       </ul>
-    </div>
+    </>
   );
 });

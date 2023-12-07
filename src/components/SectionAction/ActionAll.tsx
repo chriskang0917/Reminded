@@ -11,7 +11,7 @@ export const ActionAll = observer(() => {
   const actionCards = cardStore.getFilteredCardsWith(new ActionAllCards());
 
   return (
-    <div className="mx-auto mt-10 flex flex-col items-center">
+    <>
       <Heading title={title} subtitle={subtitle} counts={actionCards.length} />
       <HeadingDivider />
       <div className="grid w-full gap-3">
@@ -24,6 +24,6 @@ export const ActionAll = observer(() => {
         </ul>
       </div>
       <Spacer y={10} />
-    </div>
+    </>
   );
 });

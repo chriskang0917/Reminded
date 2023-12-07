@@ -13,7 +13,7 @@ export const ActionExpire = observer(() => {
   );
 
   return (
-    <div className="mx-auto mt-10 flex flex-col items-center">
+    <>
       <Heading
         title={title}
         subtitle={subtitle}
@@ -28,6 +28,6 @@ export const ActionExpire = observer(() => {
         ))}
       </ul>
       <Spacer y={10} />
-    </div>
+    </>
   );
 });
