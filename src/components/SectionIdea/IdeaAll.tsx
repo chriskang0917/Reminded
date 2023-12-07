@@ -6,7 +6,7 @@ import { IdeaCard } from "../Card";
 
 const Title = "所有靈感";
 
-export const IdeaPools = observer(() => {
+export const IdeaAll = observer(() => {
   const ideaCardsAll = cardStore.getFilteredCardsWith(new IdeaAllCards());
 
   return (
