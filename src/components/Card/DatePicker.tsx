@@ -8,9 +8,10 @@ interface DatePickerProps {
   card: ICard;
   date: Date | null;
   setDate: (date: Date | null) => void;
+  onClose: () => void;
 }
 
-function DatePicker({ card, date, setDate }: DatePickerProps) {
+function DatePicker({ card, date, setDate, onClose }: DatePickerProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(date);
 
   const handleSelectDate = (date: Date | undefined) => {
@@ -21,12 +22,14 @@ function DatePicker({ card, date, setDate }: DatePickerProps) {
   const handleReturnToday = () => {
     toast.success("已設定到期日為今日");
     setSelectedDate(new Date());
+    onClose();
   };
 
   const handleConfirmDate = () => {
     if (!selectedDate) return toast.error("請選擇到期日");
     toast.success("已設定到期日");
     setDate(selectedDate);
+    onClose();
   };
 
   const handleRemoveDate = () => {
@@ -34,6 +37,7 @@ function DatePicker({ card, date, setDate }: DatePickerProps) {
     cardStore.updateCardToFirebase(card.id, { dueDate: null });
     setSelectedDate(null);
     setDate(null);
+    onClose();
   };
 
   const DatePickerFooter = (

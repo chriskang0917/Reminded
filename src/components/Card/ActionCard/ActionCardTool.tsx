@@ -45,6 +45,7 @@ interface IList {
 export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
   const parsedDate = card.dueDate ? parseISO(card.dueDate) : null;
   const [selectedDate, setSelectedDate] = useState<Date | null>(parsedDate);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -106,7 +107,11 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
   return (
     <>
       {isDateLabel && selectedDate && (
-        <Popover placement="bottom">
+        <Popover
+          isOpen={isOpen}
+          onOpenChange={() => setIsOpen(!isOpen)}
+          placement="bottom"
+        >
           <PopoverTrigger>
             <button>
               <p className="text-[0.75rem] underline">
@@ -119,6 +124,7 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
               card={card}
               date={selectedDate}
               setDate={handleDateChange}
+              onClose={() => setIsOpen(false)}
             />
           </PopoverContent>
         </Popover>
@@ -134,6 +140,7 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
                 card={card}
                 date={selectedDate}
                 setDate={handleDateChange}
+                onClose={() => setIsOpen(false)}
               />
             )}
           </PopoverContent>

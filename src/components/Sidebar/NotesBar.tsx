@@ -89,7 +89,7 @@ export const NotesBar = observer(() => {
                   to={`/notes/article/${note.id}`}
                   className="block w-full text-center"
                 >
-                  {note.noteTitle.length > 5
+                  {note?.noteTitle?.length > 5
                     ? note.noteTitle.slice(0, 5) + "..."
                     : note.noteTitle}
                 </Link>
