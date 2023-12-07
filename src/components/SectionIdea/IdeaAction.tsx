@@ -1,11 +1,11 @@
-import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { AllCards, cardStore } from "../../store/cardStore";
-import { style } from "../../utils/style";
 import { IdeaCard } from "../Card";
+import { Heading, HeadingDivider } from "../Heading";
 
-const Title = "已轉換靈感";
+const title = "已轉換靈感";
+const subtitle = "轉換";
 
 export const IdeaAction = observer(() => {
   const transformedCards = cardStore
@@ -23,16 +23,16 @@ export const IdeaAction = observer(() => {
   }, []);
 
   return (
-    <div className="mx-auto mt-10 flex flex-col items-center">
-      <h1 className={style.mainTitle}>{Title}</h1>
-      <Divider />
-      <ul className="mt-5 grid w-full gap-3">
+    <>
+      <Heading title={title} subtitle={subtitle} counts={cards.length} />
+      <HeadingDivider />
+      <ul className="grid w-full gap-3">
         {cards.map((card) => (
           <li key={card.id}>
             <IdeaCard card={card} />
           </li>
         ))}
       </ul>
-    </div>
+    </>
   );
 });

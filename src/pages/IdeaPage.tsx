@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import {
   IdeaAction,
+  IdeaAll,
   IdeaArchive,
-  IdeaPools,
   IdeaSearch,
   IdeaWeek,
 } from "../components/SectionIdea";
@@ -15,7 +15,7 @@ const renderIdeaPage = (route: string | undefined) => {
     case "search":
       return <IdeaSearch />;
     case "pools":
-      return <IdeaPools />;
+      return <IdeaAll />;
     case "action":
       return <IdeaAction />;
     case "archive":

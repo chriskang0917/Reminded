@@ -33,6 +33,7 @@ export const useSearch = (type: searchType) => {
   return {
     text: searchText,
     searchCountsText,
+    total: filteredCards.length,
     totalCountsText,
     setText: setSearchText,
     onSearch: handleSearch,

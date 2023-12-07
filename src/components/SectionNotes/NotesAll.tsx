@@ -1,25 +1,25 @@
-import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { NewNote, NotesAllCards, cardStore } from "../../store/cardStore";
-import { style } from "../../utils/style";
 import { NoteCard } from "../Card/NoteCard";
+import { Heading, HeadingDivider } from "../Heading";
 
-const Title = "所有筆記";
+const title = "所有筆記";
+const subtitle = "筆記";
 
 export const NotesAll = observer(() => {
   const notes = cardStore.getFilteredCardsWith(new NotesAllCards());
 
   return (
-    <div className="mx-auto mt-10 flex flex-col items-center">
-      <h1 className={style.mainTitle}>{Title}</h1>
-      <Divider />
-      <ul className="mt-5 grid w-full gap-3">
+    <>
+      <Heading title={title} subtitle={subtitle} counts={notes.length} />
+      <HeadingDivider />
+      <ul className="grid w-full gap-3">
         {notes.map((note) => (
           <li key={note.id}>
             <NoteCard note={note as NewNote} />
           </li>
         ))}
       </ul>
-    </div>
+    </>
   );
 });

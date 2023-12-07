@@ -15,6 +15,7 @@ export default {
       white: colors.white,
       black: colors.black,
       gray: colors.slate,
+      stone: colors.stone,
       green: colors.emerald,
       purple: colors.violet,
       yellow: colors.amber,
