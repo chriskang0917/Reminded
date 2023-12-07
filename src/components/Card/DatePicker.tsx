@@ -22,7 +22,6 @@ function DatePicker({ card, date, setDate, onClose }: DatePickerProps) {
   const handleReturnToday = () => {
     toast.success("已設定到期日為今日");
     setSelectedDate(new Date());
-    onClose();
   };
 
   const handleConfirmDate = () => {
