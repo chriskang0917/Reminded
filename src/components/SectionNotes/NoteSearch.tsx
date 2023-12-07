@@ -12,10 +12,10 @@ export const NoteSearch = observer(() => {
 
   return (
     <div className="relative mx-auto mt-10 flex flex-col items-center">
-      <h1 className={style.mainTitle}>Search Your Notes</h1>
+      <h1 className={style.pageTitle}>Search Your Notes</h1>
       <p className={style.infoTitle}>{totalCountsText}</p>
       <IdeaSearchInput searchText={text} onSearch={onSearch} />
-      <h2 className={style.subTitle}>Results</h2>
+      <h2 className={style.pageSubtitle}>Results</h2>
       <Divider />
       <p className={cn(style.infoTitle, "mt-2")}>{searchCountsText}</p>
       <ul className="mt-5 grid w-full gap-3">

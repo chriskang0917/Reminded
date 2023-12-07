@@ -12,7 +12,7 @@ export const TodoWeek = observer(() => {
 
   return (
     <div className="mx-auto mt-10 flex flex-col items-center">
-      <h1 className={style.mainTitle}>{Title}</h1>
+      <h1 className={style.pageTitle}>{Title}</h1>
       <TodoInput />
       <Divider />
       <ul className="mt-5 grid w-full gap-3">

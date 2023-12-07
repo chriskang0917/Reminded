@@ -31,7 +31,7 @@ export const TodoTomorrow = observer(() => {
 
   return (
     <div className="mx-auto mt-10 flex flex-col items-center">
-      <h1 className={style.mainTitle}>{Title}</h1>
+      <h1 className={style.pageTitle}>{Title}</h1>
       <TodoInput />
       <Divider />
       <div ref={todoTomorrowRef} className="w-full">
@@ -49,7 +49,7 @@ export const TodoTomorrow = observer(() => {
       <Spacer y={10} />
       <section className="mb-12 w-full">
         <div className="flex w-full flex-col">
-          <h2 className={style.subTitle}>所有行動</h2>
+          <h2 className={style.pageSubtitle}>所有行動</h2>
           <Divider className="mb-5" />
           <div ref={actionRef} className="flex w-full flex-col gap-3">
             {actionCards.length !== 0 ? (

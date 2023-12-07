@@ -18,7 +18,7 @@ export const ActionExecute = observer(() => {
 
   return (
     <div className="mx-auto mt-10 flex flex-col items-center">
-      <h1 className={style.mainTitle}>{Title}</h1>
+      <h1 className={style.pageTitle}>{Title}</h1>
       <Divider />
       <Spacer y={5} />
       <div className="grid w-full gap-3">

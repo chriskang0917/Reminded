@@ -24,7 +24,7 @@ export const IdeaAction = observer(() => {
 
   return (
     <div className="mx-auto mt-10 flex flex-col items-center">
-      <h1 className={style.mainTitle}>{Title}</h1>
+      <h1 className={style.pageTitle}>{Title}</h1>
       <Divider />
       <ul className="mt-5 grid w-full gap-3">
         {cards.map((card) => (
