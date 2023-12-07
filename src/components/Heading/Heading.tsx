@@ -1,13 +1,14 @@
-import { Card, CardBody, Divider } from "@nextui-org/react";
+import { Card, CardBody } from "@nextui-org/react";
 import Animation from "./heading-animation.gif";
 
 interface HeadingProps {
   title: string;
-  subtitle?: string;
-  counts?: number;
+  subtitle: string;
+  counts: number;
+  gif?: string;
 }
 
-export const Heading = ({ title, subtitle, counts }: HeadingProps) => {
+export const Heading = ({ title, subtitle, counts, gif }: HeadingProps) => {
   return (
     <>
       <Card className="flex h-20 w-full items-center bg-fourthDark">
@@ -17,19 +18,19 @@ export const Heading = ({ title, subtitle, counts }: HeadingProps) => {
               {title}
             </h1>
             <h2 className="flex items-center leading-none text-primary">
+              {" "}
               總共有
               <span className="mx-2 flex items-center text-2xl leading-none text-black">
-                {counts}
+                {counts || 0}
               </span>
               個{subtitle}
             </h2>
           </div>
           <figure className="h-28 w-28 -translate-y-2">
-            <img src={Animation} alt="An animation gif" />
+            <img src={gif || Animation} alt="An animation gif" />
           </figure>
         </CardBody>
       </Card>
-      <Divider className="my-4 w-full" />
     </>
   );
 };
