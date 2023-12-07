@@ -1,5 +1,5 @@
 import { useDroppable } from "@dnd-kit/core";
-import { Divider, Spacer } from "@nextui-org/react";
+import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import {
   ActionAllCards,
@@ -56,7 +56,7 @@ export const TodoTomorrow = observer(() => {
       <section className="mb-12 w-full">
         <div className="flex w-full flex-col">
           <h2 className={style.pageSubtitle}>所有行動</h2>
-          <Divider className="mb-5" />
+          <HeadingDivider />
           <div ref={actionRef} className="flex w-full flex-col gap-3">
             {actionCards.length !== 0 ? (
               actionCards.map((card) => <TodoCard key={card.id} card={card} />)
