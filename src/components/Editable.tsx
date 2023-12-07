@@ -41,9 +41,10 @@ const Editable = observer(
     };
 
     return (
-      <section className="w-full">
+      <>
         {isEditing ? (
           <form
+            className="w-full tracking-wide"
             onSubmit={handleSubmit}
             onKeyDown={handleKeyDown}
             onBlur={() => setIsEditing(false)}
@@ -52,13 +53,14 @@ const Editable = observer(
             <button type="submit"></button>
           </form>
         ) : (
-          <div onClick={() => setIsEditing(true)}>
-            <div className="w-full tracking-wide">
-              {text || placeholder || "請輸入您的內容..."}
-            </div>
+          <div
+            className="w-full tracking-wide"
+            onClick={() => setIsEditing(true)}
+          >
+            {text || placeholder || "請輸入您的內容..."}
           </div>
         )}
-      </section>
+      </>
     );
   },
 );

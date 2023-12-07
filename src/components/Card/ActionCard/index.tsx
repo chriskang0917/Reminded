@@ -52,8 +52,8 @@ export const ActionCard = ({ card }: CardToolProps) => {
 
   return (
     <BasicCard card={card}>
-      <div className="flex items-center justify-between">
-        <div className="flex w-full">
+      <div className="flex flex-grow items-center justify-between">
+        <div className="flex flex-grow items-center justify-between">
           {isTodo && (
             <Checkbox
               size="sm"
