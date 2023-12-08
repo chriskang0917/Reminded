@@ -29,7 +29,7 @@ const ideaActionList: IAction[] = [
   {
     label: "已轉換",
     path: "/idea/action",
-    id: "tutorial-ideas-5",
+    id: "tutorial-ideas-6",
     icon: <GrTransaction />,
   },
   { label: "已封存", path: "/idea/archive", icon: <IoArchiveOutline /> },

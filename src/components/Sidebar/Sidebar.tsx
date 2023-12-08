@@ -16,6 +16,7 @@ const actionList = [
     page: "/action/",
     path: "/action/all",
     icon: <AiOutlineInteraction />,
+    id: "tutorial-ideas-3",
   },
   {
     label: "靈感",
@@ -29,7 +30,7 @@ const actionList = [
     page: "/notes/",
     path: "/notes/all",
     icon: <FaRegStickyNote />,
-    id: "tutorial-ideas-4",
+    id: "tutorial-ideas-5",
   },
 ];
 

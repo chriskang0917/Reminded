@@ -40,14 +40,14 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
   }, [tutorial.isActive(), isOpenAction]);
 
   useEffect(() => {
-    if (!tutorial.isActive() && !isOpenNote && isActionEnd) tutorial.drive(3);
+    if (!tutorial.isActive() && !isOpenNote && isActionEnd) tutorial.drive(4);
   }, [tutorial.isActive(), isOpenNote]);
 
   const settingList = [
     {
       icon: <PiNoteBlankThin />,
       label: "note",
-      id: "tutorial-ideas-3",
+      id: "tutorial-ideas-4",
       onClick: () => {
         onOpenNote();
         tutorial.destroy();

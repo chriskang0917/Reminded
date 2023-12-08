@@ -9,7 +9,7 @@ import {
 } from "@nextui-org/react";
 import { format, parseISO } from "date-fns";
 import { observer } from "mobx-react-lite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "react-day-picker/dist/style.css";
 import {
   ICard,
@@ -17,6 +17,7 @@ import {
   cardStatus,
   cardStore,
 } from "../../../store/cardStore";
+import { actionSteps, initTutorial, tutorial } from "../../../utils/tutorial";
 import DatePicker from "../DatePicker";
 
 interface CardToolProps {
@@ -47,6 +48,19 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
   const parsedDate = card.dueDate ? parseISO(card.dueDate) : null;
   const [selectedDate, setSelectedDate] = useState<Date | null>(parsedDate);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    initTutorial(actionSteps);
+  }, []);
+
+  useEffect(() => {
+    if (!tutorial?.isActive() && !isOpen) tutorial.drive(1);
+  }, [tutorial?.isActive(), isOpen]);
+
+  const handleDatePickerChange = () => {
+    setIsOpen(!isOpen);
+    tutorial.destroy();
+  };
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -110,7 +124,7 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
       {isDateLabel && selectedDate && (
         <Popover
           isOpen={isOpen}
-          onOpenChange={() => setIsOpen(!isOpen)}
+          onOpenChange={handleDatePickerChange}
           placement="bottom"
         >
           <PopoverTrigger>
@@ -131,7 +145,11 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
         </Popover>
       )}
       {isDateLabel && !selectedDate && (
-        <Popover placement="bottom">
+        <Popover
+          placement="bottom"
+          isOpen={isOpen}
+          onOpenChange={handleDatePickerChange}
+        >
           <PopoverTrigger>
             <button>{setting.icon}</button>
           </PopoverTrigger>

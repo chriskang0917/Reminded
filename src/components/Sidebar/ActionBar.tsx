@@ -12,6 +12,7 @@ interface IAction {
   label: string;
   path: string;
   icon?: React.ReactNode;
+  id?: string;
 }
 
 const ideaActionList: IAction[] = [
@@ -20,8 +21,15 @@ const ideaActionList: IAction[] = [
     label: "已過期",
     path: "/action/expire",
     icon: <FaRegCalendarXmark />,
+    id: "tutorial-actions-2",
   },
-  { label: "已執行", path: "/action/executed", icon: <VscTasklist /> },
+  {
+    label: "已執行",
+    path: "/action/executed",
+    icon: <VscTasklist />,
+    id: "tutorial-actions-3",
+  },
+
   {
     label: "已封存",
     path: "/action/archive",
@@ -45,7 +53,7 @@ export const ActionBar = observer(() => {
       </li>
       <Divider className="w-[80%]" />
       {ideaActionList.map((action) => (
-        <li key={action.label}>
+        <li id={action.id} key={action.label}>
           <SubsideButton key={action.label} action={action}>
             <div className="flex h-full items-center justify-center gap-3">
               <span>{action.icon}</span>

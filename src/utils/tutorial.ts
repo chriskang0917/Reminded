@@ -85,13 +85,20 @@ export const ideaSteps: DriveStep[] = [
   {
     element: "#tutorial-ideas-3",
     popover: {
+      title: "查看行動",
+      description: "將靈感轉換為行動後，會顯示在行動區域。",
+    },
+  },
+  {
+    element: "#tutorial-ideas-4",
+    popover: {
       showButtons: ["previous"],
       title: "點選轉換筆記按鈕",
       description: "將靈感轉換為更完整的筆記，用以未來快速查閱或新增知識。",
     },
   },
   {
-    element: "#tutorial-ideas-4",
+    element: "#tutorial-ideas-5",
     popover: {
       title: "查看筆記",
       description:
@@ -99,11 +106,37 @@ export const ideaSteps: DriveStep[] = [
     },
   },
   {
-    element: "#tutorial-ideas-5",
+    element: "#tutorial-ideas-6",
     popover: {
       title: "查看已轉換靈感",
       description:
         "這裡可以查看已經轉換為行動或筆記的靈感，用以回顧或再次轉換靈感。",
+    },
+  },
+];
+
+export const actionSteps: DriveStep[] = [
+  {
+    element: "#tutorial-actions-1",
+    popover: {
+      showButtons: [],
+      title: "設定行動執行日",
+      description: "將行動設定為某一天執行，將規劃的行動化為待辦。",
+    },
+  },
+  {
+    element: "#tutorial-actions-2",
+    popover: {
+      title: "查看過期行動",
+      description: "若為行動設定日期但沒有執行，會顯示在這裡，提醒你執行行動。",
+    },
+  },
+  {
+    element: "#tutorial-actions-3",
+    popover: {
+      title: "查看已執行行動",
+      description:
+        "這裡可以查看已經被執行過的行動，用以回顧或再次規劃行動，也給自己一些鼓勵！",
     },
   },
 ];
