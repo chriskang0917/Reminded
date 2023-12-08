@@ -1,8 +1,41 @@
-import { driver } from "driver.js";
+import { PopoverDOM, driver } from "driver.js";
 import "driver.js/dist/driver.css";
 
-export const tutorialToday = driver({
+const popoverRender = (popover: PopoverDOM) => {
+  popover.wrapper.classList.add(
+    "rounded-xl",
+    "shadow-xl",
+    "bg-white",
+    "tracking-wide",
+  );
+  popover.title.classList.add("text-xl", "font-bold", "text-primary");
+  popover.description.classList.add(
+    "text-lg",
+    "text-thirdDark",
+    "tracking-wider",
+  );
+
+  popover.previousButton.style.borderRadius = "5px";
+  popover.previousButton.style.color = "#32435F";
+
+  popover.nextButton.classList.add("text-lg", "bg-thirdDark", "rounded-2xl");
+  popover.nextButton.style.borderRadius = "5px";
+};
+
+const driverConfig = {
   showProgress: true,
+  allowClose: false,
+  overlayOpacity: 0.5,
+  stageRadius: 10,
+  progressText: "第 {{current}}/{{total}} 步",
+  nextBtnText: "下一步",
+  prevBtnText: "上一步",
+  doneBtnText: "完成",
+  onPopoverRender: popoverRender,
+};
+
+export const tutorialToday = driver({
+  ...driverConfig,
   steps: [
     {
       element: "#tutorial-today-1",
