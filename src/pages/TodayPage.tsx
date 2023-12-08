@@ -5,13 +5,13 @@ import { IdeaInput } from "../components/Input";
 import { TodayIdea, TodayTodo } from "../components/SectionToday";
 import CountBadge from "../components/SectionToday/CountBadge";
 import { IdeaTodayCards, TodoTodayCards, cardStore } from "../store/cardStore";
-import { tutorialToday } from "../utils/tutorial";
+import { initTutorial, todaySteps } from "../utils/tutorial";
 
 const Homepage = observer(() => {
   const [selectedKey, setSelectedKey] = useState<Key>("todo");
 
   useEffect(() => {
-    tutorialToday.drive();
+    initTutorial(todaySteps);
   }, []);
 
   const countTodo = cardStore.getFilteredCardsWith(new TodoTodayCards()).length;

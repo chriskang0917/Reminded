@@ -1,10 +1,11 @@
 import { useDisclosure } from "@nextui-org/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GrTransaction } from "react-icons/gr";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { PiNoteBlankThin } from "react-icons/pi";
 import { ICard } from "../../../store/cardStore";
 import { uiStore } from "../../../store/uiStore";
+import { tutorial } from "../../../utils/tutorial.ts";
 import Editable from "../../Editable";
 import BasicCard from "../BasicCard";
 import CardTags from "../CardTags";
@@ -14,6 +15,7 @@ import { IdeaNoteModal } from "./IdeaToNoteModal";
 
 export const IdeaCard = ({ card }: { card: ICard }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isActionEnd, setActionEnd] = useState(false);
   const {
     isOpen: isOpenAction,
     onOpen: onOpenAction,
@@ -32,12 +34,34 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
     uiStore.enableDnd();
   }, [isOpenNote, isOpenAction]);
 
+  useEffect(() => {
+    if (!tutorial.isActive() && !isOpenAction && !isActionEnd)
+      tutorial.drive(2);
+  }, [tutorial.isActive(), isOpenAction]);
+
+  useEffect(() => {
+    if (!tutorial.isActive() && !isOpenNote && isActionEnd) tutorial.drive(3);
+  }, [tutorial.isActive(), isOpenNote]);
+
   const settingList = [
-    { icon: <PiNoteBlankThin />, label: "note", onClick: onOpenNote },
+    {
+      icon: <PiNoteBlankThin />,
+      label: "note",
+      id: "tutorial-ideas-3",
+      onClick: () => {
+        onOpenNote();
+        tutorial.destroy();
+        setActionEnd(true);
+      },
+    },
     {
       icon: <GrTransaction className="h-3" />,
       label: "action",
-      onClick: onOpenAction,
+      id: "tutorial-ideas-2",
+      onClick: () => {
+        onOpenAction();
+        tutorial.destroy();
+      },
     },
     { icon: <HiOutlineDotsVertical />, label: "more", onClick: () => {} },
   ];
@@ -60,9 +84,11 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
             ref={inputRef}
           />
         </Editable>
-        <div className="ml-2 flex min-w-unit-24 items-center justify-between">
+        <ul className="ml-2 flex min-w-unit-24 items-center justify-between">
           {settingList.map((setting) => (
-            <IdeaCardTool key={setting.label} card={card} setting={setting} />
+            <li id={setting.id} key={setting.label}>
+              <IdeaCardTool card={card} setting={setting} />
+            </li>
           ))}
           <IdeaToActionModal
             card={card}
@@ -76,7 +102,7 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
             onOpenChange={onOpenChangeNote}
             onClose={onCloseNote}
           />
-        </div>
+        </ul>
       </div>
       <div className="mt-5 flex flex-wrap items-center gap-x-2">
         <CardTags card={card} />

@@ -22,13 +22,14 @@ const actionList = [
     page: "/idea/",
     path: "/idea/week",
     icon: <FaRegLightbulb />,
+    id: "tutorial-today-3",
   },
   {
     label: "筆記",
     page: "/notes/",
     path: "/notes/all",
     icon: <FaRegStickyNote />,
-    id: "tutorial-today-3",
+    id: "tutorial-ideas-4",
   },
 ];
 

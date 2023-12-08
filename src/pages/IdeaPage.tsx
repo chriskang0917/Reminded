@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   IdeaAction,
@@ -6,6 +7,7 @@ import {
   IdeaSearch,
   IdeaWeek,
 } from "../components/SectionIdea";
+import { ideaSteps, initTutorial } from "../utils/tutorial";
 import ErrorPage from "./ErrorPage";
 
 const renderIdeaPage = (route: string | undefined) => {
@@ -27,6 +29,11 @@ const renderIdeaPage = (route: string | undefined) => {
 
 function IdeaPage() {
   const { route } = useParams();
+
+  useEffect(() => {
+    initTutorial(ideaSteps);
+  }, []);
+
   return <section className="relative">{renderIdeaPage(route)}</section>;
 }
 

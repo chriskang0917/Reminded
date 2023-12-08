@@ -1,4 +1,4 @@
-import { driver, DriveStep, PopoverDOM } from "driver.js";
+import { driver, Driver, DriveStep, PopoverDOM } from "driver.js";
 import "driver.js/dist/driver.css";
 
 const popoverRender = (popover: PopoverDOM) => {
@@ -23,7 +23,7 @@ const popoverRender = (popover: PopoverDOM) => {
 
 export const driverConfig = {
   showProgress: true,
-  allowClose: false,
+  // allowClose: false,
   overlayOpacity: 0.5,
   stageRadius: 10,
   progressText: "第 {{current}}/{{total}} 步",
@@ -33,8 +33,10 @@ export const driverConfig = {
   onPopoverRender: popoverRender,
 };
 
+export let tutorial: Driver;
+
 export const initTutorial = (steps: DriveStep[]) => {
-  const tutorial = driver({ ...driverConfig, steps });
+  tutorial = driver({ ...driverConfig, steps });
   tutorial.drive();
 };
 
@@ -58,7 +60,7 @@ export const todaySteps: DriveStep[] = [
   {
     element: "#tutorial-today-3",
     popover: {
-      title: "點擊查看新增靈感",
+      title: "點選查看新增靈感",
       description: "新增的靈感會顯示在靈感區域。",
     },
   },
@@ -75,27 +77,21 @@ export const ideaSteps: DriveStep[] = [
   {
     element: "#tutorial-ideas-2",
     popover: {
-      title: "轉換為行動",
+      showButtons: ["previous"],
+      title: "點選轉換行動鈕",
       description: "將靈感轉換為可執行的行動，用以未來執行你的靈感。",
     },
   },
   {
     element: "#tutorial-ideas-3",
     popover: {
-      title: "寫出具體行動",
-      description:
-        "盡量將內容遵守 SMART 原則，讓行動更具體可行。分別是明確、可衡量、可達成、相關或時限性的行動。例如：「下班後直接在門口換運動鞋運動」。",
-    },
-  },
-  {
-    element: "#tutorial-ideas-4",
-    popover: {
-      title: "轉換為筆記",
+      showButtons: ["previous"],
+      title: "點選轉換筆記按鈕",
       description: "將靈感轉換為更完整的筆記，用以未來快速查閱或新增知識。",
     },
   },
   {
-    element: "#tutorial-ideas-5",
+    element: "#tutorial-ideas-4",
     popover: {
       title: "查看筆記",
       description:
@@ -103,7 +99,7 @@ export const ideaSteps: DriveStep[] = [
     },
   },
   {
-    element: "#tutorial-ideas-6",
+    element: "#tutorial-ideas-5",
     popover: {
       title: "查看已轉換靈感",
       description:
