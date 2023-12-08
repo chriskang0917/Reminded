@@ -1,4 +1,4 @@
-import { PopoverDOM, driver } from "driver.js";
+import { driver, DriveStep, PopoverDOM } from "driver.js";
 import "driver.js/dist/driver.css";
 
 const popoverRender = (popover: PopoverDOM) => {
@@ -17,12 +17,11 @@ const popoverRender = (popover: PopoverDOM) => {
 
   popover.previousButton.style.borderRadius = "5px";
   popover.previousButton.style.color = "#32435F";
-
-  popover.nextButton.classList.add("text-lg", "bg-thirdDark", "rounded-2xl");
   popover.nextButton.style.borderRadius = "5px";
+  popover.nextButton.style.color = "#32435F";
 };
 
-const driverConfig = {
+export const driverConfig = {
   showProgress: true,
   allowClose: false,
   overlayOpacity: 0.5,
@@ -34,30 +33,81 @@ const driverConfig = {
   onPopoverRender: popoverRender,
 };
 
-export const tutorialToday = driver({
-  ...driverConfig,
-  steps: [
-    {
-      element: "#tutorial-today-1",
-      popover: {
-        title: "捕捉你的靈感或待辦",
-        description:
-          "透過快捷鍵 ⌘ + ⇧ + I 或點擊上方切換鈕，切換輸入靈感或標籤，開始輸入你的每日靈感或待辦。",
-      },
+export const initTutorial = (steps: DriveStep[]) => {
+  const tutorial = driver({ ...driverConfig, steps });
+  tutorial.drive();
+};
+
+export const todaySteps: DriveStep[] = [
+  {
+    element: "#tutorial-today-1",
+    popover: {
+      title: "捕捉你的靈感或待辦",
+      description:
+        "透過快捷鍵 ⌘ + ⇧ + I 或點擊上方切換鈕，切換輸入靈感或標籤，開始輸入你的每日靈感或待辦。",
     },
-    {
-      element: "#tutorial-today-2",
-      popover: {
-        title: "查看靈感或待辦",
-        description: "透過切換標籤，查看你輸入的每日靈感或待辦。",
-      },
+  },
+  {
+    element: "#tutorial-today-2",
+    popover: {
+      title: "查看靈感或待辦",
+      description: "透過切換標籤，查看你輸入的每日靈感或待辦。",
+      side: "bottom",
     },
-    {
-      element: "#tutorial-today-3",
-      popover: {
-        title: "點擊查看新增靈感",
-        description: "新增的靈感會顯示在靈感區域。",
-      },
+  },
+  {
+    element: "#tutorial-today-3",
+    popover: {
+      title: "點擊查看新增靈感",
+      description: "新增的靈感會顯示在靈感區域。",
     },
-  ],
-});
+  },
+];
+
+export const ideaSteps: DriveStep[] = [
+  {
+    element: "#tutorial-ideas-1",
+    popover: {
+      title: "查看本週靈感",
+      description: "預設存放「週日至週六」的靈感，快速查看已經儲存的靈感。",
+    },
+  },
+  {
+    element: "#tutorial-ideas-2",
+    popover: {
+      title: "轉換為行動",
+      description: "將靈感轉換為可執行的行動，用以未來執行你的靈感。",
+    },
+  },
+  {
+    element: "#tutorial-ideas-3",
+    popover: {
+      title: "寫出具體行動",
+      description:
+        "盡量將內容遵守 SMART 原則，讓行動更具體可行。分別是明確、可衡量、可達成、相關或時限性的行動。例如：「下班後直接在門口換運動鞋運動」。",
+    },
+  },
+  {
+    element: "#tutorial-ideas-4",
+    popover: {
+      title: "轉換為筆記",
+      description: "將靈感轉換為更完整的筆記，用以未來快速查閱或新增知識。",
+    },
+  },
+  {
+    element: "#tutorial-ideas-5",
+    popover: {
+      title: "查看筆記",
+      description:
+        "可在筆記區域查看已經儲存的筆記，也能透過搜尋快速找到相關筆記。",
+    },
+  },
+  {
+    element: "#tutorial-ideas-6",
+    popover: {
+      title: "查看已轉換靈感",
+      description:
+        "這裡可以查看已經轉換為行動或筆記的靈感，用以回顧或再次轉換靈感。",
+    },
+  },
+];
