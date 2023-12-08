@@ -28,6 +28,7 @@ const actionList = [
     page: "/notes/",
     path: "/notes/all",
     icon: <FaRegStickyNote />,
+    id: "tutorial-today-3",
   },
 ];
 
@@ -57,6 +58,7 @@ export const Sidebar = () => {
                 closeDelay={100}
               >
                 <Card
+                  id={action?.id}
                   isBlurred
                   classNames={{
                     base: "h-10 w-10 rounded-xl drop-shadow-2xl",
