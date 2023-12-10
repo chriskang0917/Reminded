@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
-import { cardStore } from "../store/cardStore";
+import { cardStore } from "../../../store/cardStore";
 
 interface EditableProps {
   id: string;

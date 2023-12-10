@@ -42,16 +42,23 @@ function DatePicker({ card, date, setDate, onClose }: DatePickerProps) {
   };
 
   const DatePickerFooter = (
-    <div className="flex justify-between">
+    <div className="flex justify-center gap-2">
       <Button size="sm" variant="light" onPress={handleReturnToday}>
         今天
       </Button>
       <Button size="sm" variant="shadow" onPress={handleConfirmDate}>
         確認日期
       </Button>
-      <Button size="sm" variant="light" onPress={handleRemoveDate}>
-        移除到期
-      </Button>
+      {selectedDate && (
+        <Button
+          className="self-end"
+          size="sm"
+          variant="light"
+          onPress={handleRemoveDate}
+        >
+          移除到期
+        </Button>
+      )}
     </div>
   );
 
