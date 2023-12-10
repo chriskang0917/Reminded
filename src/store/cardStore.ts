@@ -156,8 +156,8 @@ export class TodoAllCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList().filter(
       (card) =>
-        (card.status === "todo" || card.status === "action") &&
-        card.dueDate &&
+        ((card.dueDate && card.status === "action") ||
+          card.status === "todo") &&
         !card.isArchived,
     );
     const descSortedCards = cardUtils.sortCardsDescBy("dueDate", sortedCards);
