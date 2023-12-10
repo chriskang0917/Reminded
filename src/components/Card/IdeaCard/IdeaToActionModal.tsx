@@ -1,6 +1,5 @@
 import {
   Button,
-  Chip,
   Input,
   Modal,
   ModalBody,
@@ -22,7 +21,8 @@ interface ActionModalProps {
 }
 
 interface ButtonProps {
-  label: "刪除" | "關閉" | "封存" | "轉換";
+  label: string;
+  tooltip?: string;
   color?:
     | "danger"
     | "primary"
@@ -42,16 +42,16 @@ interface ButtonProps {
   onPress: () => void;
 }
 
-const toolTipList = [
-  {
-    label: "轉換",
-    content: "轉換行動後保留靈感",
-  },
-  {
-    label: "封存",
-    content: "轉換行動後封存靈感",
-  },
-];
+// const toolTipList = [
+//   {
+//     label: "轉換",
+//     content: "轉換行動後保留靈感",
+//   },
+//   {
+//     label: "封存",
+//     content: "轉換行動後封存靈感",
+//   },
+// ];
 
 export const IdeaToActionModal = observer(
   ({ card, isOpen, onOpenChange, onClose }: ActionModalProps) => {
@@ -65,9 +65,10 @@ export const IdeaToActionModal = observer(
 
     const buttonsList: ButtonProps[] = [
       {
-        label: "轉換",
+        label: "保留靈感",
         variant: "ghost",
         color: "warning",
+        tooltip: "新增行動卡片後保留靈感",
         onPress: () => {
           const ideaToActionInput = inputRef.current?.value || "";
           if (!ideaToActionInput) return toast.error("請輸入內容");
@@ -76,13 +77,14 @@ export const IdeaToActionModal = observer(
           cardStore.updateCardToFirebase(card.id, { isTransformed: true });
           cardStore.addCard(newCard);
           cardStore.addCardToFireStore(newCard);
-          toast.success("轉換成功");
+          toast.success("已新增行動卡片並保留靈感");
           onClose();
         },
       },
       {
-        label: "封存",
+        label: "封存靈感",
         color: "primary",
+        tooltip: "新增行動卡片後封存靈感",
         onPress: () => {
           const ideaToActionInput = inputRef.current?.value || "";
           if (!ideaToActionInput) return toast.error("請輸入內容");
@@ -97,7 +99,7 @@ export const IdeaToActionModal = observer(
           });
           cardStore.addCard(newCard);
           cardStore.addCardToFireStore(newCard);
-          toast.success("封存成功");
+          toast.success("已新增行動卡片並封存靈感");
           onClose();
         },
       },
@@ -114,7 +116,7 @@ export const IdeaToActionModal = observer(
       buttonsList[1].onPress();
     };
 
-    const modalHeader = "以動詞開頭，轉換你的行動...";
+    const modalHeader = "根據靈感卡片新增行動。以動詞開頭，轉換你的行動...";
     const modalExample = (
       <p className="text-slate-500 text-sm">
         <strong>範例</strong>：<strong>寫一篇</strong> 500 字的文章、
@@ -128,16 +130,7 @@ export const IdeaToActionModal = observer(
           {() => (
             <>
               <ModalHeader className="flex items-center gap-2">
-                <h1>轉換你的靈感</h1>
-                <ul className="my-2 flex gap-2 text-sm">
-                  {toolTipList.map((toolTip) => (
-                    <li key={toolTip.label}>
-                      <Tooltip className="px-3" content={toolTip.content}>
-                        <Chip size="sm">{toolTip.label}</Chip>
-                      </Tooltip>
-                    </li>
-                  ))}
-                </ul>
+                <h1 className="tracking-wide text-primary">轉換你的靈感</h1>
               </ModalHeader>
               <ModalBody>
                 <h2 className="text-[0.85rem] tracking-wider text-gray-500">
@@ -162,15 +155,22 @@ export const IdeaToActionModal = observer(
                   {buttonsList.map((button) => {
                     if (card.isArchived && button.label === "封存") return;
                     return (
-                      <Button
+                      <Tooltip
                         key={button.label}
-                        size="sm"
-                        variant={button.variant}
-                        color={button.color}
-                        onPress={button.onPress}
+                        content={button.tooltip}
+                        placement="bottom"
+                        delay={300}
+                        closeDelay={100}
                       >
-                        {button.label}
-                      </Button>
+                        <Button
+                          size="sm"
+                          variant={button.variant}
+                          color={button.color}
+                          onPress={button.onPress}
+                        >
+                          {button.label}
+                        </Button>
+                      </Tooltip>
                     );
                   })}
                 </div>
