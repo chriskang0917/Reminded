@@ -16,13 +16,13 @@ interface ITodo {
 
 const TodoList: ITodo[] = [
   { label: "明日待辦", path: "/todo/tomorrow", icon: <CiCalendarDate /> },
-  { label: "今日待辦", path: "/todo/today", icon: <MdOutlineToday /> },
   {
     label: "本週待辦",
     path: "/todo/week",
     icon: <BsCalendar2Week />,
     id: "tutorial-todo-3",
   },
+  { label: "所有待辦", path: "/todo/all", icon: <GrTask /> },
   { label: "已完成", path: "/todo/complete", icon: <MdTaskAlt /> },
 ];
 
@@ -32,13 +32,13 @@ export const TodoBar = observer(() => {
       <li>
         <SubsideButton
           className="h-12"
-          action={{ label: "所有待辦", path: "/todo/all" }}
+          action={{ label: "今日待辦", path: "/todo/today" }}
         >
           <div className="flex h-full items-center justify-center gap-3">
             <span>
-              <GrTask />
+              <MdOutlineToday />
             </span>
-            <span className="text-sm">所有待辦</span>
+            <span className="text-sm">今日待辦</span>
           </div>
         </SubsideButton>
       </li>
