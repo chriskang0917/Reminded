@@ -458,6 +458,7 @@ class FirebaseService implements IFirebaseService {
     try {
       await this.getCardOrderList();
       await this.getActiveCards();
+      runInAction(() => (this.cardStore.isLoaded = true));
     } catch (error) {
       console.error(error);
     }
@@ -594,6 +595,7 @@ class FirebaseService implements IFirebaseService {
 =============================== */
 
 class CardStore {
+  isLoaded: boolean = false;
   cardService: CardService;
   firebaseService: FirebaseService;
   cardOrderList: string[] = [];
