@@ -46,11 +46,8 @@ export const NotesBar = observer(() => {
           "transition-all hover:bg-fourthDark hover:text-white",
         )}
       >
-        <CardBody>
-          <div
-            className="flex h-full items-center justify-center gap-3"
-            onClick={onOpen}
-          >
+        <CardBody onClick={onOpen}>
+          <div className="flex h-full items-center justify-center gap-3">
             <span>+</span>
             <span className="text-sm">新增筆記</span>
           </div>
