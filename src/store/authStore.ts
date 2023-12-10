@@ -67,28 +67,38 @@ class EmailAuthService implements AuthService {
     });
   }
 
-  async initUserSettings() {
-    const settings = localStorage.getItem("settings");
+  initUserSettings() {
+    if (!authStore.uid) return;
+    const settingRef = doc(db, "users", authStore.uid);
+    onSnapshot(settingRef, (doc) => {
+      if (doc.exists()) {
+        return runInAction(() => {
+          authStore.tutorialProgress = doc.data()?.tutorialProgress;
+        });
+      }
 
-    if (settings) {
-      const parsedSettings = JSON.parse(settings);
-      return runInAction(() => {
-        authStore.tutorialProgress = parsedSettings.tutorialProgress;
+      const settings = localStorage.getItem("settings");
+
+      if (settings) {
+        const parsedSettings = JSON.parse(settings);
+        return runInAction(() => {
+          authStore.tutorialProgress = parsedSettings.tutorialProgress;
+        });
+      }
+
+      const initSetting = {
+        tutorialProgress: {
+          today: false,
+          idea: false,
+          action: false,
+          todo: false,
+        },
+      };
+
+      localStorage.setItem("settings", JSON.stringify(initSetting));
+      runInAction(() => {
+        authStore.tutorialProgress = initSetting.tutorialProgress;
       });
-    }
-
-    const initSetting = {
-      tutorialProgress: {
-        today: false,
-        idea: false,
-        action: false,
-        todo: false,
-      },
-    };
-
-    localStorage.setItem("settings", JSON.stringify(initSetting));
-    runInAction(() => {
-      authStore.tutorialProgress = initSetting.tutorialProgress;
     });
   }
 
@@ -196,6 +206,16 @@ class EmailAuthService implements AuthService {
     localStorage.setItem(
       "settings",
       JSON.stringify({ tutorialProgress: authStore.tutorialProgress }),
+    );
+
+    if (!authStore.uid) return;
+    const settingRef = doc(db, "users", authStore.uid);
+    setDoc(
+      settingRef,
+      {
+        tutorialProgress: authStore.tutorialProgress,
+      },
+      { merge: true },
     );
   }
 }
