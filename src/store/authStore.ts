@@ -29,7 +29,7 @@ interface AuthService {
   login: (email: string, password: string) => void;
   logout: () => void;
   updateProfile: (profile: IProfile) => void;
-  updateTutorialProgress: (tutorialName: string) => void;
+  updateTutorialProgress: (tutorialName: keyof ITutorial) => void;
 }
 
 class EmailAuthService implements AuthService {
@@ -186,16 +186,17 @@ class EmailAuthService implements AuthService {
     }
   }
 
-  updateTutorialProgress(tutorialName: string) {
-    const settings = localStorage.getItem("settings");
-    if (!settings) return;
+  updateTutorialProgress(tutorialName: keyof ITutorial) {
+    if (Object.keys(authStore.tutorialProgress || {}).length === 0) return;
 
-    const parsedSettings = JSON.parse(settings);
-    parsedSettings.tutorialProgress[tutorialName] = true;
-    localStorage.setItem("settings", JSON.stringify(parsedSettings));
     runInAction(() => {
-      authStore.tutorialProgress = parsedSettings.tutorialProgress;
+      authStore.tutorialProgress[tutorialName] = true;
     });
+
+    localStorage.setItem(
+      "settings",
+      JSON.stringify({ tutorialProgress: authStore.tutorialProgress }),
+    );
   }
 }
 
@@ -243,7 +244,7 @@ class AuthStore {
     this.authService.updateProfile(profile);
   }
 
-  updateTutorialProgress(tutorialName: string) {
+  updateTutorialProgress(tutorialName: keyof ITutorial) {
     this.authService.updateTutorialProgress(tutorialName);
   }
 }

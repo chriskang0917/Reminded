@@ -13,15 +13,12 @@ const Homepage = observer(() => {
 
   useEffect(() => {
     const isTutorialDone = authStore.tutorialProgress?.today;
-
-    if (authStore.uid && isTutorialDone !== undefined && !isTutorialDone) {
+    if (isTutorialDone !== undefined && !isTutorialDone) {
       initTutorial(todaySteps, {
-        onDestroyed: () => {
-          authStore.updateTutorialProgress("today");
-        },
+        onDestroyed: () => authStore.updateTutorialProgress("today"),
       });
     }
-  }, [authStore.uid, authStore.tutorialProgress?.today]);
+  }, []);
 
   const countTodo = cardStore.getFilteredCardsWith(new TodoTodayCards()).length;
   const countIdea = cardStore.getFilteredCardsWith(new IdeaTodayCards()).length;

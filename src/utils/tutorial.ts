@@ -33,10 +33,10 @@ export const driverConfig = {
   onPopoverRender: popoverRender,
 };
 
-export let tutorial: Driver;
+export let tutorial: Driver = driver();
 
 export const initTutorial = (steps: DriveStep[], configs?: Partial<Config>) => {
-  tutorial = driver({ ...driverConfig, steps, ...configs });
+  tutorial.setConfig({ ...driverConfig, steps, ...configs });
   tutorial.drive();
 };
 
@@ -77,7 +77,6 @@ export const ideaSteps: DriveStep[] = [
   {
     element: "#tutorial-ideas-2",
     popover: {
-      showButtons: ["previous"],
       title: "點選轉換行動鈕",
       description: "將靈感轉換為可執行的行動，用以未來執行你的靈感。",
     },
@@ -92,7 +91,6 @@ export const ideaSteps: DriveStep[] = [
   {
     element: "#tutorial-ideas-4",
     popover: {
-      showButtons: ["previous"],
       title: "點選轉換筆記按鈕",
       description: "將靈感轉換為更完整的筆記，用以未來快速查閱或新增知識。",
     },
@@ -119,7 +117,6 @@ export const actionSteps: DriveStep[] = [
   {
     element: "#tutorial-actions-1",
     popover: {
-      showButtons: [],
       title: "設定行動執行日",
       description: "將行動設定為某一天執行，將規劃的行動化為待辦。",
     },

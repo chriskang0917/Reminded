@@ -458,7 +458,6 @@ class FirebaseService implements IFirebaseService {
     try {
       await this.getCardOrderList();
       await this.getActiveCards();
-      runInAction(() => (this.cardStore.isInitialized = true));
     } catch (error) {
       console.error(error);
     }
@@ -595,7 +594,6 @@ class FirebaseService implements IFirebaseService {
 =============================== */
 
 class CardStore {
-  isInitialized: boolean = false;
   cardService: CardService;
   firebaseService: FirebaseService;
   cardOrderList: string[] = [];

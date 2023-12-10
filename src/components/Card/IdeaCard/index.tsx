@@ -1,11 +1,10 @@
 import { useDisclosure } from "@nextui-org/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { GrTransaction } from "react-icons/gr";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { PiNoteBlankThin } from "react-icons/pi";
 import { ICard } from "../../../store/cardStore";
 import { uiStore } from "../../../store/uiStore";
-import { tutorial } from "../../../utils/tutorial.ts";
 import Editable from "../../Editable";
 import BasicCard from "../BasicCard";
 import CardTags from "../CardTags";
@@ -15,7 +14,6 @@ import { IdeaNoteModal } from "./IdeaToNoteModal";
 
 export const IdeaCard = ({ card }: { card: ICard }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isActionEnd, setActionEnd] = useState(false);
   const {
     isOpen: isOpenAction,
     onOpen: onOpenAction,
@@ -34,34 +32,18 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
     uiStore.enableDnd();
   }, [isOpenNote, isOpenAction]);
 
-  useEffect(() => {
-    if (!tutorial.isActive() && !isOpenAction && !isActionEnd)
-      tutorial.drive(2);
-  }, [tutorial.isActive(), isOpenAction]);
-
-  useEffect(() => {
-    if (!tutorial.isActive() && !isOpenNote && isActionEnd) tutorial.drive(4);
-  }, [tutorial.isActive(), isOpenNote]);
-
   const settingList = [
     {
       icon: <PiNoteBlankThin />,
       label: "note",
       id: "tutorial-ideas-4",
-      onClick: () => {
-        onOpenNote();
-        tutorial.destroy();
-        setActionEnd(true);
-      },
+      onClick: onOpenNote,
     },
     {
       icon: <GrTransaction className="h-3" />,
       label: "action",
       id: "tutorial-ideas-2",
-      onClick: () => {
-        onOpenAction();
-        tutorial.destroy();
-      },
+      onClick: onOpenAction,
     },
     { icon: <HiOutlineDotsVertical />, label: "more", onClick: () => {} },
   ];

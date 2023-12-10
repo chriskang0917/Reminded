@@ -26,13 +26,12 @@ export const TodoTomorrow = observer(() => {
   );
 
   useEffect(() => {
-    if (cardStore.isInitialized)
+    const isTutorialDone = authStore.tutorialProgress.todo;
+    if (isTutorialDone !== undefined && !isTutorialDone)
       initTutorial(todoSteps, {
-        onCloseClick: () => {
-          authStore.updateTutorialProgress("todo");
-        },
+        onDestroyed: () => authStore.updateTutorialProgress("todo"),
       });
-  }, [cardStore.isInitialized]);
+  }, [authStore.tutorialProgress?.todo]);
 
   const actionCards = cardStore.getFilteredCardsWith(new ActionAllCards());
 
