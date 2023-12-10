@@ -1,4 +1,5 @@
 import { Button } from "@nextui-org/react";
+import { format } from "date-fns";
 import { useState } from "react";
 import { DayPicker } from "react-day-picker";
 import toast from "react-hot-toast";
@@ -26,7 +27,8 @@ function DatePicker({ card, date, setDate, onClose }: DatePickerProps) {
 
   const handleConfirmDate = () => {
     if (!selectedDate) return toast.error("請選擇到期日");
-    toast.success("已設定到期日");
+    const dueDate = format(selectedDate, "yyyy-MM-dd");
+    toast.success(`已設定待辦的到期日為 ${dueDate}`);
     setDate(selectedDate);
     onClose();
   };
