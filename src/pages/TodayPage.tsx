@@ -18,7 +18,7 @@ const Homepage = observer(() => {
         onDestroyed: () => authStore.updateTutorialProgress("today"),
       });
     }
-  }, []);
+  }, [authStore.tutorialProgress?.today]);
 
   const countTodo = cardStore.getFilteredCardsWith(new TodoTodayCards()).length;
   const countIdea = cardStore.getFilteredCardsWith(new IdeaTodayCards()).length;

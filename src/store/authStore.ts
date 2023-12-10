@@ -71,12 +71,13 @@ class EmailAuthService implements AuthService {
     if (!authStore.uid) return;
     const settingRef = doc(db, "users", authStore.uid);
     onSnapshot(settingRef, (doc) => {
-      if (doc.exists()) {
+      if (doc.data()?.tutorialProgress) {
         return runInAction(() => {
           authStore.tutorialProgress = doc.data()?.tutorialProgress;
         });
       }
 
+      localStorage.removeItem("settings");
       const settings = localStorage.getItem("settings");
 
       if (settings) {

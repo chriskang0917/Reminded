@@ -33,7 +33,7 @@ const IdeaPage = observer(() => {
   const { route } = useParams();
 
   useEffect(() => {
-    const isTutorialDone = authStore.tutorialProgress.idea;
+    const isTutorialDone = authStore.tutorialProgress?.idea;
     if (isTutorialDone !== undefined && !isTutorialDone) {
       initTutorial(ideaSteps, {
         onDestroyed: () => authStore.updateTutorialProgress("idea"),

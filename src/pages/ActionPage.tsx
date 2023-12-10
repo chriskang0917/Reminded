@@ -33,13 +33,13 @@ const ActionPage = observer(() => {
   const { route } = useParams();
 
   useEffect(() => {
-    const isTutorialDone = authStore.tutorialProgress.action;
+    const isTutorialDone = authStore.tutorialProgress?.action;
     if (isTutorialDone !== undefined && !isTutorialDone) {
       initTutorial(actionSteps, {
         onDestroyed: () => authStore.updateTutorialProgress("action"),
       });
     }
-  }, [authStore.tutorialProgress]);
+  }, [authStore.tutorialProgress?.action]);
 
   return <section className="relative">{renderActionPage(route)}</section>;
 });
