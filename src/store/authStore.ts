@@ -14,13 +14,22 @@ interface IProfile {
   name: string;
 }
 
+interface ITutorial {
+  today: boolean;
+  idea: boolean;
+  action: boolean;
+  todo: boolean;
+}
+
 interface AuthService {
   initAuthState: () => void;
   initState: () => void;
+  initUserSettings: () => void;
   register: (email: string, password: string, callback?: () => void) => void;
   login: (email: string, password: string) => void;
   logout: () => void;
   updateProfile: (profile: IProfile) => void;
+  updateTutorialProgress: (tutorialName: string) => void;
 }
 
 class EmailAuthService implements AuthService {
@@ -55,6 +64,31 @@ class EmailAuthService implements AuthService {
       } catch (error) {
         console.error("init_state_error", error);
       }
+    });
+  }
+
+  async initUserSettings() {
+    const settings = localStorage.getItem("settings");
+
+    if (settings) {
+      const parsedSettings = JSON.parse(settings);
+      return runInAction(() => {
+        authStore.tutorialProgress = parsedSettings.tutorialProgress;
+      });
+    }
+
+    const initSetting = {
+      tutorialProgress: {
+        today: false,
+        idea: false,
+        action: false,
+        todo: false,
+      },
+    };
+
+    localStorage.setItem("settings", JSON.stringify(initSetting));
+    runInAction(() => {
+      authStore.tutorialProgress = initSetting.tutorialProgress;
     });
   }
 
@@ -122,6 +156,7 @@ class EmailAuthService implements AuthService {
 
   logout() {
     cookie.deleteCookie("uid");
+    localStorage.removeItem("settings");
     runInAction(() => {
       authStore.isLogin = false;
       authStore.uid = null;
@@ -150,6 +185,18 @@ class EmailAuthService implements AuthService {
       console.error(error);
     }
   }
+
+  updateTutorialProgress(tutorialName: string) {
+    const settings = localStorage.getItem("settings");
+    if (!settings) return;
+
+    const parsedSettings = JSON.parse(settings);
+    parsedSettings.tutorialProgress[tutorialName] = true;
+    localStorage.setItem("settings", JSON.stringify(parsedSettings));
+    runInAction(() => {
+      authStore.tutorialProgress = parsedSettings.tutorialProgress;
+    });
+  }
 }
 
 class AuthStore {
@@ -161,6 +208,7 @@ class AuthStore {
   public favoriteIdeaTags: string[] = [];
   public favoriteActionTags: string[] = [];
   public favoriteTodoTags: string[] = [];
+  public tutorialProgress: ITutorial = {} as ITutorial;
 
   constructor(authService: AuthService) {
     makeAutoObservable(this);
@@ -173,6 +221,10 @@ class AuthStore {
 
   async initState() {
     this.authService.initState();
+  }
+
+  initUserSettings() {
+    this.authService.initUserSettings();
   }
 
   register(email: string, password: string, callback?: () => void) {
@@ -189,6 +241,10 @@ class AuthStore {
 
   updateProfile(profile: IProfile) {
     this.authService.updateProfile(profile);
+  }
+
+  updateTutorialProgress(tutorialName: string) {
+    this.authService.updateTutorialProgress(tutorialName);
   }
 }
 

@@ -1,4 +1,4 @@
-import { driver, Driver, DriveStep, PopoverDOM } from "driver.js";
+import { Config, driver, Driver, DriveStep, PopoverDOM } from "driver.js";
 import "driver.js/dist/driver.css";
 
 const popoverRender = (popover: PopoverDOM) => {
@@ -23,7 +23,7 @@ const popoverRender = (popover: PopoverDOM) => {
 
 export const driverConfig = {
   showProgress: true,
-  // allowClose: false,
+  allowClose: false,
   overlayOpacity: 0.5,
   stageRadius: 10,
   progressText: "第 {{current}}/{{total}} 步",
@@ -35,8 +35,8 @@ export const driverConfig = {
 
 export let tutorial: Driver;
 
-export const initTutorial = (steps: DriveStep[]) => {
-  tutorial = driver({ ...driverConfig, steps });
+export const initTutorial = (steps: DriveStep[], configs?: Partial<Config>) => {
+  tutorial = driver({ ...driverConfig, steps, ...configs });
   tutorial.drive();
 };
 
@@ -137,6 +137,31 @@ export const actionSteps: DriveStep[] = [
       title: "查看已執行行動",
       description:
         "這裡可以查看已經被執行過的行動，用以回顧或再次規劃行動，也給自己一些鼓勵！",
+    },
+  },
+];
+
+export const todoSteps: DriveStep[] = [
+  {
+    element: "#tutorial-todo-1",
+    popover: {
+      title: "拖曳待辦事項",
+      description:
+        "這裡可以查看目前已有的行動，能夠透過拖曳從行動放進明日待辦。",
+    },
+  },
+  {
+    element: "#tutorial-todo-2",
+    popover: {
+      title: "將待辦轉換為行動",
+      description: "這裡可以查看明日的待辦，也可以將待辦轉換為行動未來再做。",
+    },
+  },
+  {
+    element: "#tutorial-todo-3",
+    popover: {
+      title: "查看週六前的待辦",
+      description: "這裡可以查看一個工作週循環內的待辦，預設為週日至週六。",
     },
   },
 ];

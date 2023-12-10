@@ -81,6 +81,7 @@ const App = observer(() => {
   useEffect(() => {
     if (!authStore.uid) return authStore.initAuthState();
     authStore.initState();
+    authStore.initUserSettings();
     cardStore.initActiveCards();
   }, [authStore.uid]);
 

@@ -11,12 +11,18 @@ interface ITodo {
   label: string;
   path: string;
   icon?: React.ReactNode;
+  id?: string;
 }
 
 const TodoList: ITodo[] = [
   { label: "明日待辦", path: "/todo/tomorrow", icon: <CiCalendarDate /> },
   { label: "今日待辦", path: "/todo/today", icon: <MdOutlineToday /> },
-  { label: "本週待辦", path: "/todo/week", icon: <BsCalendar2Week /> },
+  {
+    label: "本週待辦",
+    path: "/todo/week",
+    icon: <BsCalendar2Week />,
+    id: "tutorial-todo-3",
+  },
   { label: "已完成", path: "/todo/complete", icon: <MdTaskAlt /> },
 ];
 
@@ -38,7 +44,7 @@ export const TodoBar = observer(() => {
       </li>
       <Divider className="w-[80%]" />
       {TodoList.map((action) => (
-        <li key={action.label}>
+        <li id={action.id} key={action.label}>
           <SubsideButton key={action.label} action={action}>
             <div className="flex h-full items-center justify-center gap-3">
               <span>{action.icon}</span>

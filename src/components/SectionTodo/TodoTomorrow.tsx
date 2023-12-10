@@ -1,12 +1,15 @@
 import { useDroppable } from "@dnd-kit/core";
 import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
+import { authStore } from "../../store/authStore";
 import {
   ActionAllCards,
   TodoAndActionTomorrowCards,
   cardStore,
 } from "../../store/cardStore";
 import { style } from "../../utils/style";
+import { initTutorial, todoSteps } from "../../utils/tutorial";
 import { TodoCard } from "../Card";
 import EmptyCard from "../Card/EmptyCard";
 import { Heading, HeadingDivider } from "../Heading";
@@ -21,6 +24,16 @@ export const TodoTomorrow = observer(() => {
   const todoAndActionAll = cardStore.getFilteredCardsWith(
     new TodoAndActionTomorrowCards(),
   );
+
+  useEffect(() => {
+    if (cardStore.isInitialized)
+      initTutorial(todoSteps, {
+        onCloseClick: () => {
+          authStore.updateTutorialProgress("todo");
+        },
+      });
+  }, [cardStore.isInitialized]);
+
   const actionCards = cardStore.getFilteredCardsWith(new ActionAllCards());
 
   const { setNodeRef: todoTomorrowRef } = useDroppable({
@@ -40,7 +53,7 @@ export const TodoTomorrow = observer(() => {
       />
       <TodoInput />
       <HeadingDivider />
-      <div ref={todoTomorrowRef} className="w-full">
+      <div id="tutorial-todo-2" ref={todoTomorrowRef} className="w-full">
         {todoAndActionAll.length === 0 && (
           <EmptyCard placeholder={todoPlaceholder} />
         )}
@@ -54,7 +67,7 @@ export const TodoTomorrow = observer(() => {
       </ul>
       <Spacer y={10} />
       <section className="mb-12 w-full">
-        <div className="flex w-full flex-col">
+        <div id="tutorial-todo-1" className="flex w-full flex-col">
           <h2 className={style.pageSubtitle}>所有行動</h2>
           <HeadingDivider />
           <div ref={actionRef} className="flex w-full flex-col gap-3">
