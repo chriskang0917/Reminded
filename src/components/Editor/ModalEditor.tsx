@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { NewNote, cardStore } from "../../store/cardStore";
 import NoteEditor from "./NoteEditor";
 
@@ -29,6 +30,7 @@ interface NoteContent {
 
 const ModalEditor = observer((prop: ModalEditorProp) => {
   const { pageTitle, card, isOpen, onOpenChange, onClose } = prop;
+  const navigate = useNavigate();
 
   const [noteContent, setNoteContent] = useState<NoteContent>({
     noteTitle: card?.noteTitle || "",
@@ -44,6 +46,14 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
     tags: string[],
   ) => {
     setNoteContent({ noteTitle, description, noteHTML, tags });
+  };
+
+  const handleDeleteNote = () => {
+    cardStore.deleteCard(card?.id as string);
+    cardStore.deleteCardFromFireStore(card?.id as string);
+    toast.success("已刪除筆記");
+    onClose();
+    navigate("/notes/all");
   };
 
   const handleSubmit = () => {
@@ -103,6 +113,15 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
               onPress={onClose}
             >
               關閉
+            </Button>
+            <Button
+              className="min-w-3 px-4 tracking-wider"
+              color="danger"
+              variant="shadow"
+              radius="sm"
+              onPress={handleDeleteNote}
+            >
+              刪除
             </Button>
             <Button
               className="min-w-[40px] tracking-wider"
