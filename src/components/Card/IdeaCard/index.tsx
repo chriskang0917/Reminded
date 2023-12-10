@@ -33,10 +33,16 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
   }, [isOpenNote, isOpenAction]);
 
   const settingList = [
-    { icon: <PiNoteBlankThin />, label: "note", onClick: onOpenNote },
+    {
+      icon: <PiNoteBlankThin />,
+      label: "note",
+      id: "tutorial-ideas-4",
+      onClick: onOpenNote,
+    },
     {
       icon: <GrTransaction className="h-3" />,
       label: "action",
+      id: "tutorial-ideas-2",
       onClick: onOpenAction,
     },
     { icon: <HiOutlineDotsVertical />, label: "more", onClick: () => {} },
@@ -60,9 +66,11 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
             ref={inputRef}
           />
         </Editable>
-        <div className="ml-2 flex min-w-unit-24 items-center justify-between">
+        <ul className="ml-2 flex min-w-unit-24 items-center justify-between">
           {settingList.map((setting) => (
-            <IdeaCardTool key={setting.label} card={card} setting={setting} />
+            <li id={setting.id} key={setting.label}>
+              <IdeaCardTool card={card} setting={setting} />
+            </li>
           ))}
           <IdeaToActionModal
             card={card}
@@ -76,7 +84,7 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
             onOpenChange={onOpenChangeNote}
             onClose={onCloseNote}
           />
-        </div>
+        </ul>
       </div>
       <div className="mt-5 flex flex-wrap items-center gap-x-2">
         <CardTags card={card} />

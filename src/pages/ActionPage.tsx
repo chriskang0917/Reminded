@@ -1,3 +1,5 @@
+import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   ActionAll,
@@ -6,6 +8,8 @@ import {
   ActionExpire,
   ActionSearch,
 } from "../components/SectionAction";
+import { authStore } from "../store/authStore";
+import { actionSteps, initTutorial } from "../utils/tutorial";
 import ErrorPage from "./ErrorPage";
 
 const renderActionPage = (route: string | undefined) => {
@@ -25,10 +29,19 @@ const renderActionPage = (route: string | undefined) => {
   }
 };
 
-function ActionPage() {
+const ActionPage = observer(() => {
   const { route } = useParams();
 
+  useEffect(() => {
+    const isTutorialDone = authStore.tutorialProgress?.action;
+    if (isTutorialDone !== undefined && !isTutorialDone) {
+      initTutorial(actionSteps, {
+        onDestroyed: () => authStore.updateTutorialProgress("action"),
+      });
+    }
+  }, [authStore.tutorialProgress?.action]);
+
   return <section className="relative">{renderActionPage(route)}</section>;
-}
+});
 
 export default ActionPage;

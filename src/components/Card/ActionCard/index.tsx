@@ -11,7 +11,7 @@ import { IdeaNoteModal } from "../IdeaCard/IdeaToNoteModal";
 import { ActionCardTool } from "./ActionCardTool";
 
 const settingList = [
-  { icon: <CiCalendarDate />, label: "date" },
+  { icon: <CiCalendarDate />, label: "date", id: "tutorial-actions-1" },
   { icon: <SlActionUndo className="h-3" />, label: "action" },
   { icon: <HiOutlineDotsVertical />, label: "more" },
 ];
@@ -88,16 +88,17 @@ export const ActionCard = ({ card }: CardToolProps) => {
             />
           </Editable>
         </div>
-        <div className="ml-2 flex min-w-unit-24 items-center justify-between">
+        <ul className="ml-2 flex min-w-unit-24 items-center justify-between">
           {settingList.map((setting) => (
-            <ActionCardTool
-              key={setting.label}
-              setting={setting}
-              onOpen={onOpenNote}
-              card={card}
-            />
+            <li id={setting.id} key={setting.label}>
+              <ActionCardTool
+                setting={setting}
+                onOpen={onOpenNote}
+                card={card}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
         <IdeaNoteModal
           card={card}
           isOpen={isOpenNote}

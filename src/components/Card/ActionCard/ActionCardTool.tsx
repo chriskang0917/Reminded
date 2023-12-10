@@ -89,11 +89,6 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
       color: "default",
       onPress: () => handleUpdateStatus("idea"),
     },
-    // {
-    //   label: "筆記",
-    //   color: "success",
-    //   onPress: () => onOpen && onOpen(),
-    // },
   ];
 
   const formatDate = (date: Date | undefined) => {
@@ -131,7 +126,11 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
         </Popover>
       )}
       {isDateLabel && !selectedDate && (
-        <Popover placement="bottom">
+        <Popover
+          placement="bottom"
+          isOpen={isOpen}
+          onOpenChange={() => setIsOpen(!isOpen)}
+        >
           <PopoverTrigger>
             <button>{setting.icon}</button>
           </PopoverTrigger>

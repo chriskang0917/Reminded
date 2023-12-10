@@ -16,18 +16,21 @@ const actionList = [
     page: "/action/",
     path: "/action/all",
     icon: <AiOutlineInteraction />,
+    id: "tutorial-ideas-3",
   },
   {
     label: "靈感",
     page: "/idea/",
     path: "/idea/week",
     icon: <FaRegLightbulb />,
+    id: "tutorial-today-3",
   },
   {
     label: "筆記",
     page: "/notes/",
     path: "/notes/all",
     icon: <FaRegStickyNote />,
+    id: "tutorial-ideas-5",
   },
 ];
 
@@ -57,6 +60,7 @@ export const Sidebar = () => {
                 closeDelay={100}
               >
                 <Card
+                  id={action?.id}
                   isBlurred
                   classNames={{
                     base: "h-10 w-10 rounded-xl drop-shadow-2xl",

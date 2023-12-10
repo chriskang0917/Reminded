@@ -73,7 +73,7 @@ export const IdeaInput = observer(() => {
   );
 
   return (
-    <section className="mb-8 flex flex-col items-center">
+    <section id="tutorial-today-1" className="mb-8 flex flex-col items-center">
       <Tabs
         className="mb-5"
         size="lg"

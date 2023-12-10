@@ -116,7 +116,7 @@ export const IdeaToActionModal = observer(
 
     const modalHeader = "以動詞開頭，轉換你的行動...";
     const modalExample = (
-      <p className="text-sm text-slate-500">
+      <p className="text-slate-500 text-sm">
         <strong>範例</strong>：<strong>寫一篇</strong> 500 字的文章、
         <strong>尋找</strong>公司附近的健身房...
       </p>
