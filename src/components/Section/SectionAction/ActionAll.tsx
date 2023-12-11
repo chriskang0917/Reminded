@@ -1,4 +1,3 @@
-import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { ActionAllCards, cardStore } from "../../../store/cardStore";
 import { ActionCard } from "../../Card";
@@ -15,16 +14,13 @@ export const ActionAll = observer(() => {
     <>
       <Heading title={title} subtitle={subtitle} counts={actionCards.length} />
       <HeadingDivider />
-      <SectionShadow>
-        <ul className="grid w-full gap-3">
-          {actionCards.map((card) => (
-            <li key={card.id}>
-              <ActionCard card={card} />
-            </li>
-          ))}
-        </ul>
+      <SectionShadow className="h-[calc(100svh-170px)]">
+        {actionCards.map((card) => (
+          <li key={card.id}>
+            <ActionCard card={card} />
+          </li>
+        ))}
       </SectionShadow>
-      <Spacer y={10} />
     </>
   );
 });

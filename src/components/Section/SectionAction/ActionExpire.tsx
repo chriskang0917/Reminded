@@ -1,8 +1,8 @@
-import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { ActionExpiredCards, cardStore } from "../../../store/cardStore";
 import { ActionCard } from "../../Card";
 import { Heading, HeadingDivider } from "../../Heading";
+import SectionShadow from "../SectionShadow";
 
 const title = "過期行動";
 const subtitle = "行動過期";
@@ -20,14 +20,13 @@ export const ActionExpire = observer(() => {
         counts={actionTodoCards.length}
       />
       <HeadingDivider />
-      <ul className="mt-5 grid w-full gap-3">
+      <SectionShadow className="h-[calc(100svh-170px)]">
         {actionTodoCards.map((card) => (
           <li key={card.id}>
             <ActionCard card={card} />
           </li>
         ))}
-      </ul>
-      <Spacer y={10} />
+      </SectionShadow>
     </>
   );
 });
