@@ -9,7 +9,7 @@ import { IdeaTodayCards, TodoTodayCards, cardStore } from "../store/cardStore";
 import { initTutorial, todaySteps } from "../utils/tutorial";
 
 const Homepage = observer(() => {
-  const [selectedKey, setSelectedKey] = useState<Key>("todo");
+  const [selectedKey, setSelectedKey] = useState<Key>("idea");
 
   useEffect(() => {
     const isTutorialDone = authStore.tutorialProgress?.today;
