@@ -49,16 +49,18 @@ function DatePicker({ card, date, setDate, onClose }: DatePickerProps) {
       <Button size="sm" variant="shadow" onPress={handleConfirmDate}>
         確認日期
       </Button>
-      {selectedDate && (
+      {
         <Button
           className="self-end"
           size="sm"
+          color="danger"
           variant="light"
           onPress={handleRemoveDate}
+          isDisabled={!selectedDate}
         >
           移除到期
         </Button>
-      )}
+      }
     </div>
   );
 
