@@ -1,4 +1,5 @@
 import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 import { ActionArchiveCards, cardStore } from "../../../store/cardStore";
 import { ActionCard } from "../../Card";
 import { Heading, HeadingDivider } from "../../Heading";
@@ -11,6 +12,10 @@ export const ActionArchive = observer(() => {
   const actionTodoCards = cardStore.getFilteredCardsWith(
     new ActionArchiveCards(),
   );
+
+  useEffect(() => {
+    cardStore.getArchivedCards();
+  }, []);
 
   return (
     <>

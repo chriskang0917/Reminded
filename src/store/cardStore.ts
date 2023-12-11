@@ -317,9 +317,18 @@ export class ActionExecutedCards extends CardsStrategy {
 
 export class ActionArchiveCards extends CardsStrategy {
   getCards() {
-    return this.cardStore.archivedCards.filter(
+    const sortedCards = this.getSortedCardsByOrderList();
+    const justArchived = sortedCards.filter(
+      (card) => card.status === "action" && card.isArchived,
+    );
+    const hasArchived = this.cardStore.archivedCards.filter(
       (card) => card.status === "action",
     );
+    const sortedCardsDesc = cardUtils.sortCardsDescBy("updatedTime", [
+      ...justArchived,
+      ...hasArchived,
+    ]);
+    return sortedCardsDesc;
   }
 }
 
