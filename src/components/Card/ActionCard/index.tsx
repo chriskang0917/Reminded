@@ -16,11 +16,7 @@ const settingList = [
   { icon: <HiOutlineDotsVertical />, label: "more" },
 ];
 
-interface CardToolProps {
-  card: ICard;
-}
-
-export const ActionCard = ({ card }: CardToolProps) => {
+export const ActionCard = ({ card }: { card: ICard }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isSelect, setIsSelect] = useState(card.isArchived);
   const {
@@ -80,7 +76,7 @@ export const ActionCard = ({ card }: CardToolProps) => {
             type="input"
           >
             <input
-              className="inline-block bg-transparent tracking-wide outline-none"
+              className="inline-block w-full bg-transparent tracking-wide outline-none"
               type="text"
               name={card.status}
               defaultValue={card.content}
