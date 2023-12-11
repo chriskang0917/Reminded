@@ -2,6 +2,8 @@ import { observer } from "mobx-react-lite";
 import { IdeaAllCards, cardStore } from "../../../store/cardStore";
 import { IdeaCard } from "../../Card";
 import { Heading, HeadingDivider } from "../../Heading";
+import MotionItem from "../../Motion/MotionItem";
+import MotionList from "../../Motion/MotionList";
 import SectionShadow from "../SectionShadow";
 
 const title = "所有靈感";
@@ -15,11 +17,13 @@ export const IdeaAll = observer(() => {
       <Heading title={title} subtitle={subtitle} counts={ideaCardsAll.length} />
       <HeadingDivider />
       <SectionShadow className="h-[calc(100svh-170px)]">
-        {ideaCardsAll.map((card) => (
-          <li key={card.id}>
-            <IdeaCard card={card} />
-          </li>
-        ))}
+        <MotionList>
+          {ideaCardsAll.map((card) => (
+            <MotionItem key={card.id}>
+              <IdeaCard card={card} />
+            </MotionItem>
+          ))}
+        </MotionList>
       </SectionShadow>
     </>
   );

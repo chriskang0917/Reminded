@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { TodoCompletedCards, cardStore } from "../../../store/cardStore";
 import { TodoCard } from "../../Card";
 import { Heading, HeadingDivider } from "../../Heading";
+import MotionItem from "../../Motion/MotionItem";
+import MotionList from "../../Motion/MotionList";
 import SectionShadow from "../SectionShadow";
 
 const title = "已完成待辦";
@@ -20,11 +22,13 @@ export const TodoComplete = observer(() => {
       <Heading title={title} subtitle={subtitle} counts={todoComplete.length} />
       <HeadingDivider />
       <SectionShadow className="h-[calc(100svh-180px)]">
-        {todoComplete.map((card) => (
-          <li key={card.id}>
-            <TodoCard card={card} />
-          </li>
-        ))}
+        <MotionList>
+          {todoComplete.map((card) => (
+            <MotionItem key={card.id}>
+              <TodoCard card={card} />
+            </MotionItem>
+          ))}
+        </MotionList>
       </SectionShadow>
     </>
   );

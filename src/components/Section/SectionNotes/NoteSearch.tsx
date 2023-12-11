@@ -4,6 +4,8 @@ import { NewNote } from "../../../store/cardStore";
 import { NoteCard } from "../../Card/NoteCard";
 import { Heading, HeadingDivider } from "../../Heading";
 import { IdeaSearchInput } from "../../Input";
+import MotionItem from "../../Motion/MotionItem";
+import MotionList from "../../Motion/MotionList";
 
 const title = "搜尋筆記";
 const subtitle = "筆記";
@@ -18,13 +20,15 @@ export const NoteSearch = observer(() => {
       <IdeaSearchInput searchText={text} onSearch={onSearch} />
       <p className="self-start text-sm text-gray-400">{searchCountsText}</p>
       <HeadingDivider />
-      <ul className="mt-5 grid w-full gap-3">
-        {results.map((card) => (
-          <li key={card.item.id}>
-            <NoteCard note={card.item as NewNote} />
-          </li>
-        ))}
-      </ul>
+      <MotionList>
+        <ul className="mt-5 grid w-full gap-3">
+          {results.map((card) => (
+            <MotionItem key={card.item.id}>
+              <NoteCard note={card.item as NewNote} />
+            </MotionItem>
+          ))}
+        </ul>
+      </MotionList>
     </>
   );
 });

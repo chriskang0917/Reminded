@@ -2,6 +2,8 @@ import { observer } from "mobx-react-lite";
 import { ActionExpiredCards, cardStore } from "../../../store/cardStore";
 import { ActionCard } from "../../Card";
 import { Heading, HeadingDivider } from "../../Heading";
+import MotionItem from "../../Motion/MotionItem";
+import MotionList from "../../Motion/MotionList";
 import SectionShadow from "../SectionShadow";
 
 const title = "過期行動";
@@ -21,11 +23,13 @@ export const ActionExpire = observer(() => {
       />
       <HeadingDivider />
       <SectionShadow className="h-[calc(100svh-170px)]">
-        {actionTodoCards.map((card) => (
-          <li key={card.id}>
-            <ActionCard card={card} />
-          </li>
-        ))}
+        <MotionList>
+          {actionTodoCards.map((card) => (
+            <MotionItem key={card.id}>
+              <ActionCard card={card} />
+            </MotionItem>
+          ))}
+        </MotionList>
       </SectionShadow>
     </>
   );
