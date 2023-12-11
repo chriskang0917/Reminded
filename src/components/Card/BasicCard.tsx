@@ -15,9 +15,11 @@ function BasicCard({ card, children, className }: BasicCardProps) {
       <Card fullWidth radius="sm">
         <CardBody className={cn("min-h-20 my-2 flex flex-col pl-3", className)}>
           {children}
-          <div className="mt-2 flex flex-wrap items-center gap-x-2">
-            <CardTags card={card} />
-          </div>
+          {card.status !== "note" && (
+            <div className="mt-2 flex flex-wrap items-center gap-x-2">
+              <CardTags card={card} />
+            </div>
+          )}
         </CardBody>
       </Card>
     </SortableItem>

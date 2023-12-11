@@ -114,15 +114,17 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
             >
               關閉
             </Button>
-            <Button
-              className="min-w-3 px-4 tracking-wider"
-              color="danger"
-              variant="shadow"
-              radius="sm"
-              onPress={handleDeleteNote}
-            >
-              刪除
-            </Button>
+            {noteContent.noteTitle && (
+              <Button
+                className="min-w-3 px-4 tracking-wider"
+                color="danger"
+                variant="shadow"
+                radius="sm"
+                onPress={handleDeleteNote}
+              >
+                刪除
+              </Button>
+            )}
             <Button
               className="min-w-[40px] tracking-wider"
               radius="sm"
