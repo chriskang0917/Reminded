@@ -7,6 +7,7 @@ import {
 } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { Key, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { IoIosAdd } from "react-icons/io";
 import { NewCard, cardStore } from "../../store/cardStore";
 import { getObjectFilteredTags } from "../../utils/input";
@@ -41,6 +42,9 @@ export const IdeaInput = observer(() => {
     tagRef.current?.blur();
     setInput("");
     setTagInput("");
+    toast.success(
+      `已新增至下方的 今日${selectedTab === "idea" ? `靈感` : `待辦`}！`,
+    );
   };
 
   const handleTab = (key: string) => {

@@ -1,8 +1,9 @@
 import { observer } from "mobx-react-lite";
-import { TodoTodayCards, cardStore } from "../../store/cardStore";
-import { TodoCard } from "../Card";
-import { Heading, HeadingDivider } from "../Heading";
-import { TodoInput } from "../Input";
+import { TodoTodayCards, cardStore } from "../../../store/cardStore";
+import { TodoCard } from "../../Card";
+import { Heading, HeadingDivider } from "../../Heading";
+import { TodoInput } from "../../Input";
+import SectionShadow from "../SectionShadow";
 
 const title = "今日待辦";
 const subtitle = "待辦";
@@ -19,13 +20,13 @@ export const TodoToday = observer(() => {
       />
       <TodoInput />
       <HeadingDivider />
-      <ul className="grid w-full gap-3">
+      <SectionShadow>
         {todoTodayCards.map((card) => (
           <li key={card.id}>
             <TodoCard card={card} />
           </li>
         ))}
-      </ul>
+      </SectionShadow>
     </>
   );
 });

@@ -156,8 +156,8 @@ export class TodoAllCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList().filter(
       (card) =>
-        (card.status === "todo" || card.status === "action") &&
-        card.dueDate &&
+        ((card.dueDate && card.status === "action") ||
+          card.status === "todo") &&
         !card.isArchived,
     );
     const descSortedCards = cardUtils.sortCardsDescBy("dueDate", sortedCards);
@@ -317,9 +317,18 @@ export class ActionExecutedCards extends CardsStrategy {
 
 export class ActionArchiveCards extends CardsStrategy {
   getCards() {
-    return this.cardStore.archivedCards.filter(
+    const sortedCards = this.getSortedCardsByOrderList();
+    const justArchived = sortedCards.filter(
+      (card) => card.status === "action" && card.isArchived,
+    );
+    const hasArchived = this.cardStore.archivedCards.filter(
       (card) => card.status === "action",
     );
+    const sortedCardsDesc = cardUtils.sortCardsDescBy("updatedTime", [
+      ...justArchived,
+      ...hasArchived,
+    ]);
+    return sortedCardsDesc;
   }
 }
 
@@ -458,6 +467,7 @@ class FirebaseService implements IFirebaseService {
     try {
       await this.getCardOrderList();
       await this.getActiveCards();
+      runInAction(() => (this.cardStore.isLoaded = true));
     } catch (error) {
       console.error(error);
     }
@@ -594,6 +604,7 @@ class FirebaseService implements IFirebaseService {
 =============================== */
 
 class CardStore {
+  isLoaded: boolean = false;
   cardService: CardService;
   firebaseService: FirebaseService;
   cardOrderList: string[] = [];

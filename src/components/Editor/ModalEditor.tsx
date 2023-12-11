@@ -5,9 +5,11 @@ import {
   ModalContent,
   ModalHeader,
 } from "@nextui-org/react";
+import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { NewNote, cardStore } from "../../store/cardStore";
 import NoteEditor from "./NoteEditor";
 
@@ -28,6 +30,7 @@ interface NoteContent {
 
 const ModalEditor = observer((prop: ModalEditorProp) => {
   const { pageTitle, card, isOpen, onOpenChange, onClose } = prop;
+  const navigate = useNavigate();
 
   const [noteContent, setNoteContent] = useState<NoteContent>({
     noteTitle: card?.noteTitle || "",
@@ -45,18 +48,28 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
     setNoteContent({ noteTitle, description, noteHTML, tags });
   };
 
+  const handleDeleteNote = () => {
+    cardStore.deleteCard(card?.id as string);
+    cardStore.deleteCardFromFireStore(card?.id as string);
+    toast.success("已刪除筆記");
+    onClose();
+    navigate("/notes/all");
+  };
+
   const handleSubmit = () => {
+    const now = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+
     if (card?.noteHTML) {
       cardStore.updateNote(card.id, {
-        noteTitle: noteContent.noteTitle,
-        content: noteContent.description,
+        noteTitle: noteContent.noteTitle || `未命名筆記 ${now}`,
+        content: noteContent.description || "尚無內容",
         noteHTML: noteContent.noteHTML,
         tags: noteContent.tags,
       });
       cardStore.updateNoteToFirebase(card.id, {
-        noteTitle: noteContent.noteTitle,
-        content: noteContent.description,
-        noteHTML: noteContent.noteHTML,
+        noteTitle: noteContent.noteTitle || "未命名筆記 ${now}",
+        content: noteContent.description || "尚無內容",
+        noteHTML: noteContent.noteHTML || "",
         tags: noteContent.tags,
       });
       toast.success("已更新筆記");
@@ -65,9 +78,9 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
     }
 
     const note = new NewNote(
-      noteContent.noteTitle,
-      noteContent.description,
-      noteContent.noteHTML,
+      noteContent.noteTitle || `未命名筆記 ${now}`,
+      noteContent.description || `尚無內容`,
+      noteContent.noteHTML || "",
       card?.tags || [],
     );
     cardStore.addNote(note);
@@ -101,6 +114,17 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
             >
               關閉
             </Button>
+            {noteContent.noteTitle && (
+              <Button
+                className="min-w-3 px-4 tracking-wider"
+                color="danger"
+                variant="shadow"
+                radius="sm"
+                onPress={handleDeleteNote}
+              >
+                刪除
+              </Button>
+            )}
             <Button
               className="min-w-[40px] tracking-wider"
               radius="sm"

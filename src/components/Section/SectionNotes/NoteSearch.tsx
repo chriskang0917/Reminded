@@ -1,9 +1,9 @@
 import { observer } from "mobx-react-lite";
-import { useSearch } from "../../hooks/useSearch";
-import { NewNote } from "../../store/cardStore";
-import { NoteCard } from "../Card/NoteCard";
-import { Heading, HeadingDivider } from "../Heading";
-import { IdeaSearchInput } from "../Input";
+import { useSearch } from "../../../hooks/useSearch";
+import { NewNote } from "../../../store/cardStore";
+import { NoteCard } from "../../Card/NoteCard";
+import { Heading, HeadingDivider } from "../../Heading";
+import { IdeaSearchInput } from "../../Input";
 
 const title = "搜尋筆記";
 const subtitle = "筆記";

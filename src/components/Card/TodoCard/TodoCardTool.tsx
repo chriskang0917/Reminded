@@ -100,7 +100,7 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
 
   return (
     <>
-      {isDateLabel && selectedDate && (
+      {isDateLabel && (
         <Popover
           isOpen={isOpen}
           onOpenChange={() => setIsOpen(!isOpen)}
@@ -108,9 +108,13 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
         >
           <PopoverTrigger>
             <button>
-              <p className="text-[0.75rem] underline">
-                {formatDate(selectedDate)}
-              </p>
+              {card.dueDate ? (
+                <p className="text-[0.75rem] underline">
+                  {formatDate(selectedDate || undefined)}
+                </p>
+              ) : (
+                <>{setting.icon}</>
+              )}
             </button>
           </PopoverTrigger>
           <PopoverContent>
@@ -118,29 +122,8 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
               card={card}
               date={selectedDate}
               setDate={handleDateChange}
-              onClose={() => setSelectedDate(null)}
+              onClose={() => setIsOpen(false)}
             />
-          </PopoverContent>
-        </Popover>
-      )}
-      {isDateLabel && !selectedDate && (
-        <Popover
-          placement="bottom"
-          isOpen={isOpen}
-          onOpenChange={() => setIsOpen(!isOpen)}
-        >
-          <PopoverTrigger>
-            <button>{setting.icon}</button>
-          </PopoverTrigger>
-          <PopoverContent>
-            {!selectedDate && (
-              <DatePicker
-                card={card}
-                date={selectedDate}
-                setDate={handleDateChange}
-                onClose={() => setIsOpen(false)}
-              />
-            )}
           </PopoverContent>
         </Popover>
       )}

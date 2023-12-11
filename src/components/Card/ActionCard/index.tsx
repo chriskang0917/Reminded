@@ -4,9 +4,9 @@ import { CiCalendarDate } from "react-icons/ci";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { SlActionUndo } from "react-icons/sl";
 import { ICard, cardStore } from "../../../store/cardStore";
-import Editable from "../../Editable";
 import BasicCard from "../BasicCard";
-import CardTags from "../CardTags";
+import Editable from "../Editable/Editable";
+import EditableWrapper from "../Editable/EditableWrapper";
 import { IdeaNoteModal } from "../IdeaCard/IdeaToNoteModal";
 import { ActionCardTool } from "./ActionCardTool";
 
@@ -16,11 +16,7 @@ const settingList = [
   { icon: <HiOutlineDotsVertical />, label: "more" },
 ];
 
-interface CardToolProps {
-  card: ICard;
-}
-
-export const ActionCard = ({ card }: CardToolProps) => {
+export const ActionCard = ({ card }: { card: ICard }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isSelect, setIsSelect] = useState(card.isArchived);
   const {
@@ -58,9 +54,9 @@ export const ActionCard = ({ card }: CardToolProps) => {
   const isTodo = card.dueDate || card.status === "execute";
 
   return (
-    <BasicCard card={card}>
-      <div className="flex flex-grow items-center justify-between">
-        <div className="flex flex-grow items-center justify-between">
+    <>
+      <BasicCard card={card}>
+        <EditableWrapper>
           {isTodo && (
             <Checkbox
               size="sm"
@@ -70,7 +66,7 @@ export const ActionCard = ({ card }: CardToolProps) => {
               isSelected={isSelect}
               lineThrough
               defaultSelected
-            ></Checkbox>
+            />
           )}
           <Editable
             id={card.id}
@@ -80,35 +76,32 @@ export const ActionCard = ({ card }: CardToolProps) => {
             type="input"
           >
             <input
-              className="inline-block bg-transparent tracking-wide outline-none"
+              className="inline-block w-full bg-transparent tracking-wide outline-none"
               type="text"
               name={card.status}
               defaultValue={card.content}
               ref={inputRef}
             />
           </Editable>
-        </div>
-        <ul className="ml-2 flex min-w-unit-24 items-center justify-between">
-          {settingList.map((setting) => (
-            <li id={setting.id} key={setting.label}>
-              <ActionCardTool
-                setting={setting}
-                onOpen={onOpenNote}
-                card={card}
-              />
-            </li>
-          ))}
-        </ul>
-        <IdeaNoteModal
-          card={card}
-          isOpen={isOpenNote}
-          onOpenChange={onOpenChangeNote}
-          onClose={onCloseNote}
-        />
-      </div>
-      <div className="mt-2 flex flex-wrap items-center gap-x-2">
-        <CardTags card={card} />
-      </div>
-    </BasicCard>
+          <ul className="ml-2 flex min-w-unit-24 items-center justify-between">
+            {settingList.map((setting) => (
+              <li id={setting.id} key={setting.label}>
+                <ActionCardTool
+                  setting={setting}
+                  onOpen={onOpenNote}
+                  card={card}
+                />
+              </li>
+            ))}
+          </ul>
+        </EditableWrapper>
+      </BasicCard>
+      <IdeaNoteModal
+        card={card}
+        isOpen={isOpenNote}
+        onOpenChange={onOpenChangeNote}
+        onClose={onCloseNote}
+      />
+    </>
   );
 };

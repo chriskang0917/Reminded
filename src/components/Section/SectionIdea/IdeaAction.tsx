@@ -1,8 +1,9 @@
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { AllCards, cardStore } from "../../store/cardStore";
-import { IdeaCard } from "../Card";
-import { Heading, HeadingDivider } from "../Heading";
+import { AllCards, cardStore } from "../../../store/cardStore";
+import { IdeaCard } from "../../Card";
+import { Heading, HeadingDivider } from "../../Heading";
+import SectionShadow from "../SectionShadow";
 
 const title = "已轉換靈感";
 const subtitle = "轉換";
@@ -26,13 +27,13 @@ export const IdeaAction = observer(() => {
     <>
       <Heading title={title} subtitle={subtitle} counts={cards.length} />
       <HeadingDivider />
-      <ul className="grid w-full gap-3">
+      <SectionShadow className="h-[calc(100svh-170px)]">
         {cards.map((card) => (
           <li key={card.id}>
             <IdeaCard card={card} />
           </li>
         ))}
-      </ul>
+      </SectionShadow>
     </>
   );
 });

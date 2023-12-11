@@ -46,11 +46,8 @@ export const NotesBar = observer(() => {
           "transition-all hover:bg-fourthDark hover:text-white",
         )}
       >
-        <CardBody>
-          <div
-            className="flex h-full items-center justify-center gap-3"
-            onClick={onOpen}
-          >
+        <CardBody onClick={onOpen}>
+          <div className="flex h-full items-center justify-center gap-3">
             <span>+</span>
             <span className="text-sm">新增筆記</span>
           </div>
@@ -68,9 +65,15 @@ export const NotesBar = observer(() => {
       ))}
       <Divider className="w-[80%]" />
       <ScrollShadow className="h-[400px]" hideScrollBar size={30}>
-        {notes.length === 0 && (
-          <div className="mt-2 flex justify-center">
+        {!cardStore.isLoaded && (
+          <div className="mt-2 flex items-center justify-center gap-2">
             <Spinner />
+            <p className="text-sm text-secondary">讀取中...</p>
+          </div>
+        )}
+        {cardStore.isLoaded && notes.length === 0 && (
+          <div className="mt-2 flex items-center justify-center gap-2">
+            <p className="text-sm text-secondary">新增一些筆記吧！</p>
           </div>
         )}
         <ul aria-label="Notes List" className="inline-block w-[90%]">

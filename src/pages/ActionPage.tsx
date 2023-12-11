@@ -7,7 +7,7 @@ import {
   ActionExecute,
   ActionExpire,
   ActionSearch,
-} from "../components/SectionAction";
+} from "../components/Section/SectionAction";
 import { authStore } from "../store/authStore";
 import { actionSteps, initTutorial } from "../utils/tutorial";
 import ErrorPage from "./ErrorPage";

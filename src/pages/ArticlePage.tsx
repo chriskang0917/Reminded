@@ -24,7 +24,7 @@ const ArticlePage = observer(() => {
   if (!note) return <div>Loading...</div>;
 
   const title = note.noteTitle;
-  const noteHTML = note.noteHTML;
+  const noteHTML = note.noteHTML || "";
   const parsedHTML = parse(noteHTML);
   const parsedDate = parseISO(note.createdTime);
   const formattedDate = format(parsedDate, "yyyy-MM-dd");
@@ -33,16 +33,6 @@ const ArticlePage = observer(() => {
 
   return (
     <section className="pb-5">
-      {/* <Image
-        isBlurred
-        loading="lazy"
-        alt="article-bg"
-        src={ArticleBG}
-        classNames={{
-          wrapper: "absolute",
-          blurredImg: "opacity-5",
-        }}
-      /> */}
       <Card className="relative top-6 z-10 mx-auto mb-10 w-[95%] px-6 py-5">
         {note.tags.length ? <CardTags card={note} /> : ""}
         <div className="flex items-center justify-between">

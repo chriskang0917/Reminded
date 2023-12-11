@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { NoteSearch, NotesAll } from "../components/SectionNotes";
+import { NoteSearch, NotesAll } from "../components/Section/SectionNotes";
 import ErrorPage from "./ErrorPage";
 
 const renderIdeaPage = (route: string | undefined) => {

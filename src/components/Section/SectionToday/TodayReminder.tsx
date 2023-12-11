@@ -1,6 +1,6 @@
 import { Card, CardBody, Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { AllCards, cardStore } from "../../store/cardStore";
+import { AllCards, cardStore } from "../../../store/cardStore";
 
 export const TodayReminder = observer(() => {
   const todoCards = cardStore

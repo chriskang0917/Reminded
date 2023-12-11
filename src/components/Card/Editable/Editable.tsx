@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
-import { cardStore } from "../store/cardStore";
+import { cardStore } from "../../../store/cardStore";
 
 interface EditableProps {
   id: string;
@@ -54,7 +54,7 @@ const Editable = observer(
           </form>
         ) : (
           <div
-            className="w-full tracking-wide"
+            className="w-full cursor-pointer tracking-wide"
             onClick={() => setIsEditing(true)}
           >
             {text || placeholder || "請輸入您的內容..."}

@@ -1,4 +1,5 @@
 import { Button } from "@nextui-org/react";
+import { format } from "date-fns";
 import { useState } from "react";
 import { DayPicker } from "react-day-picker";
 import toast from "react-hot-toast";
@@ -26,7 +27,8 @@ function DatePicker({ card, date, setDate, onClose }: DatePickerProps) {
 
   const handleConfirmDate = () => {
     if (!selectedDate) return toast.error("請選擇到期日");
-    toast.success("已設定到期日");
+    const dueDate = format(selectedDate, "MM-dd");
+    toast.success(`已設定待辦到期日為 ${dueDate}`);
     setDate(selectedDate);
     onClose();
   };
@@ -40,16 +42,25 @@ function DatePicker({ card, date, setDate, onClose }: DatePickerProps) {
   };
 
   const DatePickerFooter = (
-    <div className="flex justify-between">
+    <div className="flex justify-center gap-2">
       <Button size="sm" variant="light" onPress={handleReturnToday}>
         今天
       </Button>
       <Button size="sm" variant="shadow" onPress={handleConfirmDate}>
         確認日期
       </Button>
-      <Button size="sm" variant="light" onPress={handleRemoveDate}>
-        移除到期
-      </Button>
+      {
+        <Button
+          className="self-end"
+          size="sm"
+          color="danger"
+          variant="light"
+          onPress={handleRemoveDate}
+          isDisabled={!selectedDate}
+        >
+          移除到期
+        </Button>
+      }
     </div>
   );
 
