@@ -8,6 +8,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import toast from "react-hot-toast";
 import { auth, db } from "../config/firebase";
 import { cookie } from "../utils/cookie";
+import { NewCard, cardStore } from "./cardStore";
 
 interface IProfile {
   email: string;
@@ -130,6 +131,24 @@ class EmailAuthService implements AuthService {
           uid: authStore.uid,
           email,
         });
+      })
+      .then(() => {
+        const newCard1 = new NewCard("將靈感轉換成具體行動", [], "idea");
+        const newCard2 = new NewCard("今日待辦，可以調整到期日", [], "todo");
+        const newCard3 = new NewCard(
+          "行動設定到期日，轉換成待辦",
+          [],
+          "action",
+        );
+        const cardOrderList = [newCard1.id, newCard2.id, newCard3.id];
+        cardStore.addCard(newCard1);
+        cardStore.addCard(newCard2);
+        cardStore.addCard(newCard3);
+        cardStore.addCardToFireStore(newCard1);
+        cardStore.addCardToFireStore(newCard2);
+        cardStore.addCardToFireStore(newCard3);
+        cardStore.updateCardOrderList(cardOrderList);
+        cardStore.updateCardOrderListToFirebase(cardOrderList);
       })
       .catch((error) => {
         const errorCode = error.code || "";
