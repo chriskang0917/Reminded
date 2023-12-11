@@ -42,17 +42,6 @@ interface ButtonProps {
   onPress: () => void;
 }
 
-// const toolTipList = [
-//   {
-//     label: "轉換",
-//     content: "轉換行動後保留靈感",
-//   },
-//   {
-//     label: "封存",
-//     content: "轉換行動後封存靈感",
-//   },
-// ];
-
 export const IdeaToActionModal = observer(
   ({ card, isOpen, onOpenChange, onClose }: ActionModalProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
@@ -77,14 +66,14 @@ export const IdeaToActionModal = observer(
           cardStore.updateCardToFirebase(card.id, { isTransformed: true });
           cardStore.addCard(newCard);
           cardStore.addCardToFireStore(newCard);
-          toast.success("已新增行動卡片並保留靈感");
+          toast.success("已新增行動卡片");
           onClose();
         },
       },
       {
         label: "封存靈感",
         color: "primary",
-        tooltip: "新增行動卡片後封存靈感",
+        tooltip: "新增行動卡片後封存靈感，可至「封存靈感」查找",
         onPress: () => {
           const ideaToActionInput = inputRef.current?.value || "";
           if (!ideaToActionInput) return toast.error("請輸入內容");
@@ -99,7 +88,7 @@ export const IdeaToActionModal = observer(
           });
           cardStore.addCard(newCard);
           cardStore.addCardToFireStore(newCard);
-          toast.success("已新增行動卡片並封存靈感");
+          toast.success("已新增行動卡片");
           onClose();
         },
       },

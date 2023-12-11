@@ -2,6 +2,8 @@ import { observer } from "mobx-react-lite";
 import { IdeaThisWeekCards, cardStore } from "../../../store/cardStore";
 import { IdeaCard } from "../../Card";
 import { Heading, HeadingDivider } from "../../Heading";
+import MotionItem from "../../Motion/MotionItem";
+import MotionList from "../../Motion/MotionList";
 import SectionShadow from "../SectionShadow";
 
 const title = "本週靈感";
@@ -19,11 +21,13 @@ export const IdeaWeek = observer(() => {
       <Heading title={title} subtitle={subtitle} counts={counts} />
       <HeadingDivider />
       <SectionShadow className="h-[calc(100svh-170px)]">
-        {ideaCardsOfThisWeek.map((card) => (
-          <li key={card.id}>
-            <IdeaCard card={card} />
-          </li>
-        ))}
+        <MotionList>
+          {ideaCardsOfThisWeek.map((card) => (
+            <MotionItem key={card.id}>
+              <IdeaCard card={card} />
+            </MotionItem>
+          ))}
+        </MotionList>
       </SectionShadow>
     </>
   );

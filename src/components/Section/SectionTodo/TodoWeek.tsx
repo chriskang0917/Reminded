@@ -3,6 +3,8 @@ import { TodoThisWeekCards, cardStore } from "../../../store/cardStore";
 import { TodoCard } from "../../Card";
 import { Heading, HeadingDivider } from "../../Heading";
 import { TodoInput } from "../../Input";
+import MotionItem from "../../Motion/MotionItem";
+import MotionList from "../../Motion/MotionList";
 import SectionShadow from "../SectionShadow";
 
 const title = "本週待辦";
@@ -17,11 +19,13 @@ export const TodoWeek = observer(() => {
       <TodoInput />
       <HeadingDivider />
       <SectionShadow>
-        {todoThisWeek.map((card) => (
-          <li key={card.id}>
-            <TodoCard card={card} />
-          </li>
-        ))}
+        <MotionList>
+          {todoThisWeek.map((card) => (
+            <MotionItem key={card.id}>
+              <TodoCard card={card} />
+            </MotionItem>
+          ))}
+        </MotionList>
       </SectionShadow>
     </>
   );

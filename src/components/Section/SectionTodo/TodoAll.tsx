@@ -3,6 +3,8 @@ import { TodoAllCards, cardStore } from "../../../store/cardStore";
 import { TodoCard } from "../../Card";
 import { Heading, HeadingDivider } from "../../Heading";
 import { TodoInput } from "../../Input";
+import MotionItem from "../../Motion/MotionItem";
+import MotionList from "../../Motion/MotionList";
 import SectionShadow from "../SectionShadow";
 
 const title = "所有待辦";
@@ -17,11 +19,13 @@ export const TodoAll = observer(() => {
       <TodoInput />
       <HeadingDivider />
       <SectionShadow>
-        {todoCards.map((card) => (
-          <li key={card.id}>
-            <TodoCard card={card} />
-          </li>
-        ))}
+        <MotionList>
+          {todoCards.map((card) => (
+            <MotionItem key={card.id}>
+              <TodoCard card={card} />
+            </MotionItem>
+          ))}
+        </MotionList>
       </SectionShadow>
     </>
   );

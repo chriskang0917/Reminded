@@ -3,6 +3,8 @@ import { useSearch } from "../../../hooks/useSearch";
 import { IdeaCard } from "../../Card";
 import { Heading, HeadingDivider } from "../../Heading";
 import { IdeaSearchInput } from "../../Input";
+import MotionItem from "../../Motion/MotionItem";
+import MotionList from "../../Motion/MotionList";
 import SectionShadow from "../SectionShadow";
 
 const title = "搜尋行動";
@@ -19,11 +21,13 @@ export const ActionSearch = observer(() => {
       <p className="self-start text-sm text-gray-400">{searchCountsText}</p>
       <HeadingDivider />
       <SectionShadow>
-        {results.map((card) => (
-          <li key={card.item.id}>
-            <IdeaCard card={card.item} />
-          </li>
-        ))}
+        <MotionList>
+          {results.map((card) => (
+            <MotionItem key={card.item.id}>
+              <IdeaCard card={card.item} />
+            </MotionItem>
+          ))}
+        </MotionList>
       </SectionShadow>
     </>
   );

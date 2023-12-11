@@ -3,6 +3,8 @@ import { observer } from "mobx-react-lite";
 import { TodoTodayCards, cardStore } from "../../../store/cardStore";
 import { TodoCard } from "../../Card";
 import EmptyCard from "../../Card/EmptyCard";
+import MotionItem from "../../Motion/MotionItem";
+import MotionList from "../../Motion/MotionList";
 import SectionShadow from "../SectionShadow";
 
 const placeholder = "享受你的個人時光吧！";
@@ -22,11 +24,13 @@ export const TodayTodo = observer(() => {
   return (
     <section className="flex w-full flex-col items-center">
       <SectionShadow className="h-[calc(100svh-313px)]">
-        {todoCards.map((card) => (
-          <li>
-            <TodoCard key={card.id} card={card} />
-          </li>
-        ))}
+        <MotionList>
+          {todoCards.map((card) => (
+            <MotionItem key={card.id}>
+              <TodoCard card={card} />
+            </MotionItem>
+          ))}
+        </MotionList>
       </SectionShadow>
     </section>
   );

@@ -3,6 +3,8 @@ import { TodoTodayCards, cardStore } from "../../../store/cardStore";
 import { TodoCard } from "../../Card";
 import { Heading, HeadingDivider } from "../../Heading";
 import { TodoInput } from "../../Input";
+import MotionItem from "../../Motion/MotionItem";
+import MotionList from "../../Motion/MotionList";
 import SectionShadow from "../SectionShadow";
 
 const title = "今日待辦";
@@ -21,11 +23,13 @@ export const TodoToday = observer(() => {
       <TodoInput />
       <HeadingDivider />
       <SectionShadow>
-        {todoTodayCards.map((card) => (
-          <li key={card.id}>
-            <TodoCard card={card} />
-          </li>
-        ))}
+        <MotionList>
+          {todoTodayCards.map((card) => (
+            <MotionItem key={card.id}>
+              <TodoCard card={card} />
+            </MotionItem>
+          ))}
+        </MotionList>
       </SectionShadow>
     </>
   );
