@@ -8,9 +8,13 @@ interface SectionShadowProps {
 function SectionShadow({ children, className }: SectionShadowProps) {
   return (
     <ScrollShadow
-      className={cn("mt-5 flex w-full flex-col gap-3 p-5", className)}
+      className={cn(
+        "flex w-full flex-col gap-3 px-4 py-3",
+        "h-[calc(100svh-250px)]",
+        className,
+      )}
       hideScrollBar
-      size={10}
+      size={20}
     >
       {children}
     </ScrollShadow>

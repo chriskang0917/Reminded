@@ -14,6 +14,7 @@ import { TodoCard } from "../../Card";
 import EmptyCard from "../../Card/EmptyCard";
 import { Heading, HeadingDivider } from "../../Heading";
 import { TodoInput } from "../../Input";
+import SectionShadow from "../SectionShadow";
 
 const title = "明日待辦";
 const subtitle = "待辦";
@@ -52,30 +53,36 @@ export const TodoTomorrow = observer(() => {
       />
       <TodoInput />
       <HeadingDivider />
-      <div id="tutorial-todo-2" ref={todoTomorrowRef} className="w-full">
-        {todoAndActionAll.length === 0 && (
-          <EmptyCard placeholder={todoPlaceholder} />
-        )}
-      </div>
-      <ul className="mt-5 grid w-full gap-3">
-        {todoAndActionAll.map((card) => (
-          <li key={card.id}>
-            <TodoCard card={card} />
-          </li>
-        ))}
-      </ul>
+      <SectionShadow className="h-[calc(50svh-170px)] pt-0">
+        <div ref={todoTomorrowRef} className="w-full">
+          {todoAndActionAll.length === 0 && (
+            <EmptyCard placeholder={todoPlaceholder} />
+          )}
+        </div>
+        <ul id="tutorial-todo-2" className="grid w-full gap-3">
+          {todoAndActionAll.map((card) => (
+            <li key={card.id}>
+              <TodoCard card={card} />
+            </li>
+          ))}
+        </ul>
+      </SectionShadow>
       <Spacer y={10} />
       <section className="mb-12 w-full">
         <div id="tutorial-todo-1" className="flex w-full flex-col">
           <h2 className={style.pageSubtitle}>所有行動</h2>
           <HeadingDivider />
-          <div ref={actionRef} className="flex w-full flex-col gap-3">
-            {actionCards.length !== 0 ? (
-              actionCards.map((card) => <TodoCard key={card.id} card={card} />)
-            ) : (
-              <EmptyCard placeholder={actionPlaceholder} />
-            )}
-          </div>
+          <SectionShadow className="h-[calc(50svh-150px)]">
+            <div ref={actionRef} className="flex w-full flex-col gap-3">
+              {actionCards.length !== 0 ? (
+                actionCards.map((card) => (
+                  <TodoCard key={card.id} card={card} />
+                ))
+              ) : (
+                <EmptyCard placeholder={actionPlaceholder} />
+              )}
+            </div>
+          </SectionShadow>
         </div>
       </section>
     </>
