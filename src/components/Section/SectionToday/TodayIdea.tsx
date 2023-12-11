@@ -1,19 +1,18 @@
-import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { IdeaTodayCards, cardStore } from "../../store/cardStore";
-import { IdeaCard } from "../Card/IdeaCard";
+import { IdeaTodayCards, cardStore } from "../../../store/cardStore";
+import { IdeaCard } from "../../Card/IdeaCard";
+import SectionShadow from "../SectionShadow";
 
 export const TodayIdea = observer(() => {
   const ideaCards = cardStore.getFilteredCardsWith(new IdeaTodayCards());
 
   return (
     <section className="flex w-full flex-col items-center">
-      <div className="mt-5 grid w-full gap-3">
+      <SectionShadow className="h-[calc(100svh-313px)]">
         {ideaCards.map((card) => (
           <IdeaCard key={card.id} card={card} />
         ))}
-      </div>
-      <Spacer y={10} />
+      </SectionShadow>
     </section>
   );
 });

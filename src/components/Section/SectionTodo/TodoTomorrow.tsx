@@ -2,18 +2,18 @@ import { useDroppable } from "@dnd-kit/core";
 import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { authStore } from "../../store/authStore";
+import { authStore } from "../../../store/authStore";
 import {
   ActionAllCards,
   TodoAndActionTomorrowCards,
   cardStore,
-} from "../../store/cardStore";
-import { style } from "../../utils/style";
-import { initTutorial, todoSteps } from "../../utils/tutorial";
-import { TodoCard } from "../Card";
-import EmptyCard from "../Card/EmptyCard";
-import { Heading, HeadingDivider } from "../Heading";
-import { TodoInput } from "../Input";
+} from "../../../store/cardStore";
+import { style } from "../../../utils/style";
+import { initTutorial, todoSteps } from "../../../utils/tutorial";
+import { TodoCard } from "../../Card";
+import EmptyCard from "../../Card/EmptyCard";
+import { Heading, HeadingDivider } from "../../Heading";
+import { TodoInput } from "../../Input";
 
 const title = "明日待辦";
 const subtitle = "待辦";

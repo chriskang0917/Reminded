@@ -1,21 +1,16 @@
 import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
-import { ActionExecutedCards, cardStore } from "../../store/cardStore";
-import { ActionCard } from "../Card";
-import { Heading, HeadingDivider } from "../Heading";
+import { ActionArchiveCards, cardStore } from "../../../store/cardStore";
+import { ActionCard } from "../../Card";
+import { Heading, HeadingDivider } from "../../Heading";
 
-const title = "已執行行動";
-const subtitle = "已執行";
+const title = "已封存行動";
+const subtitle = "已封存";
 
-export const ActionExecute = observer(() => {
+export const ActionArchive = observer(() => {
   const actionTodoCards = cardStore.getFilteredCardsWith(
-    new ActionExecutedCards(),
+    new ActionArchiveCards(),
   );
-
-  useEffect(() => {
-    cardStore.getArchivedCards();
-  }, [cardStore.archivedCards.length]);
 
   return (
     <>

@@ -1,8 +1,8 @@
 import { observer } from "mobx-react-lite";
-import { TodoAllCards, cardStore } from "../../store/cardStore";
-import { TodoCard } from "../Card";
-import { Heading, HeadingDivider } from "../Heading";
-import { TodoInput } from "../Input";
+import { TodoAllCards, cardStore } from "../../../store/cardStore";
+import { TodoCard } from "../../Card";
+import { Heading, HeadingDivider } from "../../Heading";
+import { TodoInput } from "../../Input";
 
 const title = "所有待辦";
 const subtitle = "待辦";

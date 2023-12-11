@@ -1,15 +1,16 @@
 import { observer } from "mobx-react-lite";
-import { useSearch } from "../../hooks/useSearch";
-import { IdeaCard } from "../Card";
-import { Heading, HeadingDivider } from "../Heading";
-import { IdeaSearchInput } from "../Input";
+import { useSearch } from "../../../hooks/useSearch";
+import { NewNote } from "../../../store/cardStore";
+import { NoteCard } from "../../Card/NoteCard";
+import { Heading, HeadingDivider } from "../../Heading";
+import { IdeaSearchInput } from "../../Input";
 
-const title = "搜尋靈感";
-const subtitle = "靈感";
+const title = "搜尋筆記";
+const subtitle = "筆記";
 
-export const IdeaSearch = observer(() => {
+export const NoteSearch = observer(() => {
   const { text, total, searchCountsText, onSearch, results } =
-    useSearch("idea");
+    useSearch("note");
 
   return (
     <>
@@ -20,7 +21,7 @@ export const IdeaSearch = observer(() => {
       <ul className="mt-5 grid w-full gap-3">
         {results.map((card) => (
           <li key={card.item.id}>
-            <IdeaCard card={card.item} />
+            <NoteCard note={card.item as NewNote} />
           </li>
         ))}
       </ul>

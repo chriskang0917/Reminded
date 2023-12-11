@@ -7,7 +7,7 @@ import {
   IdeaArchive,
   IdeaSearch,
   IdeaWeek,
-} from "../components/SectionIdea";
+} from "../components/Section/SectionIdea";
 import { authStore } from "../store/authStore";
 import { ideaSteps, initTutorial } from "../utils/tutorial";
 import ErrorPage from "./ErrorPage";

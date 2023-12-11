@@ -1,8 +1,8 @@
 import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { ActionAllCards, cardStore } from "../../store/cardStore";
-import { ActionCard } from "../Card";
-import { Heading, HeadingDivider } from "../Heading";
+import { ActionAllCards, cardStore } from "../../../store/cardStore";
+import { ActionCard } from "../../Card";
+import { Heading, HeadingDivider } from "../../Heading";
 
 const title = "所有行動";
 const subtitle = "行動";

@@ -1,8 +1,8 @@
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { TodoCompletedCards, cardStore } from "../../store/cardStore";
-import { TodoCard } from "../Card";
-import { Heading, HeadingDivider } from "../Heading";
+import { TodoCompletedCards, cardStore } from "../../../store/cardStore";
+import { TodoCard } from "../../Card";
+import { Heading, HeadingDivider } from "../../Heading";
 
 const title = "已完成待辦";
 const subtitle = "待辦";

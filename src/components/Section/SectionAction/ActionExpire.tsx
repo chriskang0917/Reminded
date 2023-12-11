@@ -1,8 +1,8 @@
 import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { ActionExpiredCards, cardStore } from "../../store/cardStore";
-import { ActionCard } from "../Card";
-import { Heading, HeadingDivider } from "../Heading";
+import { ActionExpiredCards, cardStore } from "../../../store/cardStore";
+import { ActionCard } from "../../Card";
+import { Heading, HeadingDivider } from "../../Heading";
 
 const title = "過期行動";
 const subtitle = "行動過期";

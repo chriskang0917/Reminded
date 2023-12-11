@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
-import { IdeaThisWeekCards, cardStore } from "../../store/cardStore";
-import { IdeaCard } from "../Card";
-import { Heading, HeadingDivider } from "../Heading";
+import { IdeaThisWeekCards, cardStore } from "../../../store/cardStore";
+import { IdeaCard } from "../../Card";
+import { Heading, HeadingDivider } from "../../Heading";
 
 const title = "本週靈感";
 const subtitle = "靈感";

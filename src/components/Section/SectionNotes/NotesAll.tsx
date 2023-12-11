@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
-import { NewNote, NotesAllCards, cardStore } from "../../store/cardStore";
-import { NoteCard } from "../Card/NoteCard";
-import { Heading, HeadingDivider } from "../Heading";
+import { NewNote, NotesAllCards, cardStore } from "../../../store/cardStore";
+import { NoteCard } from "../../Card/NoteCard";
+import { Heading, HeadingDivider } from "../../Heading";
 
 const title = "所有筆記";
 const subtitle = "筆記";

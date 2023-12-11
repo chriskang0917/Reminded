@@ -1,8 +1,8 @@
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { AllCards, cardStore } from "../../store/cardStore";
-import { IdeaCard } from "../Card";
-import { Heading, HeadingDivider } from "../Heading";
+import { AllCards, cardStore } from "../../../store/cardStore";
+import { IdeaCard } from "../../Card";
+import { Heading, HeadingDivider } from "../../Heading";
 
 const title = "已轉換靈感";
 const subtitle = "轉換";

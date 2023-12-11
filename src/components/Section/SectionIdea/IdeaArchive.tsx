@@ -1,8 +1,8 @@
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { cardStore } from "../../store/cardStore";
-import { IdeaCard } from "../Card";
-import { Heading, HeadingDivider } from "../Heading";
+import { cardStore } from "../../../store/cardStore";
+import { IdeaCard } from "../../Card";
+import { Heading, HeadingDivider } from "../../Heading";
 
 const title = "已封存靈感";
 const subtitle = "封存";
