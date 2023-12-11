@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { cardStore } from "../../../store/cardStore";
 import { IdeaCard } from "../../Card";
 import { Heading, HeadingDivider } from "../../Heading";
+import SectionShadow from "../SectionShadow";
 
 const title = "已封存靈感";
 const subtitle = "封存";
@@ -18,13 +19,13 @@ export const IdeaArchive = observer(() => {
     <>
       <Heading title={title} subtitle={subtitle} counts={counts} />
       <HeadingDivider />
-      <ul className="grid w-full gap-3">
+      <SectionShadow className="h-[calc(100svh-170px)]">
         {cardStore.archivedCards.map((card) => (
           <li key={card.id}>
             <IdeaCard card={card} />
           </li>
         ))}
-      </ul>
+      </SectionShadow>
     </>
   );
 });
