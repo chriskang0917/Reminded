@@ -54,7 +54,7 @@ const Editable = observer(
           </form>
         ) : (
           <div
-            className="w-full tracking-wide"
+            className="w-full cursor-pointer tracking-wide"
             onClick={() => setIsEditing(true)}
           >
             {text || placeholder || "請輸入您的內容..."}
