@@ -27,8 +27,8 @@ function DatePicker({ card, date, setDate, onClose }: DatePickerProps) {
 
   const handleConfirmDate = () => {
     if (!selectedDate) return toast.error("請選擇到期日");
-    const dueDate = format(selectedDate, "yyyy-MM-dd");
-    toast.success(`已設定待辦的到期日為 ${dueDate}`);
+    const dueDate = format(selectedDate, "MM-dd");
+    toast.success(`已設定待辦到期日為 ${dueDate}`);
     setDate(selectedDate);
     onClose();
   };

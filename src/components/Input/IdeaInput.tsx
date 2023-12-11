@@ -42,7 +42,9 @@ export const IdeaInput = observer(() => {
     tagRef.current?.blur();
     setInput("");
     setTagInput("");
-    toast.success(`已新增至今日${selectedTab === "idea" ? `靈感` : `待辦`}！`);
+    toast.success(
+      `已新增至下方的 今日${selectedTab === "idea" ? `靈感` : `待辦`}！`,
+    );
   };
 
   const handleTab = (key: string) => {
