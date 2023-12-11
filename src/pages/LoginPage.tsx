@@ -165,7 +165,6 @@ const LoginPage = observer(() => {
                 placeholder="輸入你的帳號"
                 type="email"
                 label="Email"
-                isClearable
                 onClear={() => setLoginState({ ...loginState, email: "" })}
                 onValueChange={(value) =>
                   setLoginState({ ...loginState, email: value })
@@ -175,7 +174,6 @@ const LoginPage = observer(() => {
                 placeholder="輸入你的密碼"
                 type="password"
                 label="Password"
-                isClearable
                 onClear={() => setLoginState({ ...loginState, password: "" })}
                 onValueChange={(value) =>
                   setLoginState({ ...loginState, password: value })
