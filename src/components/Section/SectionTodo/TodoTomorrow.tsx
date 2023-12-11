@@ -53,7 +53,7 @@ export const TodoTomorrow = observer(() => {
       />
       <TodoInput />
       <HeadingDivider />
-      <SectionShadow className="h-[calc(50svh-170px)] pt-0">
+      <SectionShadow className="h-[calc(50svh-120px)] pt-0">
         <div ref={todoTomorrowRef} className="w-full">
           {todoAndActionAll.length === 0 && (
             <EmptyCard placeholder={todoPlaceholder} />
@@ -72,7 +72,7 @@ export const TodoTomorrow = observer(() => {
         <div id="tutorial-todo-1" className="flex w-full flex-col">
           <h2 className={style.pageSubtitle}>所有行動</h2>
           <HeadingDivider />
-          <SectionShadow className="h-[calc(50svh-150px)]">
+          <SectionShadow className="h-[calc(50svh-200px)]">
             <div ref={actionRef} className="flex w-full flex-col gap-3">
               {actionCards.length !== 0 ? (
                 actionCards.map((card) => (
