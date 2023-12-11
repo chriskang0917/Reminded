@@ -15,7 +15,7 @@ function BasicCard({ card, children, className }: BasicCardProps) {
       <Card fullWidth radius="sm">
         <CardBody
           className={cn(
-            "min-h-20 my-2 flex cursor-default flex-col pl-3",
+            "min-h-20 my-1 flex cursor-default flex-col",
             className,
           )}
         >
