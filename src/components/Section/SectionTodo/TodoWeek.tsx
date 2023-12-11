@@ -17,13 +17,11 @@ export const TodoWeek = observer(() => {
       <TodoInput />
       <HeadingDivider />
       <SectionShadow>
-        <ul className="grid w-full gap-3">
-          {todoThisWeek.map((card) => (
-            <li key={card.id}>
-              <TodoCard card={card} />
-            </li>
-          ))}
-        </ul>
+        {todoThisWeek.map((card) => (
+          <li key={card.id}>
+            <TodoCard card={card} />
+          </li>
+        ))}
       </SectionShadow>
     </>
   );

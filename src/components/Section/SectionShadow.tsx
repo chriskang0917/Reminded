@@ -16,7 +16,7 @@ function SectionShadow({ children, className }: SectionShadowProps) {
       hideScrollBar
       size={20}
     >
-      {children}
+      <ul className="grid w-full gap-3">{children}</ul>
     </ScrollShadow>
   );
 }

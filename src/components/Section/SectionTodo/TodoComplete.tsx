@@ -20,13 +20,11 @@ export const TodoComplete = observer(() => {
       <Heading title={title} subtitle={subtitle} counts={todoComplete.length} />
       <HeadingDivider />
       <SectionShadow className="h-[calc(100svh-180px)]">
-        <ul className="grid w-full gap-3">
-          {todoComplete.map((card) => (
-            <li key={card.id}>
-              <TodoCard card={card} />
-            </li>
-          ))}
-        </ul>
+        {todoComplete.map((card) => (
+          <li key={card.id}>
+            <TodoCard card={card} />
+          </li>
+        ))}
       </SectionShadow>
     </>
   );

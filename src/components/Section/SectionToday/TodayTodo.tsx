@@ -23,7 +23,9 @@ export const TodayTodo = observer(() => {
     <section className="flex w-full flex-col items-center">
       <SectionShadow className="h-[calc(100svh-313px)]">
         {todoCards.map((card) => (
-          <TodoCard key={card.id} card={card} />
+          <li>
+            <TodoCard key={card.id} card={card} />
+          </li>
         ))}
       </SectionShadow>
     </section>

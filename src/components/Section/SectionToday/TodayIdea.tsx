@@ -10,7 +10,9 @@ export const TodayIdea = observer(() => {
     <section className="flex w-full flex-col items-center">
       <SectionShadow className="h-[calc(100svh-313px)]">
         {ideaCards.map((card) => (
-          <IdeaCard key={card.id} card={card} />
+          <li>
+            <IdeaCard key={card.id} card={card} />
+          </li>
         ))}
       </SectionShadow>
     </section>

@@ -21,13 +21,11 @@ export const TodoToday = observer(() => {
       <TodoInput />
       <HeadingDivider />
       <SectionShadow>
-        <ul className="grid w-full gap-3">
-          {todoTodayCards.map((card) => (
-            <li key={card.id}>
-              <TodoCard card={card} />
-            </li>
-          ))}
-        </ul>
+        {todoTodayCards.map((card) => (
+          <li key={card.id}>
+            <TodoCard card={card} />
+          </li>
+        ))}
       </SectionShadow>
     </>
   );
