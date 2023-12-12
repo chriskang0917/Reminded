@@ -57,7 +57,7 @@ export const IdeaToActionModal = observer(
         label: "保留靈感",
         variant: "ghost",
         color: "warning",
-        tooltip: "新增行動卡片後保留靈感",
+        tooltip: "新增行動後，會「保留此靈感卡片」在原處",
         onPress: () => {
           const ideaToActionInput = inputRef.current?.value || "";
           if (!ideaToActionInput) return toast.error("請輸入內容");
@@ -71,9 +71,9 @@ export const IdeaToActionModal = observer(
         },
       },
       {
-        label: "封存靈感",
+        label: "轉換行動",
         color: "primary",
-        tooltip: "新增行動卡片後封存靈感，可至「封存靈感」查找",
+        tooltip: "新增行動後，會「移動此卡片」至封存靈感區",
         onPress: () => {
           const ideaToActionInput = inputRef.current?.value || "";
           if (!ideaToActionInput) return toast.error("請輸入內容");
