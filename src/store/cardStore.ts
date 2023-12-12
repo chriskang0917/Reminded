@@ -211,9 +211,15 @@ export class TodoThisWeekCards extends CardsStrategy {
 
 export class TodoCompletedCards extends CardsStrategy {
   getCards() {
-    return this.cardStore.archivedCards.filter(
-      (card) => card.status === "todo" && card.isArchived,
+    const sortedCards = this.getSortedCardsByOrderList();
+    const totalCards = [...sortedCards, ...this.cardStore.archivedCards];
+    const filteredCards = totalCards.filter(
+      (card) =>
+        (card.status === "todo" || card.status === "execute") &&
+        card.isArchived,
     );
+    const sortedCardsDesc = cardUtils.sortCardsDescBy("dueDate", filteredCards);
+    return sortedCardsDesc;
   }
 }
 
