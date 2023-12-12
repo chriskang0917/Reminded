@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { AiOutlineInteraction } from "react-icons/ai";
 import { BsListTask } from "react-icons/bs";
 import { FaRegLightbulb, FaRegStickyNote } from "react-icons/fa";
-import { IoHomeOutline, IoSettingsOutline } from "react-icons/io5";
+import { IoHomeOutline } from "react-icons/io5";
 import { RxAvatar } from "react-icons/rx";
 import { Link, useLocation } from "react-router-dom";
 import { authStore } from "../../store/authStore";
@@ -113,7 +113,7 @@ export const Sidebar = () => {
             />
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link to="/setting">
             <Card
               isBlurred
@@ -130,7 +130,7 @@ export const Sidebar = () => {
               </CardBody>
             </Card>
           </Link>
-        </li>
+        </li> */}
       </ul>
     </nav>
   );
