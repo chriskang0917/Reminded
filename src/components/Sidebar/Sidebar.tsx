@@ -48,6 +48,15 @@ export const Sidebar = () => {
   return (
     <nav className="fixed left-0 top-0 flex h-[100svh] w-36 flex-col items-center justify-between bg-secondary pr-10 opacity-70">
       <ul className="mt-36 flex flex-col gap-7 pr-6">
+        <li className="absolute left-6 top-8">
+          <figure className="h-8 w-8 rounded-full">
+            <img
+              className="w-full rounded-lg"
+              src="/public/logo.png"
+              alt="logo"
+            />
+          </figure>
+        </li>
         {actionList.map((action) => (
           <li key={action.label}>
             <Link to={action.path}>
