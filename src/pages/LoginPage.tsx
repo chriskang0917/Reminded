@@ -145,9 +145,9 @@ const LoginPage = observer(() => {
         </video>
       </div>
       <BackdropBlur />
-      <h1 className="fixed top-36 z-30 text-4xl font-bold text-fourth">
+      <h1 className="fixed top-[15%] z-30 text-4xl font-bold opacity-0 sm:opacity-100 md:text-fourth">
         現在，就開始捕捉
-        <span className="underline decoration-yellow-600 decoration-8">
+        <span className="underline decoration-yellow-600 decoration-8 opacity-0 md:opacity-100">
           你的靈感
         </span>
         。
@@ -155,7 +155,7 @@ const LoginPage = observer(() => {
       <Card className="relative z-20 h-[400px] w-3/5 max-w-[500px]">
         <CardHeader className="flex w-full flex-col items-center">
           <h1 className="my-2 text-center text-2xl font-bold">Reminded</h1>
-          <p>用靈感，開始你改變的旅程。</p>
+          <p className="text-sm md:text-medium">用靈感，開始你改變的旅程。</p>
         </CardHeader>
         <CardBody className="">
           <form onSubmit={handleLoginSubmit}>
