@@ -1,4 +1,4 @@
-import { Avatar, Card, CardBody, Tooltip, cn } from "@nextui-org/react";
+import { Avatar, Card, CardBody, Image, Tooltip, cn } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { AiOutlineInteraction } from "react-icons/ai";
 import { BsListTask } from "react-icons/bs";
@@ -49,13 +49,9 @@ export const Sidebar = () => {
     <nav className="fixed left-0 top-0 flex h-[100svh] w-36 flex-col items-center justify-between bg-secondary pr-10 opacity-70">
       <ul className="mt-36 flex flex-col gap-7 pr-6">
         <li className="absolute left-6 top-8">
-          <figure className="h-8 w-8 rounded-full">
-            <img
-              className="w-full rounded-lg"
-              src="/public/logo.png"
-              alt="logo"
-            />
-          </figure>
+          <Card className="h-8 w-8 rounded-lg">
+            <Image width={32} src="/public/logo.png" alt="logo" />
+          </Card>
         </li>
         {actionList.map((action) => (
           <li key={action.label}>
