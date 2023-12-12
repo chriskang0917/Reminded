@@ -2,7 +2,6 @@ import { Checkbox, useDisclosure } from "@nextui-org/react";
 import { useRef, useState } from "react";
 import { CiCalendarDate } from "react-icons/ci";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { SlActionUndo } from "react-icons/sl";
 import { ICard, cardStore } from "../../../store/cardStore";
 import BasicCard from "../BasicCard";
 import Editable from "../Editable/Editable";
@@ -12,7 +11,7 @@ import { ActionCardTool } from "./ActionCardTool";
 
 const settingList = [
   { icon: <CiCalendarDate />, label: "date", id: "tutorial-actions-1" },
-  { icon: <SlActionUndo className="h-3" />, label: "action" },
+  // { icon: <SlActionUndo className="h-3" />, label: "action" },
   { icon: <HiOutlineDotsVertical />, label: "more" },
 ];
 
@@ -83,7 +82,7 @@ export const ActionCard = ({ card }: { card: ICard }) => {
               ref={inputRef}
             />
           </Editable>
-          <ul className="ml-2 flex min-w-unit-24 items-center justify-between">
+          <ul className="ml-2 flex min-w-unit-24 items-center justify-end gap-5">
             {settingList.map((setting) => (
               <li id={setting.id} key={setting.label}>
                 <ActionCardTool
