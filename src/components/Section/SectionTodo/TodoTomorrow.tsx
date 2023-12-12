@@ -79,8 +79,8 @@ export const TodoTomorrow = observer(() => {
           <h2 className={style.pageSubtitle}>所有行動</h2>
           <HeadingDivider />
           <SectionShadow className="h-[calc(50svh-200px)]">
-            <MotionList>
-              <div ref={actionRef} className="flex w-full flex-col gap-3">
+            <div ref={actionRef} className="flex w-full flex-col gap-3">
+              <MotionList>
                 {actionCards.length !== 0 ? (
                   actionCards.map((card) => (
                     <MotionItem key={card.id}>
@@ -92,8 +92,8 @@ export const TodoTomorrow = observer(() => {
                     <EmptyCard placeholder={actionPlaceholder} />
                   </MotionItem>
                 )}
-              </div>
-            </MotionList>
+              </MotionList>
+            </div>
           </SectionShadow>
         </div>
       </section>

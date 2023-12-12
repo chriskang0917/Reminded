@@ -5,19 +5,31 @@ import {
   DragStartEvent,
   PointerSensor,
   TouchSensor,
+  UniqueIdentifier,
+  closestCenter,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { ICard, NewNote, cardStatus, cardStore } from "../../store/cardStore";
+import { ICard, cardStatus, cardStore } from "../../store/cardStore";
 import { cardUtils } from "../../utils/cardUtils";
 import { ActionCard, IdeaCard, TodoCard } from "../Card";
 
 interface DndContextProps {
   children: React.ReactNode;
 }
+
+const moveCard = (activeCard: ICard, overCard: ICard) => {
+  const cardOrderList = cardStore.cardOrderList;
+  const activeCardIndex = cardOrderList.indexOf(activeCard.id);
+  const overCardIndex = cardOrderList.indexOf(overCard.id);
+
+  const movedArray = arrayMove(cardOrderList, activeCardIndex, overCardIndex);
+  cardStore.updateCardOrderList(movedArray);
+  cardStore.updateCardOrderListToFirebase(movedArray);
+};
 
 const actionToTodoTomorrow = (activeCard: ICard) => {
   const cardOrderList = cardStore.cardOrderList;
@@ -45,23 +57,42 @@ const todoTomorrowToAction = (activeCard: ICard) => {
   cardStore.updateCardOrderListToFirebase(movedArray);
 };
 
-const defaultSwitch = (
-  activeCard: ICard | NewNote,
-  overCard: ICard | NewNote,
-) => {
-  const cardOrderList = cardStore.cardOrderList;
-  const activeCardIndex = cardOrderList.indexOf(activeCard.id);
-  const overCardIndex = cardOrderList.indexOf(overCard?.id);
-
-  const movedArray = arrayMove(cardOrderList, activeCardIndex, overCardIndex);
-  cardStore.updateCardOrderList(movedArray);
-  cardStore.updateCardOrderListToFirebase(movedArray);
-};
-
 const switchStrategy = {
   action_to_todo_tomorrow: actionToTodoTomorrow,
   todo_tomorrow_to_action: todoTomorrowToAction,
-  default: defaultSwitch,
+  default: moveCard,
+};
+
+const shouldSwitchActionToTodo = (
+  overId: UniqueIdentifier,
+  activeCard: ICard,
+  overCard: ICard,
+) => {
+  const isOverTomorrowSection = overId === "todo_tomorrow_section";
+  const isOverActionCard = overCard?.status === "action";
+  const isOverTodoCard = overCard?.status === "todo";
+  const hasActiveCardDueDate = activeCard?.dueDate;
+  const isOverTodoTomorrowCard = overCard?.dueDate;
+
+  return (
+    isOverTomorrowSection ||
+    ((isOverActionCard || isOverTodoCard) &&
+      !hasActiveCardDueDate &&
+      isOverTodoTomorrowCard)
+  );
+};
+
+const shouldSwitchTodoToAction = (
+  overId: UniqueIdentifier,
+  activeCard: ICard,
+  overCard: ICard,
+) => {
+  const isOverActionSection = overId === "action_section";
+  const isOverActionCard = overCard?.status === "action";
+  return (
+    (isOverActionCard && activeCard?.dueDate && !overCard?.dueDate) ||
+    isOverActionSection
+  );
 };
 
 export const DndProvider = ({ children }: DndContextProps) => {
@@ -89,30 +120,21 @@ export const DndProvider = ({ children }: DndContextProps) => {
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     setActiveCard(null);
+
     if (!over) return;
 
     const overId = over.id;
     const overCard = over.data.current?.card;
     const activeCard = active.data.current?.card;
 
-    const isOverTodoTomorrow = overId === "todo_tomorrow_section";
-    const isOverActionCard = overCard?.status === "action";
-    const isOverTodoCard = overCard?.status === "todo";
-    const hasActiveCardDueDate = activeCard?.dueDate;
-
-    if (
-      isOverTodoTomorrow ||
-      ((isOverActionCard || isOverTodoCard) && !hasActiveCardDueDate)
-    ) {
+    if (shouldSwitchActionToTodo(overId, activeCard, overCard)) {
       return switchStrategy.action_to_todo_tomorrow(activeCard);
     }
-
-    if (overId === "action_section" || isOverActionCard) {
+    if (shouldSwitchTodoToAction(overId, activeCard, overCard)) {
       return switchStrategy.todo_tomorrow_to_action(activeCard);
     }
 
-    if (activeCard.id === overCard?.id) return;
-
+    if (activeCard?.id === overCard?.id) return;
     return switchStrategy.default(activeCard, overCard);
   };
 
@@ -133,6 +155,7 @@ export const DndProvider = ({ children }: DndContextProps) => {
   return (
     <DndContext
       sensors={sensors}
+      collisionDetection={closestCenter}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
