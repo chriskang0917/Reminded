@@ -55,7 +55,7 @@ export const TodoTomorrow = observer(() => {
       />
       <TodoInput />
       <HeadingDivider />
-      <SectionShadow className="h-[calc(50svh-120px)] pt-0">
+      <SectionShadow className="h-[calc(50svh-100px)] pt-0">
         <MotionList>
           <MotionItem key="placeholder">
             <div ref={todoTomorrowRef} className="w-full">
@@ -73,12 +73,12 @@ export const TodoTomorrow = observer(() => {
           </ul>
         </MotionList>
       </SectionShadow>
-      <Spacer y={10} />
+      <Spacer y={5} />
       <section className="mb-12 w-full">
         <div id="tutorial-todo-1" className="flex w-full flex-col">
           <h2 className={style.pageSubtitle}>已儲存的行動</h2>
           <HeadingDivider />
-          <SectionShadow className="h-[calc(50svh-200px)]">
+          <SectionShadow className="h-[calc(50svh-190px)]">
             <div ref={actionRef} className="flex w-full flex-col gap-3">
               <MotionList>
                 {actionCards.length !== 0 ? (
