@@ -114,7 +114,7 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
             >
               關閉
             </Button>
-            {noteContent.noteTitle && (
+            {card && (
               <Button
                 className="min-w-3 px-4 tracking-wider"
                 color="danger"
