@@ -76,7 +76,7 @@ export const TodoTomorrow = observer(() => {
       <Spacer y={10} />
       <section className="mb-12 w-full">
         <div id="tutorial-todo-1" className="flex w-full flex-col">
-          <h2 className={style.pageSubtitle}>所有行動</h2>
+          <h2 className={style.pageSubtitle}>已儲存的行動</h2>
           <HeadingDivider />
           <SectionShadow className="h-[calc(50svh-200px)]">
             <div ref={actionRef} className="flex w-full flex-col gap-3">
