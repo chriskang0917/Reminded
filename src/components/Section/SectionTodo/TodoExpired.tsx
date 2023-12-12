@@ -1,32 +1,28 @@
 import { observer } from "mobx-react-lite";
 import { TodoExpiredCards, cardStore } from "../../../store/cardStore";
-import { ActionCard } from "../../Card";
+import { TodoCard } from "../../Card";
 import { Heading, HeadingDivider } from "../../Heading";
+import { TodoInput } from "../../Input";
 import MotionItem from "../../Motion/MotionItem";
 import MotionList from "../../Motion/MotionList";
 import SectionShadow from "../SectionShadow";
 
-const title = "過期行動";
-const subtitle = "行動過期";
+const title = "過期待辦";
+const subtitle = "過期";
 
-export const ActionExpire = observer(() => {
-  const actionTodoCards = cardStore.getFilteredCardsWith(
-    new TodoExpiredCards(),
-  );
+export const TodoExpired = observer(() => {
+  const expiredCards = cardStore.getFilteredCardsWith(new TodoExpiredCards());
 
   return (
     <>
-      <Heading
-        title={title}
-        subtitle={subtitle}
-        counts={actionTodoCards.length}
-      />
+      <Heading title={title} subtitle={subtitle} counts={expiredCards.length} />
+      <TodoInput />
       <HeadingDivider />
-      <SectionShadow className="h-[calc(100svh-170px)]">
+      <SectionShadow>
         <MotionList>
-          {actionTodoCards.map((card) => (
+          {expiredCards.map((card) => (
             <MotionItem key={card.id}>
-              <ActionCard card={card} />
+              <TodoCard card={card} />
             </MotionItem>
           ))}
         </MotionList>

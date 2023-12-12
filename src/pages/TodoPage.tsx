@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { ActionAll } from "../components/Section/SectionAction/ActionAll";
 import {
   TodoAll,
   TodoComplete,
@@ -7,6 +6,7 @@ import {
   TodoTomorrow,
   TodoWeek,
 } from "../components/Section/SectionTodo";
+import { TodoExpired } from "../components/Section/SectionTodo/TodoExpired";
 
 const renderTodoPage = (route: string | undefined) => {
   switch (route) {
@@ -18,8 +18,8 @@ const renderTodoPage = (route: string | undefined) => {
       return <TodoToday />;
     case "week":
       return <TodoWeek />;
-    case "actions":
-      return <ActionAll />;
+    case "expired":
+      return <TodoExpired />;
     case "complete":
       return <TodoComplete />;
   }

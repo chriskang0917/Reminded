@@ -2,6 +2,7 @@ import { Divider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { BsCalendar2Week } from "react-icons/bs";
 import { CiCalendarDate } from "react-icons/ci";
+import { FaRegCalendarXmark } from "react-icons/fa6";
 import { GrTask } from "react-icons/gr";
 import { MdOutlineToday, MdTaskAlt } from "react-icons/md";
 import { SubsideBar } from "./SubsideBar";
@@ -22,6 +23,7 @@ const TodoList: ITodo[] = [
     icon: <BsCalendar2Week />,
     id: "tutorial-todo-3",
   },
+  { label: "過期待辦", path: "/todo/expired", icon: <FaRegCalendarXmark /> },
   { label: "所有待辦", path: "/todo/all", icon: <GrTask /> },
   { label: "已完成", path: "/todo/complete", icon: <MdTaskAlt /> },
 ];
