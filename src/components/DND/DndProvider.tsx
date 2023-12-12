@@ -3,7 +3,7 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
-  PointerSensor,
+  MouseSensor,
   TouchSensor,
   UniqueIdentifier,
   closestCenter,
@@ -99,16 +99,14 @@ export const DndProvider = ({ children }: DndContextProps) => {
   const [activeCard, setActiveCard] = useState<ICard | null>(null);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(MouseSensor, {
       activationConstraint: {
         distance: 30,
-        delay: 1000,
       },
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        distance: 10,
-        delay: 5000,
+        delay: 700,
         tolerance: 5,
       },
     }),
