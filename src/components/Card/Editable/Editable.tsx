@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { cardStore } from "../../../store/cardStore";
 
 interface EditableProps {
@@ -32,6 +33,7 @@ const Editable = observer(
       if (keyDown === "Backspace" && metaKey) {
         cardStore.deleteCard(id);
         cardStore.deleteCardFromFireStore(id);
+        toast.success("刪除成功");
       }
     };
 
