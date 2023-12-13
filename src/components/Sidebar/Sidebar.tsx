@@ -50,7 +50,7 @@ export const Sidebar = () => {
       <ul className="mt-36 flex flex-col gap-7 pr-6">
         <li className="absolute left-6 top-8">
           <Card className="h-8 w-8 rounded-lg">
-            <Image width={32} src="/public/logo.png" alt="logo" />
+            <Image width={32} src="logo.png" alt="logo" />
           </Card>
         </li>
         {actionList.map((action) => (
