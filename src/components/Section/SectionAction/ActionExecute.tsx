@@ -1,7 +1,9 @@
+import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { ActionExecutedCards, cardStore } from "../../../store/cardStore";
 import { ActionCard } from "../../Card";
+import EmptyCard from "../../Card/EmptyCard";
 import { Heading, HeadingDivider } from "../../Heading";
 import MotionItem from "../../Motion/MotionItem";
 import MotionList from "../../Motion/MotionList";
@@ -9,6 +11,7 @@ import SectionShadow from "../SectionShadow";
 
 const title = "已執行行動";
 const subtitle = "已執行";
+const placeholder = "從轉換你的靈感開始吧！";
 
 export const ActionExecute = observer(() => {
   const actionTodoCards = cardStore.getFilteredCardsWith(
@@ -34,6 +37,12 @@ export const ActionExecute = observer(() => {
               <ActionCard card={card} />
             </MotionItem>
           ))}
+          {!actionTodoCards.length && (
+            <section className="flex flex-col items-center">
+              <EmptyCard placeholder={placeholder} />
+              <Spacer y={10} />
+            </section>
+          )}
         </MotionList>
       </SectionShadow>
     </>

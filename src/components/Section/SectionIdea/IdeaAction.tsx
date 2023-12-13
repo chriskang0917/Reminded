@@ -1,7 +1,9 @@
+import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { AllCards, cardStore } from "../../../store/cardStore";
 import { IdeaCard } from "../../Card";
+import EmptyCard from "../../Card/EmptyCard";
 import { Heading, HeadingDivider } from "../../Heading";
 import MotionItem from "../../Motion/MotionItem";
 import MotionList from "../../Motion/MotionList";
@@ -9,6 +11,7 @@ import SectionShadow from "../SectionShadow";
 
 const title = "已轉換靈感";
 const subtitle = "轉換";
+const placeholder = "嘗試記錄生活中的靈感吧！";
 
 export const IdeaAction = observer(() => {
   const transformedCards = cardStore
@@ -36,6 +39,12 @@ export const IdeaAction = observer(() => {
               <IdeaCard card={card} />
             </MotionItem>
           ))}
+          {!cards.length && (
+            <section className="flex flex-col items-center">
+              <EmptyCard placeholder={placeholder} />
+              <Spacer y={10} />
+            </section>
+          )}
         </MotionList>
       </SectionShadow>
     </>
