@@ -90,10 +90,10 @@ export const NotesBar = observer(() => {
               >
                 <Link
                   to={`/notes/article/${note.id}`}
-                  className="block w-full text-center"
+                  className="block w-full text-center text-sm"
                 >
-                  {note?.noteTitle?.length > 5
-                    ? note.noteTitle.slice(0, 5) + "..."
+                  {note?.noteTitle?.length > 6
+                    ? note.noteTitle.slice(0, 6) + "..."
                     : note.noteTitle}
                 </Link>
               </Card>
