@@ -4,6 +4,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { authStore } from "../../store/authStore";
 import { cookie } from "../../utils/cookie";
 import { DndProvider, SortableProvider } from "../DND";
+import Helper from "../Helper/Helper";
 import { Sidebar } from "../Sidebar";
 
 const RootLayout = observer(() => {
@@ -22,6 +23,7 @@ const RootLayout = observer(() => {
           </div>
         </main>
       </SortableProvider>
+      <Helper />
     </DndProvider>
   );
 });
