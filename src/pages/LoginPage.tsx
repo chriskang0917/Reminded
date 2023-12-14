@@ -19,6 +19,7 @@ import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { Navigate } from "react-router-dom";
 import Typed from "react-typed";
+import useDocTitle from "../hooks/useDocTitle";
 import { authStore } from "../store/authStore";
 
 const DEFAULT_EMAIL = "test@gmail.com";
@@ -34,6 +35,7 @@ const LoginPage = observer(() => {
     isSettingName: false,
   });
 
+  useDocTitle("Reminded");
   useEffect(() => {
     if (loginState.isSettingName) {
       nameInputRef.current?.focus();
