@@ -153,7 +153,9 @@ const LoginPage = observer(() => {
         <Card className="w-full md:min-w-[50%]">
           <CardHeader className="flex w-full flex-col items-center">
             <h1 className="my-2 text-center text-2xl font-bold">Reminded</h1>
-            <p className="text-sm md:text-medium">用靈感，開始你改變的旅程。</p>
+            <p className="text-sm md:text-medium">
+              用靈感，開始改變自己的旅程。
+            </p>
           </CardHeader>
           <CardBody className="">
             <form onSubmit={handleLoginSubmit}>
