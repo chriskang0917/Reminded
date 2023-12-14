@@ -2,7 +2,11 @@ import { NextUIProvider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 import ActionLayout from "./components/Layout/ActionLayout";
 import IdeaLayout from "./components/Layout/IdeaLayout";
 import NotesLayout from "./components/Layout/NotesLayout";
@@ -10,7 +14,6 @@ import RootLayout from "./components/Layout/RootLayout";
 import TodoLayout from "./components/Layout/TodoLayout";
 import ActionPage from "./pages/ActionPage";
 import ArticlePage from "./pages/ArticlePage";
-import ErrorPage from "./pages/ErrorPage";
 import IdeaPage from "./pages/IdeaPage";
 import LoginPage from "./pages/LoginPage";
 import NotesPage from "./pages/NotesPage";
@@ -24,7 +27,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
-    errorElement: <ErrorPage />,
+    errorElement: <Navigate to="/" />,
     children: [
       {
         path: "/",
