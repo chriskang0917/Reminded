@@ -11,6 +11,7 @@ import { observer } from "mobx-react-lite";
 import { Navigate, useParams } from "react-router-dom";
 import CardTags from "../components/Card/CardTags";
 import ModalEditor from "../components/Editor/ModalEditor";
+import useDocTitle from "../hooks/useDocTitle";
 import { cardStore } from "../store/cardStore";
 
 const ArticlePage = observer(() => {
@@ -28,6 +29,8 @@ const ArticlePage = observer(() => {
   const parsedHTML = parse(noteHTML);
   const parsedDate = parseISO(note.createdTime);
   const formattedDate = format(parsedDate, "yyyy-MM-dd");
+
+  useDocTitle(`Reminded | ${title}`);
 
   const handleEdit = () => onOpen();
 

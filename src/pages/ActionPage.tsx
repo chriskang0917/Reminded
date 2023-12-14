@@ -8,6 +8,7 @@ import {
   ActionExpire,
   ActionSearch,
 } from "../components/Section/SectionAction";
+import useDocTitle from "../hooks/useDocTitle";
 import { authStore } from "../store/authStore";
 import { actionSteps, initTutorial } from "../utils/tutorial";
 import ErrorPage from "./ErrorPage";
@@ -32,6 +33,7 @@ const renderActionPage = (route: string | undefined) => {
 const ActionPage = observer(() => {
   const { route } = useParams();
 
+  useDocTitle("Reminded | 行動");
   useEffect(() => {
     const isTutorialDone = authStore.tutorialProgress?.action;
     if (isTutorialDone !== undefined && !isTutorialDone) {

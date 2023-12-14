@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { NoteSearch, NotesAll } from "../components/Section/SectionNotes";
+import useDocTitle from "../hooks/useDocTitle";
 import ErrorPage from "./ErrorPage";
 
 const renderIdeaPage = (route: string | undefined) => {
@@ -15,6 +16,7 @@ const renderIdeaPage = (route: string | undefined) => {
 
 function NotesPage() {
   const { route } = useParams();
+  useDocTitle("Reminded | 筆記");
   return <section className="relative">{renderIdeaPage(route)}</section>;
 }
 

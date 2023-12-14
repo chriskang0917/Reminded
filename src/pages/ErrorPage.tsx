@@ -1,7 +1,9 @@
 import { observer } from "mobx-react-lite";
 import { Sidebar } from "../components/Sidebar";
+import useDocTitle from "../hooks/useDocTitle";
 
 const ErrorPage = observer(() => {
+  useDocTitle("Reminded | 錯誤頁面");
   return (
     <>
       <Sidebar />

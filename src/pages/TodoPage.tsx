@@ -7,6 +7,7 @@ import {
   TodoWeek,
 } from "../components/Section/SectionTodo";
 import { TodoExpired } from "../components/Section/SectionTodo/TodoExpired";
+import useDocTitle from "../hooks/useDocTitle";
 
 const renderTodoPage = (route: string | undefined) => {
   switch (route) {
@@ -27,6 +28,7 @@ const renderTodoPage = (route: string | undefined) => {
 
 function TodoPage() {
   const { route } = useParams();
+  useDocTitle("Reminded | 待辦");
   return <section className="relative">{renderTodoPage(route)}</section>;
 }
 

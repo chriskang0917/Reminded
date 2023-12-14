@@ -1,10 +1,13 @@
 import { Avatar, Button, Card, CardBody, CardHeader } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
+import useDocTitle from "../hooks/useDocTitle";
 import { authStore } from "../store/authStore";
 
 const ProfilePage = observer(() => {
   const navigate = useNavigate();
+
+  useDocTitle("Reminded | 個人頁面");
 
   const handleLogout = () => {
     navigate("/login");

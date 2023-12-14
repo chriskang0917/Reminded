@@ -8,6 +8,7 @@ import {
   IdeaSearch,
   IdeaWeek,
 } from "../components/Section/SectionIdea";
+import useDocTitle from "../hooks/useDocTitle";
 import { authStore } from "../store/authStore";
 import { ideaSteps, initTutorial } from "../utils/tutorial";
 import ErrorPage from "./ErrorPage";
@@ -32,6 +33,7 @@ const renderIdeaPage = (route: string | undefined) => {
 const IdeaPage = observer(() => {
   const { route } = useParams();
 
+  useDocTitle("Reminded | 靈感");
   useEffect(() => {
     const isTutorialDone = authStore.tutorialProgress?.idea;
     if (isTutorialDone !== undefined && !isTutorialDone) {

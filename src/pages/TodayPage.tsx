@@ -4,6 +4,7 @@ import { Key, useEffect, useState } from "react";
 import { IdeaInput } from "../components/Input";
 import { TodayIdea, TodayTodo } from "../components/Section/SectionToday";
 import CountBadge from "../components/Section/SectionToday/CountBadge";
+import useDocTitle from "../hooks/useDocTitle";
 import { authStore } from "../store/authStore";
 import { IdeaTodayCards, TodoTodayCards, cardStore } from "../store/cardStore";
 import { initTutorial, todaySteps } from "../utils/tutorial";
@@ -11,6 +12,7 @@ import { initTutorial, todaySteps } from "../utils/tutorial";
 const Homepage = observer(() => {
   const [selectedKey, setSelectedKey] = useState<Key>("idea");
 
+  useDocTitle("Reminded | 今日");
   useEffect(() => {
     const isTutorialDone = authStore.tutorialProgress?.today;
     if (isTutorialDone !== undefined && !isTutorialDone) {
