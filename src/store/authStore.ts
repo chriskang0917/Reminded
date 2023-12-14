@@ -167,6 +167,14 @@ class EmailAuthService implements AuthService {
           toast.error("此信箱已被註冊");
         }
 
+        if (errorCode === "auth/weak-password") {
+          toast.error("密碼請超過 6 位數");
+        }
+
+        if (errorCode === "auth/invalid-email") {
+          toast.error("信箱格式錯誤");
+        }
+
         console.error(errorCode, errorMessage);
         if (callback) callback("error");
       });
