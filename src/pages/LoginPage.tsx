@@ -4,6 +4,7 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Divider,
   Input,
   Link,
   Modal,
@@ -17,6 +18,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { Navigate } from "react-router-dom";
+import Typed from "react-typed";
 import { authStore } from "../store/authStore";
 
 const DEFAULT_EMAIL = "test@gmail.com";
@@ -145,63 +147,81 @@ const LoginPage = observer(() => {
         </video>
       </div>
       <BackdropBlur />
-      <h1 className="fixed top-[15%] z-30 text-4xl font-bold opacity-0 sm:opacity-100 md:text-fourth">
-        現在，就開始捕捉
-        <span className="underline decoration-yellow-600 decoration-8 opacity-0 md:opacity-100">
-          你的靈感
-        </span>
-        。
-      </h1>
-      <Card className="relative z-20 h-[400px] w-3/5 max-w-[500px]">
-        <CardHeader className="flex w-full flex-col items-center">
-          <h1 className="my-2 text-center text-2xl font-bold">Reminded</h1>
-          <p className="text-sm md:text-medium">用靈感，開始你改變的旅程。</p>
-        </CardHeader>
-        <CardBody className="">
-          <form onSubmit={handleLoginSubmit}>
-            <div className="mx-auto flex w-5/6 flex-col gap-4">
-              <Input
-                value={loginState.email}
-                placeholder="輸入你的帳號"
-                type="email"
-                label="Email"
-                onValueChange={(value) =>
-                  setLoginState({ ...loginState, email: value })
-                }
-              />
-              <Input
-                placeholder="輸入你的密碼"
-                type="password"
-                label="Password"
-                onValueChange={(value) =>
-                  setLoginState({ ...loginState, password: value })
-                }
-              />
-              <button type="submit"></button>
-            </div>
-          </form>
-        </CardBody>
-        <CardFooter className="my-4 flex flex-col">
-          <Button
-            className="mx-auto mb-4 w-5/6"
-            onPress={handleLoginPressSubmit}
-          >
-            {loginState.isLoginPage ? "登入" : "註冊"}
-          </Button>
-          <div>
-            <span className=" text-slate-700 font-light">
-              {loginState.isLoginPage ? "還沒有帳號嗎？ " : "已經有帳號了嗎？ "}
-            </span>
-            <Link
-              className="cursor-pointer"
-              underline="hover"
-              onPress={handleSwitchPage}
+      <section className="relative z-20 flex h-[400px] w-4/5 max-w-[800px] justify-between gap-9">
+        <Card className="w-full md:min-w-[50%]">
+          <CardHeader className="flex w-full flex-col items-center">
+            <h1 className="my-2 text-center text-2xl font-bold">Reminded</h1>
+            <p className="text-sm md:text-medium">用靈感，開始你改變的旅程。</p>
+          </CardHeader>
+          <CardBody className="">
+            <form onSubmit={handleLoginSubmit}>
+              <div className="mx-auto flex w-5/6 flex-col gap-4">
+                <Input
+                  value={loginState.email}
+                  placeholder="輸入你的帳號"
+                  type="email"
+                  label="Email"
+                  onValueChange={(value) =>
+                    setLoginState({ ...loginState, email: value })
+                  }
+                />
+                <Input
+                  placeholder="輸入你的密碼"
+                  type="password"
+                  label="Password"
+                  onValueChange={(value) =>
+                    setLoginState({ ...loginState, password: value })
+                  }
+                />
+                <button type="submit"></button>
+              </div>
+            </form>
+          </CardBody>
+          <CardFooter className="my-4 flex flex-col">
+            <Button
+              className="mx-auto mb-4 w-5/6"
+              onPress={handleLoginPressSubmit}
             >
-              {!loginState.isLoginPage ? "返回登入" : "開始註冊"}
-            </Link>
-          </div>
-        </CardFooter>
-      </Card>
+              {loginState.isLoginPage ? "登入" : "註冊"}
+            </Button>
+            <div>
+              <span className=" text-slate-700 font-light">
+                {loginState.isLoginPage
+                  ? "還沒有帳號嗎？ "
+                  : "已經有帳號了嗎？ "}
+              </span>
+              <Link
+                className="cursor-pointer text-thirdDark"
+                underline="hover"
+                onPress={handleSwitchPage}
+              >
+                {!loginState.isLoginPage ? "返回登入" : "開始註冊"}
+              </Link>
+            </div>
+          </CardFooter>
+        </Card>
+        <div className="hidden min-w-[50%] flex-col items-start justify-center text-3xl font-bold tracking-wide text-white md:flex">
+          <h1>Reminded</h1>
+          <Divider className="my-3 w-20 bg-gray-200" />
+          <h1>現在，就開始</h1>
+          <span className="leading-9 underline decoration-yellow-600 decoration-8">
+            <Typed
+              strings={[
+                "捕捉生活中的靈感。",
+                "寫下你的成長記錄。",
+                "執行你的行動。",
+                "設定你的目標。",
+                "改變你的人生。",
+              ]}
+              typeSpeed={200}
+              backSpeed={100}
+              startDelay={1000}
+              backDelay={1000}
+              loop={true}
+            />
+          </span>
+        </div>
+      </section>
       <Modal
         backdrop="blur"
         isDismissable={false}
