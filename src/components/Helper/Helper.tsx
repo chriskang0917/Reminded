@@ -35,7 +35,11 @@ function Helper() {
         </DropdownTrigger>
         <DropdownMenu aria-label="Dropdown menu with shortcuts">
           {shortcuts.map((shortcut) => (
-            <DropdownItem key={shortcut.key} shortcut={shortcut.shortcut}>
+            <DropdownItem
+              isReadOnly
+              key={shortcut.key}
+              shortcut={shortcut.shortcut}
+            >
               {shortcut.label}
             </DropdownItem>
           ))}
