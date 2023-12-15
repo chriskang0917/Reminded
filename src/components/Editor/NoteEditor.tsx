@@ -1,4 +1,4 @@
-import { ScrollShadow, Spacer } from "@nextui-org/react";
+import { ScrollShadow, Spacer, cn } from "@nextui-org/react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { observer } from "mobx-react-lite";
@@ -109,7 +109,10 @@ const NoteEditor = observer(({ card, onNoteChange }: NoteEditorProps) => {
         placeholder="筆記標題"
       />
       <div className="py-2">
-        <ScrollShadow hideScrollBar className="h-[250px]">
+        <ScrollShadow
+          isEnabled={false}
+          className={cn("h-[250px]", { "pb-3": content.description })}
+        >
           <EditorContent editor={editor} />
         </ScrollShadow>
       </div>
