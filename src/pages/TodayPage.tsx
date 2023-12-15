@@ -1,26 +1,19 @@
 import { Tab, Tabs } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { Key, useEffect, useState } from "react";
+import { Key, useState } from "react";
 import { IdeaInput } from "../components/Input";
 import { TodayIdea, TodayTodo } from "../components/Section/SectionToday";
 import CountBadge from "../components/Section/SectionToday/CountBadge";
 import useDocTitle from "../hooks/useDocTitle";
-import { authStore } from "../store/authStore";
+import useTutorial from "../hooks/useTutorial";
 import { IdeaTodayCards, TodoTodayCards, cardStore } from "../store/cardStore";
-import { initTutorial, todaySteps } from "../utils/tutorial";
+import { TutorialType } from "../utils/tutorial";
 
 const Homepage = observer(() => {
   const [selectedKey, setSelectedKey] = useState<Key>("idea");
 
   useDocTitle("Reminded | 今日");
-  useEffect(() => {
-    const isTutorialDone = authStore.tutorialProgress?.today;
-    if (isTutorialDone !== undefined && !isTutorialDone) {
-      initTutorial(todaySteps, {
-        onDestroyed: () => authStore.updateTutorialProgress("today"),
-      });
-    }
-  }, [authStore.tutorialProgress?.today]);
+  useTutorial(TutorialType.today);
 
   const countTodo = cardStore.getFilteredCardsWith(new TodoTodayCards()).length;
   const countIdea = cardStore.getFilteredCardsWith(new IdeaTodayCards()).length;

@@ -1,5 +1,4 @@
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import {
   ActionAll,
@@ -9,8 +8,8 @@ import {
   ActionSearch,
 } from "../components/Section/SectionAction";
 import useDocTitle from "../hooks/useDocTitle";
-import { authStore } from "../store/authStore";
-import { actionSteps, initTutorial } from "../utils/tutorial";
+import useTutorial from "../hooks/useTutorial";
+import { TutorialType } from "../utils/tutorial";
 
 const renderActionPage = (route: string | undefined) => {
   switch (route) {
@@ -33,14 +32,7 @@ const ActionPage = observer(() => {
   const { route } = useParams();
 
   useDocTitle("Reminded | 行動");
-  useEffect(() => {
-    const isTutorialDone = authStore.tutorialProgress?.action;
-    if (isTutorialDone !== undefined && !isTutorialDone) {
-      initTutorial(actionSteps, {
-        onDestroyed: () => authStore.updateTutorialProgress("action"),
-      });
-    }
-  }, [authStore.tutorialProgress?.action]);
+  useTutorial(TutorialType.action);
 
   return <section className="relative">{renderActionPage(route)}</section>;
 });

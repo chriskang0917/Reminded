@@ -1,5 +1,4 @@
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import {
   IdeaAction,
@@ -9,8 +8,8 @@ import {
   IdeaWeek,
 } from "../components/Section/SectionIdea";
 import useDocTitle from "../hooks/useDocTitle";
-import { authStore } from "../store/authStore";
-import { ideaSteps, initTutorial } from "../utils/tutorial";
+import useTutorial from "../hooks/useTutorial";
+import { TutorialType } from "../utils/tutorial";
 
 const renderIdeaPage = (route: string | undefined) => {
   switch (route) {
@@ -33,14 +32,7 @@ const IdeaPage = observer(() => {
   const { route } = useParams();
 
   useDocTitle("Reminded | 靈感");
-  useEffect(() => {
-    const isTutorialDone = authStore.tutorialProgress?.idea;
-    if (isTutorialDone !== undefined && !isTutorialDone) {
-      initTutorial(ideaSteps, {
-        onDestroyed: () => authStore.updateTutorialProgress("idea"),
-      });
-    }
-  }, [authStore.tutorialProgress?.idea]);
+  useTutorial(TutorialType.idea);
 
   return <section className="relative">{renderIdeaPage(route)}</section>;
 });
