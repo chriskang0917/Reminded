@@ -64,7 +64,7 @@ export const NotesBar = observer(() => {
         </li>
       ))}
       <Divider className="w-[80%]" />
-      <ScrollShadow className="h-[400px]" hideScrollBar size={30}>
+      <ScrollShadow className="h-[calc(50vh-150px)]" hideScrollBar size={10}>
         {!cardStore.isLoaded && (
           <div className="mt-2 flex items-center justify-center gap-2">
             <Spinner />
