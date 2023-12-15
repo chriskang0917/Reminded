@@ -1,3 +1,4 @@
+import { Spinner } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { Suspense } from "react";
 import { Navigate, Outlet } from "react-router-dom";
@@ -11,13 +12,15 @@ const RootLayout = observer(() => {
   const uid = cookie.getCookie("uid");
   const isLogin = authStore.isLogin;
 
+  const Loading = () => <Spinner className="w-10" />;
+
   return (
     <DndProvider>
       <Sidebar />
       <SortableProvider>
         <main className="ml-64 h-[100vh] bg-background pt-10 text-foreground">
           <div className="mx-auto max-w-[550px]">
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Loading />}>
               {uid && isLogin ? <Outlet /> : <Navigate to="/login" replace />}
             </Suspense>
           </div>

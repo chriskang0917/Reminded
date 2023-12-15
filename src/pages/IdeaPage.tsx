@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import {
   IdeaAction,
   IdeaAll,
@@ -11,7 +11,6 @@ import {
 import useDocTitle from "../hooks/useDocTitle";
 import { authStore } from "../store/authStore";
 import { ideaSteps, initTutorial } from "../utils/tutorial";
-import ErrorPage from "./ErrorPage";
 
 const renderIdeaPage = (route: string | undefined) => {
   switch (route) {
@@ -26,7 +25,7 @@ const renderIdeaPage = (route: string | undefined) => {
     case "archive":
       return <IdeaArchive />;
     default:
-      return <ErrorPage />;
+      return <Navigate to="/" replace />;
   }
 };
 

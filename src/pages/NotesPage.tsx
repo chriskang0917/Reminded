@@ -1,7 +1,6 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { NoteSearch, NotesAll } from "../components/Section/SectionNotes";
 import useDocTitle from "../hooks/useDocTitle";
-import ErrorPage from "./ErrorPage";
 
 const renderIdeaPage = (route: string | undefined) => {
   switch (route) {
@@ -10,7 +9,7 @@ const renderIdeaPage = (route: string | undefined) => {
     case "search":
       return <NoteSearch />;
     default:
-      return <ErrorPage />;
+      return <Navigate to="/" replace />;
   }
 };
 
