@@ -52,11 +52,11 @@ export const TodoTomorrow = observer(() => {
           <MotionItem key="placeholder">
             <div ref={todoTomorrowRef} className="w-full">
               {todoAndActionAll.length === 0 && (
-                <EmptyCard placeholder={todoPlaceholder} />
+                <EmptyCard id="tutorial-todo-2" placeholder={todoPlaceholder} />
               )}
             </div>
           </MotionItem>
-          <ul id="tutorial-todo-2" className="grid w-full gap-3">
+          <ul className="grid w-full gap-3">
             {todoAndActionAll.map((card) => (
               <MotionItem key={card.id}>
                 <TodoCard card={card} />
