@@ -34,6 +34,7 @@ interface SettingService {
   initUserSettings: () => void;
   updateProfile: (profile: IProfile) => void;
   updateTutorialProgress: (tutorialName: keyof ITutorial) => void;
+  resetTutorialProgress: () => void;
 }
 
 /* ===============================
@@ -279,6 +280,38 @@ class SettingAuthService implements SettingService {
       { merge: true },
     );
   }
+
+  resetTutorialProgress() {
+    if (!this.authStore.uid) return;
+    const defaultTutorial = {
+      today: false,
+      idea: false,
+      action: false,
+      todo: false,
+    };
+    localStorage.setItem("settings", JSON.stringify(defaultTutorial));
+    const settingRef = doc(db, "users", this.authStore.uid);
+    setDoc(
+      settingRef,
+      {
+        tutorialProgress: {
+          today: false,
+          idea: false,
+          action: false,
+          todo: false,
+        },
+      },
+      { merge: true },
+    );
+    runInAction(() => {
+      this.authStore.tutorialProgress = {
+        today: false,
+        idea: false,
+        action: false,
+        todo: false,
+      } as ITutorial;
+    });
+  }
 }
 
 class AuthStore {
@@ -330,6 +363,10 @@ class AuthStore {
 
   updateTutorialProgress(tutorialName: keyof ITutorial) {
     this.settingService.updateTutorialProgress(tutorialName);
+  }
+
+  resetTutorialProgress() {
+    this.settingService.resetTutorialProgress();
   }
 }
 
