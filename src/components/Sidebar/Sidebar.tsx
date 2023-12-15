@@ -101,34 +101,16 @@ export const Sidebar = () => {
               classNames={{
                 img: "w-10 rounded-xl",
                 base: cn(
-                  "h-10 w-10 rounded-xl bg-thirdDark text-slate-600 drop-shadow-2xl",
-                  "hover:bg-primary hover:text-black transition-all",
-                  location.pathname === "/profile" && "bg-primary",
+                  "h-10 w-10 rounded-xl bg-secondaryDark text-slate-600 drop-shadow-2xl",
+                  "hover:bg-primaryDark hover:text-black transition-all",
+                  location.pathname === "/profile" && "bg-primaryDark",
                 ),
               }}
               name={authStore.name || undefined}
-              fallback={<RxAvatar className="h-8 w-8 text-gray-400" />}
+              fallback={<RxAvatar className="text-slate-500 h-8 w-8" />}
             />
           </Link>
         </li>
-        {/* <li>
-          <Link to="/setting">
-            <Card
-              isBlurred
-              classNames={{
-                base: cn(
-                  "h-10 w-10 rounded-xl bg-thirdDark text-white drop-shadow-2xl",
-                  "hover:bg-primary hover:text-black transition-all",
-                  location.pathname === "/setting" && "bg-primary",
-                ),
-              }}
-            >
-              <CardBody>
-                <IoSettingsOutline />
-              </CardBody>
-            </Card>
-          </Link>
-        </li> */}
       </ul>
     </nav>
   );
