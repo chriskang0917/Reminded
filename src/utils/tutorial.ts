@@ -40,6 +40,13 @@ export const initTutorial = (steps: DriveStep[], configs?: Partial<Config>) => {
   tutorial.drive();
 };
 
+export const enum TutorialType {
+  today = "today",
+  idea = "idea",
+  action = "action",
+  todo = "todo",
+}
+
 export const todaySteps: DriveStep[] = [
   {
     element: "#tutorial-today-1",

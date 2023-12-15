@@ -1,15 +1,14 @@
 import { useDroppable } from "@dnd-kit/core";
 import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
-import { authStore } from "../../../store/authStore";
+import useTutorial from "../../../hooks/useTutorial";
 import {
   ActionAllCards,
   TodoAndActionTomorrowCards,
   cardStore,
 } from "../../../store/cardStore";
 import { style } from "../../../utils/style";
-import { initTutorial, todoSteps } from "../../../utils/tutorial";
+import { TutorialType } from "../../../utils/tutorial";
 import { TodoCard } from "../../Card";
 import EmptyCard from "../../Card/EmptyCard";
 import { Heading, HeadingDivider } from "../../Heading";
@@ -24,19 +23,12 @@ const todoPlaceholder = "享受你的個人時光吧！";
 const actionPlaceholder = "繼續累積你的行動吧！";
 
 export const TodoTomorrow = observer(() => {
+  useTutorial(TutorialType.todo);
+
+  const actionCards = cardStore.getFilteredCardsWith(new ActionAllCards());
   const todoAndActionAll = cardStore.getFilteredCardsWith(
     new TodoAndActionTomorrowCards(),
   );
-
-  useEffect(() => {
-    const isTutorialDone = authStore.tutorialProgress.todo;
-    if (isTutorialDone !== undefined && !isTutorialDone)
-      initTutorial(todoSteps, {
-        onDestroyed: () => authStore.updateTutorialProgress("todo"),
-      });
-  }, [authStore.tutorialProgress?.todo]);
-
-  const actionCards = cardStore.getFilteredCardsWith(new ActionAllCards());
 
   const { setNodeRef: todoTomorrowRef } = useDroppable({
     id: "todo_tomorrow_section",
