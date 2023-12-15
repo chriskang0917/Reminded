@@ -1,8 +1,8 @@
 import { Checkbox } from "@nextui-org/react";
 import { useRef, useState } from "react";
 import { CiCalendarDate } from "react-icons/ci";
+import { GrTransaction } from "react-icons/gr";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { SlActionUndo } from "react-icons/sl";
 import { ICard, cardStore } from "../../../store/cardStore";
 import BasicCard from "../BasicCard";
 import Editable from "../Editable/Editable";
@@ -11,7 +11,7 @@ import { TodoCardTool } from "./TodoCardTool";
 
 const settingList = [
   { icon: <CiCalendarDate />, label: "date" },
-  { icon: <SlActionUndo className="h-3" />, label: "action" },
+  { icon: <GrTransaction className="h-3" />, label: "action" },
   { icon: <HiOutlineDotsVertical />, label: "more" },
 ];
 

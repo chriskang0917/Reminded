@@ -11,7 +11,6 @@ import { ActionCardTool } from "./ActionCardTool";
 
 const settingList = [
   { icon: <CiCalendarDate />, label: "date", id: "tutorial-actions-1" },
-  // { icon: <SlActionUndo className="h-3" />, label: "action" },
   { icon: <HiOutlineDotsVertical />, label: "more" },
 ];
 
