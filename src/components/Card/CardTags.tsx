@@ -29,7 +29,7 @@ const CardTags = observer(({ card }: { card: ICard }) => {
   };
 
   return (
-    <div className="flex items-center justify-start gap-2">
+    <div className="flex flex-wrap items-center justify-start gap-2">
       {card.tags.map((tag: string) => (
         <Chip
           size="sm"

@@ -21,7 +21,7 @@ function BasicCard({ card, children, className }: BasicCardProps) {
         >
           {children}
           {card.status !== "note" && (
-            <div className="mt-2 flex flex-wrap items-center gap-x-2">
+            <div className="mt-2 flex max-w-[calc(100%-100px)] flex-wrap items-center gap-x-2">
               <CardTags card={card} />
             </div>
           )}
