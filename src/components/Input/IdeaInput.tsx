@@ -55,8 +55,8 @@ export const IdeaInput = observer(() => {
     const handleKeyDown = (
       e: KeyboardEvent | React.KeyboardEvent<HTMLInputElement>,
     ) => {
-      if (e.key === "i" && e.metaKey) inputRef.current?.focus();
-      if (e.key === "i" && e.metaKey && e.shiftKey) handleTab(selectedTab);
+      if (e.key === "i" && e.shiftKey) inputRef.current?.focus();
+      if (e.key === "o" && e.shiftKey) handleTab(selectedTab);
       if (e.key === "Escape") {
         inputRef.current?.blur();
         tagRef.current?.blur();

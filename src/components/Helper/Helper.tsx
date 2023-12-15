@@ -10,12 +10,12 @@ const shortcuts = [
   {
     key: "focus",
     label: "觸發輸入框",
-    shortcut: "⌘ I",
+    shortcut: "⇧ I",
   },
   {
     key: "switch",
     label: "切換靈感與待辦輸入",
-    shortcut: "⌘ ⇧ I",
+    shortcut: "⇧ O",
   },
   {
     key: "enter",
