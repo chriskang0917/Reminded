@@ -26,7 +26,7 @@ const shortcuts = [
 
 function Helper() {
   return (
-    <div className="fixed bottom-4 right-4 z-50 cursor-pointer">
+    <div className="fixed bottom-4 right-7 z-50 cursor-pointer">
       <Dropdown>
         <DropdownTrigger>
           <button>
