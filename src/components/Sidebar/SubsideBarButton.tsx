@@ -32,7 +32,11 @@ const SubsideButton = ({ className, children, action, onClick }: IButton) => {
         )}
         onClick={onClick}
       >
-        <CardBody>{children}</CardBody>
+        <CardBody>
+          <div className="flex h-full items-center justify-start gap-3 pl-[6px]">
+            {children}
+          </div>
+        </CardBody>
       </Card>
     </Link>
   );

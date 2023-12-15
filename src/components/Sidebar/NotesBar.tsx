@@ -56,10 +56,8 @@ export const NotesBar = observer(() => {
       {ideaActionList.map((action) => (
         <li key={action.label}>
           <SubsideButton key={action.label} action={action}>
-            <div className="flex h-full items-center justify-center gap-3">
-              <span>{action.icon}</span>
-              <span className="text-sm">{action.label}</span>
-            </div>
+            <span>{action.icon}</span>
+            <span className="text-sm">{action.label}</span>
           </SubsideButton>
         </li>
       ))}
