@@ -1,12 +1,15 @@
-import { useParams } from "react-router-dom";
+import { observer } from "mobx-react-lite";
+import { Navigate, useParams } from "react-router-dom";
 import {
   ActionAll,
   ActionArchive,
   ActionExecute,
   ActionExpire,
   ActionSearch,
-} from "../components/SectionAction";
-import ErrorPage from "./ErrorPage";
+} from "../components/Section/SectionAction";
+import useDocTitle from "../hooks/useDocTitle";
+import useTutorial from "../hooks/useTutorial";
+import { TutorialType } from "../utils/tutorial";
 
 const renderActionPage = (route: string | undefined) => {
   switch (route) {
@@ -21,14 +24,17 @@ const renderActionPage = (route: string | undefined) => {
     case "archive":
       return <ActionArchive />;
     default:
-      return <ErrorPage />;
+      return <Navigate to="/" replace />;
   }
 };
 
-function ActionPage() {
+const ActionPage = observer(() => {
   const { route } = useParams();
 
+  useDocTitle("Reminded | 行動");
+  useTutorial(TutorialType.action);
+
   return <section className="relative">{renderActionPage(route)}</section>;
-}
+});
 
 export default ActionPage;

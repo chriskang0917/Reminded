@@ -11,6 +11,7 @@ import { observer } from "mobx-react-lite";
 import { Navigate, useParams } from "react-router-dom";
 import CardTags from "../components/Card/CardTags";
 import ModalEditor from "../components/Editor/ModalEditor";
+import useDocTitle from "../hooks/useDocTitle";
 import { cardStore } from "../store/cardStore";
 
 const ArticlePage = observer(() => {
@@ -24,25 +25,17 @@ const ArticlePage = observer(() => {
   if (!note) return <div>Loading...</div>;
 
   const title = note.noteTitle;
-  const noteHTML = note.noteHTML;
+  const noteHTML = note.noteHTML || "";
   const parsedHTML = parse(noteHTML);
   const parsedDate = parseISO(note.createdTime);
   const formattedDate = format(parsedDate, "yyyy-MM-dd");
+
+  useDocTitle(`Reminded | ${title}`);
 
   const handleEdit = () => onOpen();
 
   return (
     <section className="pb-5">
-      {/* <Image
-        isBlurred
-        loading="lazy"
-        alt="article-bg"
-        src={ArticleBG}
-        classNames={{
-          wrapper: "absolute",
-          blurredImg: "opacity-5",
-        }}
-      /> */}
       <Card className="relative top-6 z-10 mx-auto mb-10 w-[95%] px-6 py-5">
         {note.tags.length ? <CardTags card={note} /> : ""}
         <div className="flex items-center justify-between">

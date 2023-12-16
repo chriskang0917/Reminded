@@ -1,12 +1,13 @@
 import { useParams } from "react-router-dom";
-import { ActionAll } from "../components/SectionAction/ActionAll";
 import {
   TodoAll,
   TodoComplete,
   TodoToday,
   TodoTomorrow,
   TodoWeek,
-} from "../components/SectionTodo";
+} from "../components/Section/SectionTodo";
+import { TodoExpired } from "../components/Section/SectionTodo/TodoExpired";
+import useDocTitle from "../hooks/useDocTitle";
 
 const renderTodoPage = (route: string | undefined) => {
   switch (route) {
@@ -18,8 +19,8 @@ const renderTodoPage = (route: string | undefined) => {
       return <TodoToday />;
     case "week":
       return <TodoWeek />;
-    case "actions":
-      return <ActionAll />;
+    case "expired":
+      return <TodoExpired />;
     case "complete":
       return <TodoComplete />;
   }
@@ -27,6 +28,7 @@ const renderTodoPage = (route: string | undefined) => {
 
 function TodoPage() {
   const { route } = useParams();
+  useDocTitle("Reminded | 待辦");
   return <section className="relative">{renderTodoPage(route)}</section>;
 }
 

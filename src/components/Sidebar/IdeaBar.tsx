@@ -12,19 +12,33 @@ interface IAction {
   label: string;
   path: string;
   icon?: React.ReactNode;
+  id?: string;
 }
 
 const ideaActionList: IAction[] = [
-  { label: "搜尋靈感", path: "/idea/search", icon: <IoIosSearch /> },
-  { label: "靈感池", path: "/idea/pools", icon: <FcParallelTasks /> },
-  { label: "已轉換", path: "/idea/action", icon: <GrTransaction /> },
+  {
+    label: "搜尋靈感",
+    path: "/idea/search",
+    icon: <IoIosSearch />,
+  },
+  {
+    label: "所有靈感",
+    path: "/idea/pools",
+    icon: <FcParallelTasks />,
+  },
+  {
+    label: "已轉換",
+    path: "/idea/action",
+    id: "tutorial-ideas-6",
+    icon: <GrTransaction />,
+  },
   { label: "已封存", path: "/idea/archive", icon: <IoArchiveOutline /> },
 ];
 
 export const IdeaBar = observer(() => {
   return (
     <SubsideBar>
-      <li>
+      <li id="tutorial-ideas-1">
         <SubsideButton
           className="h-12"
           action={{ label: "本週靈感", path: "/idea/week" }}
@@ -37,12 +51,10 @@ export const IdeaBar = observer(() => {
       </li>
       <Divider className="w-[80%]" />
       {ideaActionList.map((action) => (
-        <li key={action.label}>
+        <li id={action.id} key={action.label}>
           <SubsideButton key={action.label} action={action}>
-            <div className="flex h-full items-center justify-center gap-3">
-              <span>{action.icon}</span>
-              <span className="text-sm">{action.label}</span>
-            </div>
+            <span>{action.icon}</span>
+            <span className="text-sm">{action.label}</span>
           </SubsideButton>
         </li>
       ))}

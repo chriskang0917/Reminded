@@ -25,6 +25,8 @@ interface IInput {
 
 export const TodoInput = observer(() => {
   const location = useLocation();
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false);
+
   const isTomorrow = location.pathname === "/todo/tomorrow";
   const tomorrowDate = new Date(new Date().setDate(new Date().getDate() + 1));
   const todayDate = new Date();
@@ -83,23 +85,16 @@ export const TodoInput = observer(() => {
   const handleConfirmDate = () => {
     if (!input.date) return toast.error("請選擇到期日");
     setInput((prev) => ({ ...prev, date: tomorrowDate }));
-  };
-
-  const handleRemoveDate = () => {
-    toast.success("已經移除到期日");
-    setInput((prev) => ({ ...prev, date: undefined }));
+    setIsDatePickerOpen(false);
   };
 
   const DatePickerFooter = (
-    <div className="flex justify-between">
+    <div className="flex justify-center">
       <Button size="sm" variant="light" onPress={handleReturnToday}>
         今天
       </Button>
       <Button size="sm" variant="ghost" onPress={handleConfirmDate}>
         確認日期
-      </Button>
-      <Button size="sm" variant="light" onPress={handleRemoveDate}>
-        移除到期
       </Button>
     </div>
   );
@@ -142,9 +137,13 @@ export const TodoInput = observer(() => {
           </AutocompleteItem>
         )}
       </Autocomplete>
-      <Popover placement="bottom">
+      <Popover
+        placement="bottom"
+        isOpen={isDatePickerOpen}
+        onOpenChange={() => setIsDatePickerOpen(!isDatePickerOpen)}
+      >
         <PopoverTrigger>
-          <button>
+          <button onClick={() => setIsDatePickerOpen(true)}>
             <CiCalendarDate className="h-7 w-7" />
           </button>
         </PopoverTrigger>
@@ -154,6 +153,16 @@ export const TodoInput = observer(() => {
             mode="single"
             selected={input.date as Date}
             onSelect={(date) => setInput((prev) => ({ ...prev, date }))}
+            modifiersStyles={{
+              today: {
+                color: "#fff",
+                backgroundColor: "#E1DCD9",
+              },
+              selected: {
+                color: "#fff",
+                backgroundColor: "#A67F78",
+              },
+            }}
             footer={DatePickerFooter}
           />
         </PopoverContent>

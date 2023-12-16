@@ -3,10 +3,11 @@ import { motion } from "framer-motion";
 import { AiOutlineInteraction } from "react-icons/ai";
 import { BsListTask } from "react-icons/bs";
 import { FaRegLightbulb, FaRegStickyNote } from "react-icons/fa";
-import { IoHomeOutline, IoSettingsOutline } from "react-icons/io5";
+import { IoHomeOutline } from "react-icons/io5";
 import { RxAvatar } from "react-icons/rx";
 import { Link, useLocation } from "react-router-dom";
 import { authStore } from "../../store/authStore";
+import Logo from "./logo.png";
 
 const actionList = [
   { label: "今日", page: "/", path: "/", icon: <IoHomeOutline /> },
@@ -16,18 +17,21 @@ const actionList = [
     page: "/action/",
     path: "/action/all",
     icon: <AiOutlineInteraction />,
+    id: "tutorial-ideas-3",
   },
   {
     label: "靈感",
     page: "/idea/",
     path: "/idea/week",
     icon: <FaRegLightbulb />,
+    id: "tutorial-today-3",
   },
   {
     label: "筆記",
     page: "/notes/",
     path: "/notes/all",
     icon: <FaRegStickyNote />,
+    id: "tutorial-ideas-5",
   },
 ];
 
@@ -43,8 +47,13 @@ export const Sidebar = () => {
   };
 
   return (
-    <nav className="fixed left-0 top-0 flex h-[100svh] w-36 flex-col items-center justify-between bg-secondary pr-10 opacity-70">
+    <nav className="fixed left-0 top-0 flex h-[100svh] w-36 flex-col items-center justify-between bg-secondary pr-10 opacity-60">
       <ul className="mt-36 flex flex-col gap-7 pr-6">
+        <li className="absolute left-[22px] top-8">
+          <Card className="h-9 w-9 rounded-full">
+            <img src={Logo} alt="logo" />
+          </Card>
+        </li>
         {actionList.map((action) => (
           <li key={action.label}>
             <Link to={action.path}>
@@ -57,16 +66,18 @@ export const Sidebar = () => {
                 closeDelay={100}
               >
                 <Card
+                  id={action?.id}
                   isBlurred
+                  shadow="lg"
                   classNames={{
                     base: "h-10 w-10 rounded-xl drop-shadow-2xl",
                     body: cn(
-                      "hover:bg-primary hover:text-white transition-all",
+                      "hover:bg-primaryDark hover:text-white transition-all",
                       isNoteHomePage(action.page)
-                        ? "bg-primary text-white"
+                        ? "bg-primaryDark text-white"
                         : isHomePage(action.page)
-                          ? "bg-primary text-white"
-                          : "bg-thirdDark text-black",
+                          ? "bg-primaryDark text-white"
+                          : "bg-secondaryDark text-black",
                     ),
                   }}
                 >
@@ -90,32 +101,14 @@ export const Sidebar = () => {
               classNames={{
                 img: "w-10 rounded-xl",
                 base: cn(
-                  "h-10 w-10 rounded-xl bg-thirdDark text-slate-600 drop-shadow-2xl",
-                  "hover:bg-primary hover:text-black transition-all",
-                  location.pathname === "/profile" && "bg-primary",
+                  "h-10 w-10 rounded-xl bg-secondaryDark text-slate-600 drop-shadow-2xl",
+                  "hover:bg-primaryDark hover:text-black transition-all",
+                  location.pathname === "/profile" && "bg-primaryDark",
                 ),
               }}
               name={authStore.name || undefined}
-              fallback={<RxAvatar className="h-8 w-8 text-gray-400" />}
+              fallback={<RxAvatar className="text-slate-500 h-8 w-8" />}
             />
-          </Link>
-        </li>
-        <li>
-          <Link to="/setting">
-            <Card
-              isBlurred
-              classNames={{
-                base: cn(
-                  "h-10 w-10 rounded-xl bg-thirdDark text-white drop-shadow-2xl",
-                  "hover:bg-primary hover:text-black transition-all",
-                  location.pathname === "/setting" && "bg-primary",
-                ),
-              }}
-            >
-              <CardBody>
-                <IoSettingsOutline />
-              </CardBody>
-            </Card>
           </Link>
         </li>
       </ul>

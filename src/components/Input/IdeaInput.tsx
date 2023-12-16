@@ -7,6 +7,7 @@ import {
 } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { Key, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { IoIosAdd } from "react-icons/io";
 import { NewCard, cardStore } from "../../store/cardStore";
 import { getObjectFilteredTags } from "../../utils/input";
@@ -41,6 +42,9 @@ export const IdeaInput = observer(() => {
     tagRef.current?.blur();
     setInput("");
     setTagInput("");
+    toast.success(
+      `已新增至下方的 今日${selectedTab === "idea" ? `靈感` : `待辦`}！`,
+    );
   };
 
   const handleTab = (key: string) => {
@@ -51,8 +55,8 @@ export const IdeaInput = observer(() => {
     const handleKeyDown = (
       e: KeyboardEvent | React.KeyboardEvent<HTMLInputElement>,
     ) => {
-      if (e.key === "i" && e.metaKey) inputRef.current?.focus();
-      if (e.key === "i" && e.metaKey && e.shiftKey) handleTab(selectedTab);
+      if (e.key === "i" && e.shiftKey) inputRef.current?.focus();
+      if (e.key === "o" && e.shiftKey) handleTab(selectedTab);
       if (e.key === "Escape") {
         inputRef.current?.blur();
         tagRef.current?.blur();
@@ -73,7 +77,7 @@ export const IdeaInput = observer(() => {
   );
 
   return (
-    <section className="mb-8 flex flex-col items-center">
+    <section id="tutorial-today-1" className="mb-8 flex flex-col items-center">
       <Tabs
         className="mb-5"
         size="lg"

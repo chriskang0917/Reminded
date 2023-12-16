@@ -1,18 +1,25 @@
 import { NextUIProvider } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { lazy, useEffect } from "react";
+import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 import ActionLayout from "./components/Layout/ActionLayout";
 import IdeaLayout from "./components/Layout/IdeaLayout";
 import NotesLayout from "./components/Layout/NotesLayout";
 import RootLayout from "./components/Layout/RootLayout";
 import TodoLayout from "./components/Layout/TodoLayout";
-import ErrorPage from "./pages/ErrorPage";
+import ActionPage from "./pages/ActionPage";
+import ArticlePage from "./pages/ArticlePage";
+import IdeaPage from "./pages/IdeaPage";
 import LoginPage from "./pages/LoginPage";
 import NotesPage from "./pages/NotesPage";
 import ProfilePage from "./pages/Profile";
 import Homepage from "./pages/TodayPage";
+import TodoPage from "./pages/TodoPage";
 import { authStore } from "./store/authStore";
 import { cardStore } from "./store/cardStore";
 
@@ -20,7 +27,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
-    errorElement: <ErrorPage />,
+    errorElement: <Navigate to="/" />,
     children: [
       {
         path: "/",
@@ -29,16 +36,12 @@ const router = createBrowserRouter([
       {
         path: "todo",
         element: <TodoLayout />,
-        children: [
-          { path: ":route", Component: lazy(() => import("./pages/TodoPage")) },
-        ],
+        children: [{ path: ":route", element: <TodoPage /> }],
       },
       {
         path: "idea",
         element: <IdeaLayout />,
-        children: [
-          { path: ":route", Component: lazy(() => import("./pages/IdeaPage")) },
-        ],
+        children: [{ path: ":route", element: <IdeaPage /> }],
       },
       {
         path: "action",
@@ -46,7 +49,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: ":route",
-            Component: lazy(() => import("./pages/ActionPage")),
+            element: <ActionPage />,
           },
         ],
       },
@@ -56,7 +59,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "article/:id",
-            Component: lazy(() => import("./pages/ArticlePage")),
+            element: <ArticlePage />,
           },
           { path: ":route", element: <NotesPage /> },
         ],
@@ -81,6 +84,7 @@ const App = observer(() => {
   useEffect(() => {
     if (!authStore.uid) return authStore.initAuthState();
     authStore.initState();
+    authStore.initUserSettings();
     cardStore.initActiveCards();
   }, [authStore.uid]);
 

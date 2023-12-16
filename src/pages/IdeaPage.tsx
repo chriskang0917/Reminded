@@ -1,12 +1,15 @@
-import { useParams } from "react-router-dom";
+import { observer } from "mobx-react-lite";
+import { Navigate, useParams } from "react-router-dom";
 import {
   IdeaAction,
+  IdeaAll,
   IdeaArchive,
-  IdeaPools,
   IdeaSearch,
   IdeaWeek,
-} from "../components/SectionIdea";
-import ErrorPage from "./ErrorPage";
+} from "../components/Section/SectionIdea";
+import useDocTitle from "../hooks/useDocTitle";
+import useTutorial from "../hooks/useTutorial";
+import { TutorialType } from "../utils/tutorial";
 
 const renderIdeaPage = (route: string | undefined) => {
   switch (route) {
@@ -15,19 +18,23 @@ const renderIdeaPage = (route: string | undefined) => {
     case "search":
       return <IdeaSearch />;
     case "pools":
-      return <IdeaPools />;
+      return <IdeaAll />;
     case "action":
       return <IdeaAction />;
     case "archive":
       return <IdeaArchive />;
     default:
-      return <ErrorPage />;
+      return <Navigate to="/" replace />;
   }
 };
 
-function IdeaPage() {
+const IdeaPage = observer(() => {
   const { route } = useParams();
+
+  useDocTitle("Reminded | 靈感");
+  useTutorial(TutorialType.idea);
+
   return <section className="relative">{renderIdeaPage(route)}</section>;
-}
+});
 
 export default IdeaPage;

@@ -17,7 +17,9 @@ export const NoteCard = ({ note }: NoteCardProps) => {
     <BasicCard className="flex-row justify-start px-7" card={note}>
       <Card className="max-w-32 my-1 -ml-1 aspect-auto">
         <CardBody className="flex items-center justify-center">
-          <Image src={NoteIcon} width={100} />
+          <Link to={`/notes/article/${note.id}`} className="h-full w-full">
+            <Image src={NoteIcon} width={80} />
+          </Link>
         </CardBody>
       </Card>
       <section className="ml-10 flex max-w-[60%] flex-col justify-between">

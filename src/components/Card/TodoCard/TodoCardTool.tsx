@@ -45,6 +45,7 @@ interface IList {
 export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
   const parsedDate = card.dueDate ? parseISO(card.dueDate) : null;
   const [selectedDate, setSelectedDate] = useState<Date | null>(parsedDate);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -86,11 +87,6 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
       color: "default",
       onPress: () => handleUpdateStatus("idea"),
     },
-    {
-      label: "筆記",
-      color: "success",
-      onPress: () => handleUpdateStatus("note"),
-    },
   ];
 
   const formatDate = (date: Date | undefined) => {
@@ -104,13 +100,21 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
 
   return (
     <>
-      {isDateLabel && selectedDate && (
-        <Popover placement="bottom">
+      {isDateLabel && (
+        <Popover
+          isOpen={isOpen}
+          onOpenChange={() => setIsOpen(!isOpen)}
+          placement="bottom"
+        >
           <PopoverTrigger>
             <button>
-              <p className="text-[0.75rem] underline">
-                {formatDate(selectedDate)}
-              </p>
+              {card.dueDate ? (
+                <p className="text-[0.75rem] underline">
+                  {formatDate(selectedDate || undefined)}
+                </p>
+              ) : (
+                <>{setting.icon}</>
+              )}
             </button>
           </PopoverTrigger>
           <PopoverContent>
@@ -118,23 +122,8 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
               card={card}
               date={selectedDate}
               setDate={handleDateChange}
+              onClose={() => setIsOpen(false)}
             />
-          </PopoverContent>
-        </Popover>
-      )}
-      {isDateLabel && !selectedDate && (
-        <Popover placement="bottom">
-          <PopoverTrigger>
-            <button>{setting.icon}</button>
-          </PopoverTrigger>
-          <PopoverContent>
-            {!selectedDate && (
-              <DatePicker
-                card={card}
-                date={selectedDate}
-                setDate={handleDateChange}
-              />
-            )}
           </PopoverContent>
         </Popover>
       )}

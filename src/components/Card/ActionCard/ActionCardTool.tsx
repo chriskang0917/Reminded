@@ -25,6 +25,7 @@ interface CardToolProps {
     icon: React.ReactNode;
   };
   card: ICard;
+  onOpen?: () => void;
 }
 
 type color =
@@ -45,6 +46,7 @@ interface IList {
 export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
   const parsedDate = card.dueDate ? parseISO(card.dueDate) : null;
   const [selectedDate, setSelectedDate] = useState<Date | null>(parsedDate);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -87,11 +89,6 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
       color: "default",
       onPress: () => handleUpdateStatus("idea"),
     },
-    {
-      label: "筆記",
-      color: "success",
-      onPress: () => handleUpdateStatus("note"),
-    },
   ];
 
   const formatDate = (date: Date | undefined) => {
@@ -106,7 +103,11 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
   return (
     <>
       {isDateLabel && selectedDate && (
-        <Popover placement="bottom">
+        <Popover
+          isOpen={isOpen}
+          onOpenChange={() => setIsOpen(!isOpen)}
+          placement="bottom"
+        >
           <PopoverTrigger>
             <button>
               <p className="text-[0.75rem] underline">
@@ -119,12 +120,17 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
               card={card}
               date={selectedDate}
               setDate={handleDateChange}
+              onClose={() => setIsOpen(false)}
             />
           </PopoverContent>
         </Popover>
       )}
       {isDateLabel && !selectedDate && (
-        <Popover placement="bottom">
+        <Popover
+          placement="bottom"
+          isOpen={isOpen}
+          onOpenChange={() => setIsOpen(!isOpen)}
+        >
           <PopoverTrigger>
             <button>{setting.icon}</button>
           </PopoverTrigger>
@@ -134,6 +140,7 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
                 card={card}
                 date={selectedDate}
                 setDate={handleDateChange}
+                onClose={() => setIsOpen(false)}
               />
             )}
           </PopoverContent>

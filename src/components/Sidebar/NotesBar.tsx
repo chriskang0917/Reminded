@@ -46,11 +46,8 @@ export const NotesBar = observer(() => {
           "transition-all hover:bg-fourthDark hover:text-white",
         )}
       >
-        <CardBody>
-          <div
-            className="flex h-full items-center justify-center gap-3"
-            onClick={onOpen}
-          >
+        <CardBody onClick={onOpen}>
+          <div className="flex h-full items-center justify-center gap-3">
             <span>+</span>
             <span className="text-sm">新增筆記</span>
           </div>
@@ -59,18 +56,22 @@ export const NotesBar = observer(() => {
       {ideaActionList.map((action) => (
         <li key={action.label}>
           <SubsideButton key={action.label} action={action}>
-            <div className="flex h-full items-center justify-center gap-3">
-              <span>{action.icon}</span>
-              <span className="text-sm">{action.label}</span>
-            </div>
+            <span>{action.icon}</span>
+            <span className="text-sm">{action.label}</span>
           </SubsideButton>
         </li>
       ))}
       <Divider className="w-[80%]" />
-      <ScrollShadow className="h-[400px]" hideScrollBar size={30}>
-        {notes.length === 0 && (
-          <div className="mt-2 flex justify-center">
+      <ScrollShadow className="h-[calc(50vh-150px)]" hideScrollBar size={10}>
+        {!cardStore.isLoaded && (
+          <div className="mt-2 flex items-center justify-center gap-2">
             <Spinner />
+            <p className="text-sm text-secondary">讀取中...</p>
+          </div>
+        )}
+        {cardStore.isLoaded && notes.length === 0 && (
+          <div className="mt-2 flex items-center justify-center gap-2">
+            <p className="text-sm text-secondary">新增一些筆記吧！</p>
           </div>
         )}
         <ul aria-label="Notes List" className="inline-block w-[90%]">
@@ -87,10 +88,10 @@ export const NotesBar = observer(() => {
               >
                 <Link
                   to={`/notes/article/${note.id}`}
-                  className="block w-full text-center"
+                  className="block w-full text-center text-sm"
                 >
-                  {note.noteTitle.length > 5
-                    ? note.noteTitle.slice(0, 5) + "..."
+                  {note?.noteTitle?.length > 6
+                    ? note.noteTitle.slice(0, 6) + "..."
                     : note.noteTitle}
                 </Link>
               </Card>
