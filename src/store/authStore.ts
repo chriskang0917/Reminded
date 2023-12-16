@@ -42,7 +42,7 @@ interface SettingService {
 =============================== */
 
 class EmailAuthService implements EmailService {
-  public authStore: AuthStore;
+  private authStore: AuthStore;
   private cookieExpireDay = 10;
 
   constructor(authStore: AuthStore) {
@@ -197,7 +197,7 @@ class EmailAuthService implements EmailService {
 =============================== */
 
 class SettingAuthService implements SettingService {
-  public authStore: AuthStore;
+  private authStore: AuthStore;
 
   constructor(authStore: AuthStore) {
     this.authStore = authStore;
