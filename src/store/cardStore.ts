@@ -444,6 +444,7 @@ class CardService implements ICardService {
         (cardId) => cardId !== id,
       );
     });
+    this.updateLocalList();
   }
 
   updateCardOrderList(cardOrderList: string[]) {
@@ -473,18 +474,23 @@ class FirebaseService implements IFirebaseService {
 
     const cardsOrderListRef = doc(db, "user_cards", uid);
     const localList = localStorage.getItem("cardOrderList");
+
     if (localList) {
-      const parsedList = JSON.parse(localList || "[]") as string[];
-      await setDoc(cardsOrderListRef, { cardOrderList: parsedList });
-    } else {
-      localStorage.setItem("cardOrderList", JSON.stringify([]));
+      const cardOrderList = JSON.parse(localList || "[]");
+      await setDoc(cardsOrderListRef, { cardOrderList }, { merge: true });
+      return runInAction(() => (this.cardStore.cardOrderList = cardOrderList));
     }
+
     const docSnap = await getDoc(cardsOrderListRef);
-    if (!docSnap.exists()) return;
-    const data = docSnap.data();
-    runInAction(
-      () => (this.cardStore.cardOrderList = data?.cardOrderList || []),
-    );
+    if (!docSnap.exists()) {
+      localStorage.setItem("cardOrderList", JSON.stringify([]));
+      return;
+    }
+    runInAction(() => {
+      this.cardStore.cardOrderList = docSnap.data()?.cardOrderList || [];
+      const stringifiedList = JSON.stringify(this.cardStore.cardOrderList);
+      localStorage.setItem("cardOrderList", stringifiedList);
+    });
   }
 
   private async getActiveCards() {
