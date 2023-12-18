@@ -1,7 +1,6 @@
 import { observer } from "mobx-react-lite";
-import { useState } from "react";
 import { Mention, MentionsInput } from "react-mentions";
-import { cardStore } from "../../store/cardStore";
+import { cardStore } from "../../../store/cardStore";
 
 const inputStyle = {
   "&singleLine": {
@@ -17,6 +16,8 @@ const inputStyle = {
       borderRadius: "0.5rem",
       backgroundColor: "#fff",
       boxShadow: "0 0 5px 1px rgba(0, 0, 0, 0.3)",
+      zIndex: 99999,
+      position: "relative",
     },
     item: {
       borderRadius: "0.5rem",
@@ -34,23 +35,31 @@ const mentionStyle = {
   backgroundColor: "#E1DCD9",
 };
 
-export const QuickInput = observer(() => {
-  const [input, setInput] = useState<string>("");
+interface QuickInputProps {
+  input: string;
+  onInputChange: (input: string) => void;
+  onClose?: () => void;
+}
+
+export const QuickInput = observer((props: QuickInputProps) => {
+  const { input, onInputChange, onClose } = props;
   const tags = cardStore.getAllTags.map((tag) => ({ id: tag, display: tag }));
 
   const handleInputChange = (e: { target: { value: string } }) => {
-    setInput(e.target.value);
+    onInputChange(e.target.value);
   };
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full rounded-lg border-2 px-3 py-2">
       <MentionsInput
+        autoFocus
         singleLine
         className="tracking-wider"
         style={inputStyle}
-        value={input}
+        value={input || ""}
         placeholder="輸入你的靈感或待辦"
         onChange={handleInputChange}
+        onBlur={onClose}
       >
         <Mention
           trigger="#"

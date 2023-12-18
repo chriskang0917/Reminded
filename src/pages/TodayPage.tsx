@@ -2,7 +2,6 @@ import { Tab, Tabs } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { Key, useState } from "react";
 import { IdeaInput } from "../components/Input";
-import { QuickInput } from "../components/Input/QuickInput";
 import { TodayIdea, TodayTodo } from "../components/Section/SectionToday";
 import CountBadge from "../components/Section/SectionToday/CountBadge";
 import useDocTitle from "../hooks/useDocTitle";
@@ -23,7 +22,6 @@ const Homepage = observer(() => {
     <div className="-ml-20 flex w-full flex-col items-center">
       <div className="fixed left-0 top-0 ml-20 h-[100svh] w-full rounded-[40px] bg-white" />
       <IdeaInput />
-      <QuickInput />
       <Tabs
         id="tutorial-today-2"
         aria-label="Today's todo, ideas, and reminders"
