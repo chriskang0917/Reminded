@@ -2,7 +2,7 @@ import { Tab, Tabs } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { Key, useState } from "react";
 import { IdeaInput } from "../components/Input";
-import QuickInput from "../components/Input/QuickInput";
+import { QuickInput } from "../components/Input/QuickInput";
 import { TodayIdea, TodayTodo } from "../components/Section/SectionToday";
 import CountBadge from "../components/Section/SectionToday/CountBadge";
 import useDocTitle from "../hooks/useDocTitle";
