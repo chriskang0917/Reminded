@@ -3,6 +3,10 @@ import { Mention, MentionsInput } from "react-mentions";
 import { cardStore } from "../../../store/cardStore";
 
 const inputStyle = {
+  control: {
+    borderRadius: "0.5rem",
+  },
+
   "&singleLine": {
     input: {
       background: "transparent",
@@ -15,7 +19,7 @@ const inputStyle = {
       padding: "4px",
       borderRadius: "0.5rem",
       backgroundColor: "#fff",
-      boxShadow: "0 0 5px 1px rgba(0, 0, 0, 0.3)",
+      boxShadow: "0 0 0.5rem 1px rgba(0, 0, 0, 0.3)",
       zIndex: 99999,
       position: "relative",
     },
@@ -42,8 +46,14 @@ interface QuickInputProps {
 }
 
 export const QuickInput = observer((props: QuickInputProps) => {
-  const { input, onInputChange, onClose } = props;
+  const { input, onInputChange } = props;
   const tags = cardStore.getAllTags.map((tag) => ({ id: tag, display: tag }));
+  const newTag = input.split("#")[input.split("#").length - 1];
+  const hasHash = input.includes("#");
+  const hasNewTag = newTag !== "" && tags.every((tag) => tag.id !== newTag);
+  const newTags = hasNewTag
+    ? [{ id: newTag, display: `新增 ${newTag}` }, ...tags]
+    : tags;
 
   const handleInputChange = (e: { target: { value: string } }) => {
     onInputChange(e.target.value);
@@ -54,20 +64,20 @@ export const QuickInput = observer((props: QuickInputProps) => {
       <MentionsInput
         autoFocus
         singleLine
-        className="tracking-wider"
+        className="tracking-wider transition-all"
         style={inputStyle}
         value={input || ""}
         placeholder="輸入你的靈感或待辦"
         onChange={handleInputChange}
-        onBlur={onClose}
       >
         <Mention
           trigger="#"
+          data={hasHash && hasNewTag ? newTags : tags}
           className="inline-block rounded-md bg-fourth tracking-wider"
           style={mentionStyle}
           appendSpaceOnAdd
+          markup="#[__display__](__id__)"
           displayTransform={(display) => ` #${display} `}
-          data={tags}
         />
       </MentionsInput>
     </div>

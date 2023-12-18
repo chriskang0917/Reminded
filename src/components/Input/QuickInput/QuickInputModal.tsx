@@ -11,12 +11,12 @@ import { useEffect, useState } from "react";
 import { QuickInput } from ".";
 
 export const QuickInputModal = observer(() => {
-  const [input, setInput] = useState<string>("Hi");
+  const [input, setInput] = useState<string>("");
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape") onClose();
-    if (e.key === "i") onOpen();
+    if (e.key === "n") onOpen();
   };
 
   const handleInputChange = (input: string) => {
@@ -33,14 +33,12 @@ export const QuickInputModal = observer(() => {
 
   return (
     <Modal
-      className="overflow-visible"
-      classNames={{
-        wrapper: "w-[100vw]",
-      }}
+      className="fixed top-20 overflow-visible drop-shadow-xl md:max-w-2xl"
       isOpen={isOpen}
       onClose={onClose}
-      backdrop="opaque"
-      placement="center"
+      backdrop="transparent"
+      placement="top"
+      isDismissable={false}
       hideCloseButton={true}
       onOpenChange={onOpenChange}
     >

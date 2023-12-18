@@ -28,3 +28,19 @@ export const getFusedResults = (ideaCards: ICard[], searchText: string) => {
   const fuse = new Fuse(ideaCards, fuseOptions);
   return fuse.search(searchText);
 };
+
+export const getPlainText = (text: string) => {
+  return text.replace(/#\[[^\]]+\]\([^)]+\)\s*/g, "");
+};
+
+export const getFilteredTags = (text: string) => {
+  const regex = /\(([^)]+)\)/g;
+  const matches = text.match(regex) || [];
+
+  return matches.map((match) => {
+    let innerRegex = /\(([^)]+)\)/;
+    let innerMatch = innerRegex.exec(match);
+    console.log(innerMatch);
+    return innerMatch && innerMatch[1];
+  });
+};
