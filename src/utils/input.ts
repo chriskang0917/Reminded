@@ -37,10 +37,10 @@ export const getFilteredTags = (text: string) => {
   const regex = /\(([^)]+)\)/g;
   const matches = text.match(regex) || [];
 
-  return matches.map((match) => {
+  const filteredMatches = matches.map((match) => {
     let innerRegex = /\(([^)]+)\)/;
     let innerMatch = innerRegex.exec(match);
-    console.log(innerMatch);
-    return innerMatch && innerMatch[1];
+    return innerMatch ? innerMatch[1] : "";
   });
+  return filteredMatches.length > 0 ? filteredMatches : [];
 };

@@ -1,6 +1,5 @@
 import { observer } from "mobx-react-lite";
 import { Mention, MentionsInput } from "react-mentions";
-import { cardStore } from "../../../store/cardStore";
 
 const inputStyle = {
   control: {
@@ -41,19 +40,13 @@ const mentionStyle = {
 
 interface QuickInputProps {
   input: string;
+  tags: { id: string; display: string }[];
   onInputChange: (input: string) => void;
   onClose?: () => void;
 }
 
 export const QuickInput = observer((props: QuickInputProps) => {
-  const { input, onInputChange } = props;
-  const tags = cardStore.getAllTags.map((tag) => ({ id: tag, display: tag }));
-  const newTag = input.split("#")[input.split("#").length - 1];
-  const hasHash = input.includes("#");
-  const hasNewTag = newTag !== "" && tags.every((tag) => tag.id !== newTag);
-  const newTags = hasNewTag
-    ? [{ id: newTag, display: `新增 ${newTag}` }, ...tags]
-    : tags;
+  const { input, tags, onInputChange } = props;
 
   const handleInputChange = (e: { target: { value: string } }) => {
     onInputChange(e.target.value);
@@ -72,7 +65,7 @@ export const QuickInput = observer((props: QuickInputProps) => {
       >
         <Mention
           trigger="#"
-          data={hasHash && hasNewTag ? newTags : tags}
+          data={tags}
           className="inline-block rounded-md bg-fourth tracking-wider"
           style={mentionStyle}
           appendSpaceOnAdd
