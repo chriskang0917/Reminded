@@ -4,6 +4,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   onSnapshot,
   query,
   serverTimestamp,
@@ -15,6 +16,7 @@ import { nanoid } from "nanoid";
 import { db } from "../config/firebase";
 import { cardUtils } from "../utils/cardUtils";
 import { cookie } from "../utils/cookie";
+import { debounceCardsOrderList } from "../utils/debounce";
 import { authStore } from "./authStore";
 
 export type cardStatus =
@@ -394,12 +396,20 @@ class CardService implements ICardService {
     return this.cardStore.cards[noteId] as NewNote;
   }
 
+  private updateLocalList() {
+    localStorage.setItem(
+      "cardOrderList",
+      JSON.stringify(this.cardStore.cardOrderList),
+    );
+  }
+
   addCard(newCard: NewCard, updateCard?: Partial<ICard>) {
     const updatedCard = { ...newCard, ...updateCard };
     runInAction(() => {
       this.cardStore.cards[newCard.id] = updatedCard;
       this.cardStore.cardOrderList.unshift(newCard.id);
     });
+    this.updateLocalList();
   }
 
   addNote(newNote: NewNote, updateNote?: Partial<ICard>) {
@@ -408,6 +418,7 @@ class CardService implements ICardService {
       this.cardStore.cards[newNote.id] = updatedNote;
       this.cardStore.cardOrderList.unshift(newNote.id);
     });
+    this.updateLocalList();
   }
 
   updateCard(id: string, updateCard: Partial<ICard>) {
@@ -433,10 +444,12 @@ class CardService implements ICardService {
         (cardId) => cardId !== id,
       );
     });
+    this.updateLocalList();
   }
 
   updateCardOrderList(cardOrderList: string[]) {
     runInAction(() => (this.cardStore.cardOrderList = cardOrderList));
+    this.updateLocalList();
   }
 }
 
@@ -460,9 +473,23 @@ class FirebaseService implements IFirebaseService {
     if (!uid) return;
 
     const cardsOrderListRef = doc(db, "user_cards", uid);
-    return onSnapshot(cardsOrderListRef, (doc) => {
-      const cardOrderList = doc.data()?.cardOrderList || [];
-      runInAction(() => (cardStore.cardOrderList = cardOrderList));
+    const localList = localStorage.getItem("cardOrderList");
+
+    if (localList) {
+      const cardOrderList = JSON.parse(localList || "[]");
+      await setDoc(cardsOrderListRef, { cardOrderList }, { merge: true });
+      return runInAction(() => (this.cardStore.cardOrderList = cardOrderList));
+    }
+
+    const docSnap = await getDoc(cardsOrderListRef);
+    if (!docSnap.exists()) {
+      localStorage.setItem("cardOrderList", JSON.stringify([]));
+      return;
+    }
+    runInAction(() => {
+      this.cardStore.cardOrderList = docSnap.data()?.cardOrderList || [];
+      const stringifiedList = JSON.stringify(this.cardStore.cardOrderList);
+      localStorage.setItem("cardOrderList", stringifiedList);
     });
   }
 
@@ -596,11 +623,8 @@ class FirebaseService implements IFirebaseService {
 
   async updateCardOrderListToFirebase(cardOrderList: string[]) {
     try {
-      const uid = this.getUid();
-      if (!uid) return;
-
-      const cardOrderListRef = doc(db, "user_cards", uid);
-      await setDoc(cardOrderListRef, { cardOrderList });
+      debounceCardsOrderList(cardOrderList);
+      localStorage.setItem("cardOrderList", JSON.stringify(cardOrderList));
     } catch (error) {
       console.error("updateCardOrderList_error", error);
     }
