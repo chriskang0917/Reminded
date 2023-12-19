@@ -59,7 +59,9 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
   const handleSubmit = () => {
     const now = format(new Date(), "yyyy-MM-dd HH:mm:ss");
 
-    if (card?.id) {
+    if (!noteContent.noteTitle) return toast.error("請輸入筆記標題");
+
+    if (card?.id && card?.noteTitle) {
       cardStore.updateNote(card.id, {
         noteTitle: noteContent.noteTitle || `未命名筆記 ${now}`,
         content: noteContent.description || "尚無內容",
