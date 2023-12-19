@@ -10,13 +10,23 @@ import { authStore } from "../../store/authStore";
 
 const shortcuts = [
   {
+    key: "quickInput",
+    label: "開啟快速輸入框",
+    shortcut: "N",
+  },
+  {
+    key: "switchInput",
+    label: "切換快速輸入類別",
+    shortcut: "⌘ I",
+  },
+  {
     key: "focus",
-    label: "觸發輸入框",
+    label: "觸發首頁輸入框",
     shortcut: "⌘ I",
   },
   {
     key: "switch",
-    label: "切換輸入類別",
+    label: "切換首頁輸入類別",
     shortcut: "⌘ O",
   },
   {
@@ -30,6 +40,8 @@ const shortcuts = [
   },
 ];
 
+const disabledKeys = ["quickInput", "switchInput", "focus", "switch", "enter"];
+
 const Helper = observer(() => {
   return (
     <div className="fixed bottom-4 right-7 z-50 cursor-pointer">
@@ -41,7 +53,7 @@ const Helper = observer(() => {
         </DropdownTrigger>
         <DropdownMenu
           aria-label="Dropdown menu with shortcuts"
-          disabledKeys={["focus", "switch", "enter"]}
+          disabledKeys={disabledKeys}
         >
           {shortcuts.map((shortcut) => (
             <DropdownItem

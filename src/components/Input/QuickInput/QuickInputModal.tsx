@@ -30,17 +30,22 @@ export const QuickInputModal = observer(() => {
   const switchRef = useRef<HTMLDivElement>(null);
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Escape") onClose();
-    if (e.key === "n" || e.key === "N" || e.key === "ㄙ") onOpen();
-    if (e.key === "o" && e.metaKey) switchRef.current?.click();
+    const keys = ["Escape"];
+    const openKeys = ["N", "n", "ㄙ"];
+    const switchKeys = ["I", "i", "ㄛ"];
+    const cmdKeys = e.metaKey;
+
+    if (keys.includes(e.key)) onClose();
+    if (!isOpen && openKeys.includes(e.key)) onOpen();
+    if (isOpen && switchKeys.includes(e.key) && cmdKeys) {
+      switchRef.current?.click();
+    }
   };
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
-  }, []);
-
-  useEffect(() => {
     setTimeout(() => setInput(""), 0);
+    () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
 
   const handleInputChange = (input: string) => {
