@@ -19,8 +19,9 @@ import { getFilteredTags, getPlainText } from "../../../utils/input";
 
 export const QuickInputModal = observer(() => {
   const [input, setInput] = useState<string>("");
-  const [isSelected, setSelected] = useState<boolean>(false);
+  const [isIdeaInput, setSelected] = useState<boolean>(true);
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
+  // const isIdeaInput = isIdeaInput;
 
   const handleKeyDown = (e: KeyboardEvent) => {
     const EscapeKeys = ["Escape"];
@@ -30,19 +31,18 @@ export const QuickInputModal = observer(() => {
 
     if (uiStore.getIsInputEditing) return;
     if (isOpen && EscapeKeys.includes(e.key)) onClose();
-
     if (openKeys.includes(e.key)) onOpen();
-    if (switchKeys.includes(e.key) && cmdKeys) setSelected(!isSelected);
+    if (switchKeys.includes(e.key) && cmdKeys) setSelected(!isIdeaInput);
   };
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, isSelected]);
+  }, [isOpen, isIdeaInput]);
 
   useEffect(() => {
     const timeId = setTimeout(() => setInput(""), 0);
-    () => clearTimeout(timeId);
+    return () => clearTimeout(timeId);
   }, [isOpen]);
 
   const handleInputChange = (input: string) => {
@@ -54,7 +54,8 @@ export const QuickInputModal = observer(() => {
     const filteredTags = getFilteredTags(input);
     const uniqueTags = [...new Set(filteredTags)];
     const content = getPlainText(input);
-    const newCard = new NewCard(content, uniqueTags, "idea");
+    const status = isIdeaInput ? "idea" : "todo";
+    const newCard = new NewCard(content, uniqueTags, status);
     cardStore.addCard(newCard);
     cardStore.addCardToFireStore(newCard);
     onClose();
@@ -97,7 +98,7 @@ export const QuickInputModal = observer(() => {
   const hasHash = plainInput.includes("#");
   const hasNewTag = isNewTagValid(newTag, tags);
   const newTags = getUpdatedTags(hasNewTag, newTag, tags);
-  const inputType = getInputType(isSelected as boolean);
+  const inputType = getInputType(isIdeaInput as boolean);
 
   const SwitchButton = () => (
     <Card
@@ -106,10 +107,10 @@ export const QuickInputModal = observer(() => {
         "flex items-center justify-center",
         "rounded-lg drop-shadow-md hover:bg-fourthDark",
         "transition-all",
-        isSelected ? "bg-fourthDark" : "bg-fourth",
+        isIdeaInput ? "bg-fourthDark" : "bg-fourth",
       )}
     >
-      {isSelected ? <FaRegLightbulb /> : <BsListTask />}
+      {isIdeaInput ? <FaRegLightbulb /> : <BsListTask />}
     </Card>
   );
 
