@@ -11,6 +11,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { NewNote, cardStore } from "../../store/cardStore";
+import { uiStore } from "../../store/uiStore";
 import NoteEditor from "./NoteEditor";
 
 interface ModalEditorProp {
@@ -51,6 +52,7 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
   const handleDeleteNote = () => {
     cardStore.deleteCard(card?.id as string);
     cardStore.deleteCardFromFireStore(card?.id as string);
+    uiStore.stopInputEditing();
     toast.success("已刪除筆記");
     onClose();
     navigate("/notes/all");
