@@ -12,11 +12,14 @@ import { Navigate, useParams } from "react-router-dom";
 import CardTags from "../components/Card/CardTags";
 import ModalEditor from "../components/Editor/ModalEditor";
 import useDocTitle from "../hooks/useDocTitle";
+import { useStopShortcut } from "../hooks/useStopShortcut";
 import { cardStore } from "../store/cardStore";
 
 const ArticlePage = observer(() => {
   const { id } = useParams();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
+  useStopShortcut(isOpen);
 
   if (!id) return <Navigate to="/notes/all" />;
 

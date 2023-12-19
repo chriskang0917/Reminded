@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { cardStore } from "../../../store/cardStore";
+import { uiStore } from "../../../store/uiStore";
 
 interface EditableProps {
   id: string;
@@ -49,7 +50,14 @@ const Editable = observer(
             className="w-full tracking-wide"
             onSubmit={handleSubmit}
             onKeyDown={handleKeyDown}
-            onBlur={() => setIsEditing(false)}
+            onFocus={() => {
+              uiStore.setInputEditing();
+              setIsEditing(true);
+            }}
+            onBlur={() => {
+              uiStore.stopInputEditing();
+              setIsEditing(false);
+            }}
           >
             {children}
             <button type="submit"></button>
