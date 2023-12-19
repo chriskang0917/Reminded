@@ -14,6 +14,7 @@ import { BsListTask } from "react-icons/bs";
 import { FaRegLightbulb } from "react-icons/fa";
 import { QuickInput } from ".";
 import { NewCard, cardStore } from "../../../store/cardStore";
+import { uiStore } from "../../../store/uiStore";
 import { getFilteredTags, getPlainText } from "../../../utils/input";
 
 export const QuickInputModal = observer(() => {
@@ -35,6 +36,7 @@ export const QuickInputModal = observer(() => {
     const switchKeys = ["I", "i", "ㄛ"];
     const cmdKeys = e.metaKey;
 
+    if (uiStore.getIsInputEditing) return;
     if (keys.includes(e.key)) onClose();
     if (!isOpen && openKeys.includes(e.key)) onOpen();
     if (isOpen && switchKeys.includes(e.key) && cmdKeys) {
