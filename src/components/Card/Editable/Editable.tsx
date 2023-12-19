@@ -41,6 +41,7 @@ const Editable = observer(
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       setIsEditing(false);
+      uiStore.stopInputEditing();
     };
 
     return (
