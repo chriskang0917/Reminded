@@ -37,13 +37,19 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
       icon: <PiNoteBlankThin />,
       label: "note",
       id: "tutorial-ideas-4",
-      onClick: onOpenNote,
+      onClick: () => {
+        uiStore.setInputEditing();
+        onOpenNote();
+      },
     },
     {
       icon: <GrTransaction className="h-3" />,
       label: "action",
       id: "tutorial-ideas-2",
-      onClick: onOpenAction,
+      onClick: () => {
+        uiStore.setInputEditing();
+        onOpenAction();
+      },
     },
     { icon: <HiOutlineDotsVertical />, label: "more", onClick: () => {} },
   ];

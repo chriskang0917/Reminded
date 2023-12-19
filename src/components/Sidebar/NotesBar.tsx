@@ -11,6 +11,7 @@ import { observer } from "mobx-react-lite";
 import { FcParallelTasks } from "react-icons/fc";
 import { IoIosSearch } from "react-icons/io";
 import { Link, useParams } from "react-router-dom";
+import { useStopShortcut } from "../../hooks/useStopShortcut";
 import { NewNote, NotesAllCards, cardStore } from "../../store/cardStore";
 import ModalEditor from "../Editor/ModalEditor";
 import { SubsideBar } from "./SubsideBar";
@@ -30,6 +31,7 @@ const ideaActionList: IAction[] = [
 export const NotesBar = observer(() => {
   const { id } = useParams();
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
+  useStopShortcut(isOpen);
 
   const notes = cardStore.getFilteredCardsWith(
     new NotesAllCards(),
