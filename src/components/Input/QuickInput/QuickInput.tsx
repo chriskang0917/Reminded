@@ -1,4 +1,3 @@
-import { observer } from "mobx-react-lite";
 import { Mention, MentionsInput } from "react-mentions";
 
 const inputStyle = {
@@ -45,7 +44,7 @@ interface QuickInputProps {
   onClose?: () => void;
 }
 
-export const QuickInput = observer((props: QuickInputProps) => {
+export const QuickInput = (props: QuickInputProps) => {
   const { input, tags, onInputChange } = props;
 
   const handleInputChange = (e: { target: { value: string } }) => {
@@ -60,7 +59,7 @@ export const QuickInput = observer((props: QuickInputProps) => {
         className="tracking-wider transition-all"
         style={inputStyle}
         value={input || ""}
-        placeholder="輸入你的靈感或待辦"
+        placeholder={"+  按下 'Enter' 以新增靈感"}
         onChange={handleInputChange}
       >
         <Mention
@@ -75,4 +74,4 @@ export const QuickInput = observer((props: QuickInputProps) => {
       </MentionsInput>
     </div>
   );
-});
+};
