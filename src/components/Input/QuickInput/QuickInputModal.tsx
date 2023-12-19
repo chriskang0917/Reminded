@@ -1,15 +1,15 @@
 import {
   Button,
+  Card,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
-  VisuallyHidden,
+  cn,
   useDisclosure,
-  useSwitch,
 } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { BsListTask } from "react-icons/bs";
 import { FaRegLightbulb } from "react-icons/fa";
 import { QuickInput } from ".";
@@ -19,35 +19,30 @@ import { getFilteredTags, getPlainText } from "../../../utils/input";
 
 export const QuickInputModal = observer(() => {
   const [input, setInput] = useState<string>("");
+  const [isSelected, setSelected] = useState<boolean>(false);
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-  const {
-    Component,
-    slots,
-    isSelected,
-    getBaseProps,
-    getInputProps,
-    getWrapperProps,
-  } = useSwitch();
-  const switchRef = useRef<HTMLDivElement>(null);
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    const keys = ["Escape"];
+    const EscapeKeys = ["Escape"];
     const openKeys = ["N", "n", "ㄙ"];
     const switchKeys = ["I", "i", "ㄛ"];
     const cmdKeys = e.metaKey;
 
     if (uiStore.getIsInputEditing) return;
-    if (keys.includes(e.key)) onClose();
-    if (!isOpen && openKeys.includes(e.key)) onOpen();
-    if (isOpen && switchKeys.includes(e.key) && cmdKeys) {
-      switchRef.current?.click();
-    }
+    if (isOpen && EscapeKeys.includes(e.key)) onClose();
+
+    if (openKeys.includes(e.key)) onOpen();
+    if (switchKeys.includes(e.key) && cmdKeys) setSelected(!isSelected);
   };
 
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    setTimeout(() => setInput(""), 0);
-    () => document.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, isSelected]);
+
+  useEffect(() => {
+    const timeId = setTimeout(() => setInput(""), 0);
+    () => clearTimeout(timeId);
   }, [isOpen]);
 
   const handleInputChange = (input: string) => {
@@ -103,6 +98,20 @@ export const QuickInputModal = observer(() => {
   const newTags = getUpdatedTags(hasNewTag, newTag, tags);
   const inputType = getInputType(isSelected as boolean);
 
+  const SwitchButton = () => (
+    <Card
+      className={cn(
+        "h-10 w-10",
+        "flex items-center justify-center",
+        "rounded-lg drop-shadow-md hover:bg-fourthDark",
+        "transition-all",
+        isSelected ? "bg-fourthDark" : "bg-fourth",
+      )}
+    >
+      {isSelected ? <FaRegLightbulb /> : <BsListTask />}
+    </Card>
+  );
+
   return (
     <Modal
       className="top-8 overflow-visible drop-shadow-xl md:fixed md:right-[calc(50vw-360px)] md:max-w-xl"
@@ -122,26 +131,8 @@ export const QuickInputModal = observer(() => {
             <h1 className="text-lg font-bold tracking-wider text-third">
               新增 {inputType}
             </h1>
-            <div className="flex">
-              <Component {...getBaseProps()}>
-                <VisuallyHidden>
-                  <input {...getInputProps()} />
-                </VisuallyHidden>
-                <div
-                  {...getWrapperProps()}
-                  ref={switchRef}
-                  className={slots.wrapper({
-                    class: [
-                      "h-10 w-10",
-                      "flex items-center justify-center",
-                      "rounded-lg drop-shadow-md hover:bg-fourthDark",
-                      "group-data-[selected=true]:bg-fourthDark",
-                    ],
-                  })}
-                >
-                  {isSelected ? <FaRegLightbulb /> : <BsListTask />}
-                </div>
-              </Component>
+            <div className="flex items-center gap-3">
+              <SwitchButton />
               <QuickInput
                 input={input}
                 tags={hasHash && hasNewTag ? newTags : tags}
