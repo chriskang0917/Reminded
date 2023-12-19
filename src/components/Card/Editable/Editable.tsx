@@ -30,10 +30,14 @@ const Editable = observer(
 
     const handleKeyDown = ({ key: keyDown, metaKey }: React.KeyboardEvent) => {
       const keys = ["Escape"];
-      if (keys.includes(keyDown)) setIsEditing(false);
+      if (keys.includes(keyDown)) {
+        setIsEditing(false);
+        uiStore.stopInputEditing();
+      }
       if (keyDown === "Backspace" && metaKey) {
         cardStore.deleteCard(id);
         cardStore.deleteCardFromFireStore(id);
+        uiStore.stopInputEditing();
         toast.success("刪除成功");
       }
     };
