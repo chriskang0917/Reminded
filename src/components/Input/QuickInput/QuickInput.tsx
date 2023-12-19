@@ -59,7 +59,7 @@ export const QuickInput = (props: QuickInputProps) => {
         className="tracking-wider transition-all"
         style={inputStyle}
         value={input || ""}
-        placeholder={"+  按下 'Enter' 以新增靈感"}
+        placeholder={"+  按下 'Enter' 以新增事項"}
         onChange={handleInputChange}
       >
         <Mention

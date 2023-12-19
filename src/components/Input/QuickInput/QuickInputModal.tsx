@@ -10,6 +10,8 @@ import {
 } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { BsListTask } from "react-icons/bs";
+import { FaRegLightbulb } from "react-icons/fa";
 import { QuickInput } from ".";
 import { NewCard, cardStore } from "../../../store/cardStore";
 import { getFilteredTags, getPlainText } from "../../../utils/input";
@@ -30,7 +32,7 @@ export const QuickInputModal = observer(() => {
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape") onClose();
     if (e.key === "n" || e.key === "N" || e.key === "ㄙ") onOpen();
-    if (e.key === "i" && e.metaKey) switchRef.current?.click();
+    if (e.key === "o" && e.metaKey) switchRef.current?.click();
   };
 
   useEffect(() => {
@@ -62,6 +64,7 @@ export const QuickInputModal = observer(() => {
   const newTags = hasNewTag
     ? [{ id: newTag, display: `新增 ${newTag}` }, ...tags]
     : tags;
+  const inputType = isSelected ? "靈感" : "待辦";
 
   return (
     <Modal
@@ -80,7 +83,7 @@ export const QuickInputModal = observer(() => {
         <form onSubmit={handleSubmit}>
           <ModalBody className="pt-5">
             <h1 className="text-lg font-bold tracking-wider text-third">
-              新增靈感
+              新增 {inputType}
             </h1>
             <div className="flex">
               <Component {...getBaseProps()}>
@@ -94,24 +97,25 @@ export const QuickInputModal = observer(() => {
                     class: [
                       "h-10 w-10",
                       "flex items-center justify-center",
-                      "rounded-lg hover:bg-fourthDark",
+                      "rounded-lg drop-shadow-md hover:bg-fourthDark",
                       "group-data-[selected=true]:bg-fourthDark",
                     ],
                   })}
                 >
-                  {isSelected ? "✓" : "✕"}
+                  {isSelected ? <FaRegLightbulb /> : <BsListTask />}
                 </div>
               </Component>
               <QuickInput
                 input={input}
                 tags={hasHash && hasNewTag ? newTags : tags}
+                // placeholder={`+  按下 'Enter' 以新增 ${inputType}`}
                 onInputChange={handleInputChange}
                 onClose={onClose}
               />
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button type="submit" size="sm" variant="ghost">
+            <Button type="submit" size="sm" variant="shadow">
               新增
             </Button>
           </ModalFooter>
