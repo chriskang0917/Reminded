@@ -6,6 +6,7 @@ import { authStore } from "../../store/authStore";
 import { cookie } from "../../utils/cookie";
 import { DndProvider, SortableProvider } from "../DND";
 import Helper from "../Helper/Helper";
+import { QuickInputModal } from "../Input/QuickInput/QuickInputModal";
 import { Sidebar } from "../Sidebar";
 
 const RootLayout = observer(() => {
@@ -26,6 +27,7 @@ const RootLayout = observer(() => {
           </div>
         </main>
       </SortableProvider>
+      <QuickInputModal />
       <Helper />
     </DndProvider>
   );

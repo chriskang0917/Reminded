@@ -11,6 +11,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { NewNote, cardStore } from "../../store/cardStore";
+import { uiStore } from "../../store/uiStore";
 import NoteEditor from "./NoteEditor";
 
 interface ModalEditorProp {
@@ -51,6 +52,7 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
   const handleDeleteNote = () => {
     cardStore.deleteCard(card?.id as string);
     cardStore.deleteCardFromFireStore(card?.id as string);
+    uiStore.stopInputEditing();
     toast.success("已刪除筆記");
     onClose();
     navigate("/notes/all");
@@ -59,7 +61,9 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
   const handleSubmit = () => {
     const now = format(new Date(), "yyyy-MM-dd HH:mm:ss");
 
-    if (card?.noteHTML) {
+    if (!noteContent.noteTitle) return toast.error("請輸入筆記標題");
+
+    if (card?.id && card?.noteTitle) {
       cardStore.updateNote(card.id, {
         noteTitle: noteContent.noteTitle || `未命名筆記 ${now}`,
         content: noteContent.description || "尚無內容",
@@ -101,9 +105,23 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
     >
       <ModalContent>
         <ModalHeader className="flex justify-between">
-          <h1 className="tracking-wider text-third">
-            {pageTitle ? pageTitle : "編輯你的筆記"}
-          </h1>
+          <div className="flex items-center gap-2">
+            {card ? (
+              <Button
+                className="min-w-3 px-3 tracking-wider"
+                color="danger"
+                variant="shadow"
+                radius="sm"
+                onPress={handleDeleteNote}
+              >
+                刪除
+              </Button>
+            ) : (
+              <h1 className="tracking-wider text-third">
+                {pageTitle ? pageTitle : "編輯你的筆記"}
+              </h1>
+            )}
+          </div>
           <div className="flex gap-2">
             <Button
               className="min-w-[40px] tracking-wider"
@@ -114,17 +132,7 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
             >
               關閉
             </Button>
-            {card && (
-              <Button
-                className="min-w-3 px-4 tracking-wider"
-                color="danger"
-                variant="shadow"
-                radius="sm"
-                onPress={handleDeleteNote}
-              >
-                刪除
-              </Button>
-            )}
+
             <Button
               className="min-w-[40px] tracking-wider"
               radius="sm"

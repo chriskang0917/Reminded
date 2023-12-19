@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { ICard, cardStore } from "../../store/cardStore";
+import { cardUtils } from "../../utils/cardUtils";
 
 const CardTags = observer(({ card }: { card: ICard }) => {
   const tagInputRef = useRef<HTMLInputElement>(null);
@@ -37,7 +38,7 @@ const CardTags = observer(({ card }: { card: ICard }) => {
           className="px-2"
           onClose={() => handleDeleteTag(tag)}
         >
-          {tag}
+          {cardUtils.textTruncate(tag, 20)}
         </Chip>
       ))}
       {!isTagInputShow && (

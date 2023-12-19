@@ -181,6 +181,7 @@ class EmailAuthService implements EmailService {
   logout() {
     cookie.deleteCookie("uid");
     localStorage.removeItem("settings");
+    localStorage.removeItem("cardOrderList");
     runInAction(() => {
       this.authStore.isLogin = false;
       this.authStore.uid = null;

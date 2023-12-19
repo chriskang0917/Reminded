@@ -1,3 +1,4 @@
+import { useStopShortcut } from "../../../hooks/useStopShortcut";
 import { ICard, NewNote } from "../../../store/cardStore";
 import ModalEditor from "../../Editor/ModalEditor";
 
@@ -10,6 +11,7 @@ interface IdeaNoteModalProp {
 
 export const IdeaNoteModal = (prop: IdeaNoteModalProp) => {
   const { card, isOpen, onOpenChange, onClose } = prop;
+  useStopShortcut(isOpen);
 
   const pageTitle = "轉換你的靈感...";
 

@@ -11,6 +11,7 @@ import {
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
+import { useStopShortcut } from "../../../hooks/useStopShortcut";
 import { ICard, NewCard, cardStore } from "../../../store/cardStore";
 
 interface ActionModalProps {
@@ -46,6 +47,7 @@ export const IdeaToActionModal = observer(
   ({ card, isOpen, onOpenChange, onClose }: ActionModalProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
+    useStopShortcut(isOpen);
     useEffect(() => {
       if (!isOpen) return;
       inputRef.current?.focus();

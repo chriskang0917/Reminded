@@ -10,6 +10,7 @@ import { Key, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { IoIosAdd } from "react-icons/io";
 import { NewCard, cardStore } from "../../store/cardStore";
+import { uiStore } from "../../store/uiStore";
 import { getObjectFilteredTags } from "../../utils/input";
 
 const tabs = [
@@ -55,8 +56,8 @@ export const IdeaInput = observer(() => {
     const handleKeyDown = (
       e: KeyboardEvent | React.KeyboardEvent<HTMLInputElement>,
     ) => {
-      if (e.key === "i" && e.shiftKey) inputRef.current?.focus();
-      if (e.key === "o" && e.shiftKey) handleTab(selectedTab);
+      if (e.key === "i" && e.metaKey) inputRef.current?.focus();
+      if (e.key === "o" && e.metaKey) handleTab(selectedTab);
       if (e.key === "Escape") {
         inputRef.current?.blur();
         tagRef.current?.blur();
@@ -93,6 +94,8 @@ export const IdeaInput = observer(() => {
           name={selectedTab}
           ref={inputRef}
           size="sm"
+          onFocus={() => uiStore.setInputEditing()}
+          onBlur={() => uiStore.stopInputEditing()}
           placeholder={placeholder}
           endContent={AddIcon}
           onChange={handleInputChange}
@@ -105,6 +108,8 @@ export const IdeaInput = observer(() => {
           allowsCustomValue
           className="w-25"
           size="sm"
+          onFocus={() => uiStore.setInputEditing()}
+          onBlur={() => uiStore.stopInputEditing()}
           items={filteredTags}
           onInputChange={(input) => setTagInput(input)}
           onSelectionChange={handleTagSelectChange}
