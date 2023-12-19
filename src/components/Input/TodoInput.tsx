@@ -15,6 +15,7 @@ import { CiCalendarDate } from "react-icons/ci";
 import { IoIosAdd } from "react-icons/io";
 import { useLocation } from "react-router-dom";
 import { NewCard, cardStore } from "../../store/cardStore";
+import { uiStore } from "../../store/uiStore";
 import { getObjectFilteredTags } from "../../utils/input";
 
 interface IInput {
@@ -115,6 +116,8 @@ export const TodoInput = observer(() => {
         onValueChange={handleInputChange}
         placeholder="新增待辦事項"
         endContent={AddButton}
+        onFocus={() => uiStore.setInputEditing()}
+        onBlur={() => uiStore.stopInputEditing()}
         size="sm"
         variant="bordered"
       />
@@ -127,6 +130,8 @@ export const TodoInput = observer(() => {
         allowsCustomValue
         className="w-25"
         size="sm"
+        onFocus={() => uiStore.setInputEditing()}
+        onBlur={() => uiStore.stopInputEditing()}
         items={filteredTags}
         onInputChange={handleTagInputChange}
         onSelectionChange={handleTagSelectChange}
