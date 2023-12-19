@@ -201,7 +201,7 @@ export class TodoThisWeekCards extends CardsStrategy {
     const cards = sortedCards.filter((card) => {
       if (!card.dueDate) return false;
       return (
-        card.status === "todo" &&
+        (card.status === "todo" || card.status === "action") &&
         cardUtils.isThisWeek(card.dueDate) &&
         !card.isArchived
       );
