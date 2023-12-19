@@ -52,7 +52,7 @@ export const QuickInput = (props: QuickInputProps) => {
   };
 
   return (
-    <div className="relative w-full rounded-lg border-2 px-3 py-2">
+    <div className="relative w-full max-w-[465px] rounded-lg border-2 px-3 py-2">
       <MentionsInput
         autoFocus
         singleLine

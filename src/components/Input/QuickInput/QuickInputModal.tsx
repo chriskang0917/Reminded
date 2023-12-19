@@ -64,18 +64,48 @@ export const QuickInputModal = observer(() => {
     onClose();
   };
 
-  const tags = cardStore.getAllTags.map((tag) => ({ id: tag, display: tag }));
-  const newTag = input.split("#")[input.split("#").length - 1];
-  const hasHash = input.includes("#");
-  const hasNewTag = newTag !== "" && tags.every((tag) => tag.id !== newTag);
-  const newTags = hasNewTag
-    ? [{ id: newTag, display: `新增 ${newTag}` }, ...tags]
-    : tags;
-  const inputType = isSelected ? "靈感" : "待辦";
+  const extractTags = (): { id: string; display: string }[] => {
+    return cardStore.getAllTags.map((tag) => ({ id: tag, display: tag }));
+  };
+
+  const getCurrentHashTag = (input: string): string => {
+    const regex = /#[^\s\[\]]+(?![^\[]*\])/g;
+    const matches = input.match(regex);
+    return matches ? matches[0].substring(1) : "";
+  };
+
+  const isNewTagValid = (
+    newTag: string,
+    tags: { id: string; display: string }[],
+  ): boolean => {
+    return newTag !== "" && tags.every((tag) => tag.id !== newTag);
+  };
+
+  const getUpdatedTags = (
+    hasNewTag: boolean,
+    newTag: string,
+    tags: { id: string; display: string }[],
+  ): { id: string; display: string }[] => {
+    return hasNewTag
+      ? [{ id: newTag, display: `新增 ${newTag}` }, ...tags]
+      : tags;
+  };
+
+  const getInputType = (isSelected: boolean): string => {
+    return isSelected ? "靈感" : "待辦";
+  };
+
+  const tags = extractTags();
+  const plainInput = getPlainText(input);
+  const newTag = getCurrentHashTag(plainInput);
+  const hasHash = plainInput.includes("#");
+  const hasNewTag = isNewTagValid(newTag, tags);
+  const newTags = getUpdatedTags(hasNewTag, newTag, tags);
+  const inputType = getInputType(isSelected as boolean);
 
   return (
     <Modal
-      className="fixed right-[calc(50vw-360px)] top-8 overflow-visible drop-shadow-xl md:max-w-xl"
+      className="top-8 overflow-visible drop-shadow-xl md:fixed md:right-[calc(50vw-360px)] md:max-w-xl"
       classNames={{
         backdrop: "backdrop-blur-lg backdrop-opacity-30",
       }}
@@ -115,7 +145,6 @@ export const QuickInputModal = observer(() => {
               <QuickInput
                 input={input}
                 tags={hasHash && hasNewTag ? newTags : tags}
-                // placeholder={`+  按下 'Enter' 以新增 ${inputType}`}
                 onInputChange={handleInputChange}
                 onClose={onClose}
               />

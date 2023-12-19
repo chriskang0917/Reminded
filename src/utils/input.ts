@@ -30,7 +30,7 @@ export const getFusedResults = (ideaCards: ICard[], searchText: string) => {
 };
 
 export const getPlainText = (text: string) => {
-  return text.replace(/#\[[^\]]+\]\([^)]+\)\s*/g, "");
+  return text.replace(/#\[[^\]]+\]\([^)]+\)\s*/g, "") || "";
 };
 
 export const getFilteredTags = (text: string) => {
