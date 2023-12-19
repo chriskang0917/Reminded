@@ -52,8 +52,9 @@ export const QuickInputModal = observer(() => {
   const handleSubmit = (e?: FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
     const filteredTags = getFilteredTags(input);
+    const uniqueTags = [...new Set(filteredTags)];
     const content = getPlainText(input);
-    const newCard = new NewCard(content, filteredTags, "idea");
+    const newCard = new NewCard(content, uniqueTags, "idea");
     cardStore.addCard(newCard);
     cardStore.addCardToFireStore(newCard);
     onClose();
