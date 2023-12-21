@@ -474,36 +474,54 @@ class FirebaseService implements IFirebaseService {
   }
 
   private getUid() {
-    return authStore.uid || cookie.getCookie("uid");
+    const uid = authStore.uid || cookie.getCookie("uid");
+    try {
+      if (!uid) throw new Error("uid not found");
+    } catch (error) {
+      console.error(error);
+    }
+    return uid;
   }
 
   private async getCardOrderList() {
     const uid = this.getUid();
     if (!uid) return;
 
-    const cardsOrderListRef = doc(db, "user_cards", uid);
-    const cardOrderList = this.getLocalCardOrderList();
+    const cardOrderList = this.getLocalList();
+
     if (cardOrderList) {
-      await setDoc(cardsOrderListRef, { cardOrderList }, { merge: true });
+      this.updateListToFirebase(cardOrderList);
       return runInAction(() => (this.cardStore.cardOrderList = cardOrderList));
     }
-    const docSnap = await getDoc(cardsOrderListRef);
-    if (!docSnap.exists()) return this.setLocalCardOrderList([]);
+
+    const docSnap = await this.getListFromFirebase();
+    if (!docSnap.exists()) return this.updateLocalList([]);
+
     runInAction(() => {
       const cardOrderList = docSnap.data()?.cardOrderList || [];
       this.cardStore.cardOrderList = cardOrderList;
-      this.setLocalCardOrderList(this.cardStore.cardOrderList);
+      this.updateLocalList(this.cardStore.cardOrderList);
     });
   }
 
-  private getLocalCardOrderList(): string[] | null {
+  private getLocalList(): string[] | null {
     const localList = localStorage.getItem("cardOrderList");
     if (!localList) return null;
     return JSON.parse(localList || "[]");
   }
 
-  private setLocalCardOrderList(cardOrderList: string[]) {
+  private updateLocalList(cardOrderList: string[]) {
     localStorage.setItem("cardOrderList", JSON.stringify(cardOrderList));
+  }
+
+  private async getListFromFirebase() {
+    const cardsOrderListRef = doc(db, "user_cards", this.getUid());
+    return await getDoc(cardsOrderListRef);
+  }
+
+  private async updateListToFirebase(cardOrderList: string[]) {
+    const cardsOrderListRef = doc(db, "user_cards", this.getUid());
+    await setDoc(cardsOrderListRef, { cardOrderList }, { merge: true });
   }
 
   private async getActiveCards() {
