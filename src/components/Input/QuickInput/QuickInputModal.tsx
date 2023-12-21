@@ -21,7 +21,6 @@ export const QuickInputModal = observer(() => {
   const [input, setInput] = useState<string>("");
   const [isIdeaInput, setSelected] = useState<boolean>(true);
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-  // const isIdeaInput = isIdeaInput;
 
   const handleKeyDown = (e: KeyboardEvent) => {
     const EscapeKeys = ["Escape"];

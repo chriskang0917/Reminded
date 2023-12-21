@@ -143,7 +143,6 @@ abstract class CardsStrategy implements ICardsStrategy {
 
   getCards() {
     this.cardStore = cardStore;
-    // 這裡的 getCards() 會被子類別覆寫，預設回傳全部的卡片
     return this.getSortedCardsByOrderList();
   }
 }

@@ -131,7 +131,6 @@ export const DndProvider = ({ children }: DndContextProps) => {
     if (shouldSwitchTodoToAction(overId, activeCard, overCard)) {
       return switchStrategy.todo_tomorrow_to_action(activeCard);
     }
-
     if (activeCard?.id === overCard?.id) return;
     return switchStrategy.default(activeCard, overCard);
   };
