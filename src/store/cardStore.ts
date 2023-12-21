@@ -500,7 +500,7 @@ class FirebaseService implements IFirebaseService {
     runInAction(() => {
       const cardOrderList = docSnap.data()?.cardOrderList || [];
       this.cardStore.cardOrderList = cardOrderList;
-      this.updateLocalList(this.cardStore.cardOrderList);
+      this.updateLocalList(cardOrderList);
     });
   }
 
