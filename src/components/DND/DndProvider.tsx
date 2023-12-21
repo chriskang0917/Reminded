@@ -21,33 +21,33 @@ interface DndContextProps {
   children: React.ReactNode;
 }
 
-const moveCard = (activeCard: ICard, overCard: ICard) => {
+const moveCard = (card: { activeCard: ICard; overCard: ICard }) => {
   const cardOrderList = cardStore.cardOrderList;
-  const activeCardIndex = cardOrderList.indexOf(activeCard.id);
-  const overCardIndex = cardOrderList.indexOf(overCard.id);
+  const activeCardIndex = cardOrderList.indexOf(card.activeCard.id);
+  const overCardIndex = cardOrderList.indexOf(card.overCard.id);
 
   const movedArray = arrayMove(cardOrderList, activeCardIndex, overCardIndex);
   cardStore.updateCardOrderList(movedArray);
   cardStore.updateCardOrderListToFirebase(movedArray);
 };
 
-const actionToTodoTomorrow = (activeCard: ICard) => {
+const actionToTodoTomorrow = (card: { activeCard: ICard }) => {
   const cardOrderList = cardStore.cardOrderList;
-  const activeCardIndex = cardOrderList.indexOf(activeCard.id);
+  const activeCardIndex = cardOrderList.indexOf(card.activeCard.id);
   const tomorrow = cardUtils.generateTomorrowDate().toISOString();
-  cardStore.updateCard(activeCard.id, { dueDate: tomorrow });
-  cardStore.updateCardToFirebase(activeCard.id, { dueDate: tomorrow });
+  cardStore.updateCard(card.activeCard.id, { dueDate: tomorrow });
+  cardStore.updateCardToFirebase(card.activeCard.id, { dueDate: tomorrow });
 
   const movedArray = arrayMove(cardOrderList, activeCardIndex, activeCardIndex);
   cardStore.updateCardOrderList(movedArray);
   cardStore.updateCardOrderListToFirebase(movedArray);
 };
 
-const todoTomorrowToAction = (activeCard: ICard) => {
+const todoTomorrowToAction = (card: { activeCard: ICard }) => {
   const cardOrderList = cardStore.cardOrderList;
-  const activeCardIndex = cardOrderList.indexOf(activeCard.id);
-  cardStore.updateCard(activeCard.id, { status: "action", dueDate: null });
-  cardStore.updateCardToFirebase(activeCard.id, {
+  const activeCardIndex = cardOrderList.indexOf(card.activeCard.id);
+  cardStore.updateCard(card.activeCard.id, { status: "action", dueDate: null });
+  cardStore.updateCardToFirebase(card.activeCard.id, {
     status: "action",
     dueDate: null,
   });
@@ -61,6 +61,21 @@ const switchStrategy = {
   action_to_todo_tomorrow: actionToTodoTomorrow,
   todo_tomorrow_to_action: todoTomorrowToAction,
   default: moveCard,
+};
+
+interface CardsProps {
+  activeCard: ICard;
+  overCard: ICard;
+}
+
+type strategy =
+  | "action_to_todo_tomorrow"
+  | "todo_tomorrow_to_action"
+  | "default";
+
+const switchCards = (cards: CardsProps, strategy: strategy) => {
+  const { activeCard, overCard } = cards;
+  return switchStrategy[strategy]({ activeCard, overCard });
 };
 
 const shouldSwitchActionToTodo = (
@@ -126,13 +141,13 @@ export const DndProvider = ({ children }: DndContextProps) => {
     const activeCard = active.data.current?.card;
 
     if (shouldSwitchActionToTodo(overId, activeCard, overCard)) {
-      return switchStrategy.action_to_todo_tomorrow(activeCard);
+      return switchCards({ activeCard, overCard }, "action_to_todo_tomorrow");
     }
     if (shouldSwitchTodoToAction(overId, activeCard, overCard)) {
-      return switchStrategy.todo_tomorrow_to_action(activeCard);
+      return switchCards({ activeCard, overCard }, "todo_tomorrow_to_action");
     }
     if (activeCard?.id === overCard?.id) return;
-    return switchStrategy.default(activeCard, overCard);
+    return switchCards({ activeCard, overCard }, "default");
   };
 
   const getCardType = (cardStatus: cardStatus) => {
