@@ -464,11 +464,7 @@ class FirebaseService implements IFirebaseService {
     this.cardStore = cardStore;
   }
 
-  private getUid() {
-    return authStore.uid || cookie.getCookie("uid");
-  }
-
-  async initActiveCards() {
+  public async initActiveCards() {
     try {
       await this.getCardOrderList();
       await this.getActiveCards();
@@ -478,21 +474,22 @@ class FirebaseService implements IFirebaseService {
     }
   }
 
+  private getUid() {
+    return authStore.uid || cookie.getCookie("uid");
+  }
+
   private async getCardOrderList() {
     const uid = this.getUid();
     if (!uid) return;
 
     const cardsOrderListRef = doc(db, "user_cards", uid);
     const cardOrderList = this.getLocalCardOrderList();
-
     if (cardOrderList) {
       await setDoc(cardsOrderListRef, { cardOrderList }, { merge: true });
       return runInAction(() => (this.cardStore.cardOrderList = cardOrderList));
     }
-
     const docSnap = await getDoc(cardsOrderListRef);
     if (!docSnap.exists()) return this.setLocalCardOrderList([]);
-
     runInAction(() => {
       const cardOrderList = docSnap.data()?.cardOrderList || [];
       this.cardStore.cardOrderList = cardOrderList;
@@ -513,7 +510,6 @@ class FirebaseService implements IFirebaseService {
   private async getActiveCards() {
     const uid = this.getUid();
     if (!uid) return;
-
     onSnapshot(this.getCardsQueryWith("active"), (querySnapshot) => {
       const cards: ICardObject = {};
       querySnapshot.forEach((doc) => {
@@ -521,6 +517,20 @@ class FirebaseService implements IFirebaseService {
       });
       runInAction(() => (this.cardStore.cards = cards || []));
     });
+  }
+
+  async getArchivedCards() {
+    try {
+      const uid = this.getUid();
+      if (!uid) return;
+      return onSnapshot(this.getCardsQueryWith("archived"), (querySnapshot) => {
+        const archivedCards: ICard[] = [];
+        querySnapshot.forEach((doc) => archivedCards.push(doc.data() as ICard));
+        runInAction(() => (this.cardStore.archivedCards = archivedCards || []));
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   private getCardsQueryWith(status: "active" | "archived") {
@@ -531,25 +541,6 @@ class FirebaseService implements IFirebaseService {
     const cardsRef = collection(db, "user_cards", this.getUid(), "cards");
     const queryArchived = where("isArchived", "==", statusMapper[status]);
     return query(cardsRef, queryArchived);
-  }
-
-  async getArchivedCards() {
-    try {
-      const uid = this.getUid();
-      if (!uid) return;
-
-      const cardsRef = collection(db, "user_cards", uid, "cards");
-      const queryActive = where("isArchived", "==", true);
-      const q = query(cardsRef, queryActive);
-
-      return onSnapshot(q, (querySnapshot) => {
-        const archivedCards: ICard[] = [];
-        querySnapshot.forEach((doc) => archivedCards.push(doc.data() as ICard));
-        runInAction(() => (this.cardStore.archivedCards = archivedCards || []));
-      });
-    } catch (error) {
-      console.error(error);
-    }
   }
 
   async getExecutedActionCards() {
@@ -614,7 +605,6 @@ class FirebaseService implements IFirebaseService {
     try {
       const uid = this.getUid();
       if (!uid) return;
-
       const cardsRef = doc(db, "user_cards", uid, "cards", cardId);
       await setDoc(cardsRef, { ...updateCard }, { merge: true });
     } catch (error) {
@@ -626,7 +616,6 @@ class FirebaseService implements IFirebaseService {
     try {
       const uid = this.getUid();
       if (!uid) return;
-
       const cardsRef = doc(db, "user_cards", uid, "cards", noteId);
       await setDoc(cardsRef, { ...updateNote }, { merge: true });
     } catch (error) {
