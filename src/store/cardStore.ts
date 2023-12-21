@@ -468,48 +468,6 @@ class FirebaseService implements IFirebaseService {
     return authStore.uid || cookie.getCookie("uid");
   }
 
-  private async getCardOrderList() {
-    const uid = this.getUid();
-    if (!uid) return;
-
-    const cardsOrderListRef = doc(db, "user_cards", uid);
-    const localList = localStorage.getItem("cardOrderList");
-
-    if (localList) {
-      const cardOrderList = JSON.parse(localList || "[]");
-      await setDoc(cardsOrderListRef, { cardOrderList }, { merge: true });
-      return runInAction(() => (this.cardStore.cardOrderList = cardOrderList));
-    }
-
-    const docSnap = await getDoc(cardsOrderListRef);
-    if (!docSnap.exists()) {
-      localStorage.setItem("cardOrderList", JSON.stringify([]));
-      return;
-    }
-    runInAction(() => {
-      this.cardStore.cardOrderList = docSnap.data()?.cardOrderList || [];
-      const stringifiedList = JSON.stringify(this.cardStore.cardOrderList);
-      localStorage.setItem("cardOrderList", stringifiedList);
-    });
-  }
-
-  private async getActiveCards() {
-    const uid = this.getUid();
-    if (!uid) return;
-
-    const cardsRef = collection(db, "user_cards", uid, "cards");
-    const queryArchived = where("isArchived", "==", false);
-    const q = query(cardsRef, queryArchived);
-
-    return onSnapshot(q, (querySnapshot) => {
-      const cards: ICardObject = {};
-      querySnapshot.forEach((doc) => {
-        cards[doc.id] = doc.data() as ICard;
-      });
-      runInAction(() => (this.cardStore.cards = cards || []));
-    });
-  }
-
   async initActiveCards() {
     try {
       await this.getCardOrderList();
@@ -518,6 +476,61 @@ class FirebaseService implements IFirebaseService {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  private async getCardOrderList() {
+    const uid = this.getUid();
+    if (!uid) return;
+
+    const cardsOrderListRef = doc(db, "user_cards", uid);
+    const cardOrderList = this.getLocalCardOrderList();
+
+    if (cardOrderList) {
+      await setDoc(cardsOrderListRef, { cardOrderList }, { merge: true });
+      return runInAction(() => (this.cardStore.cardOrderList = cardOrderList));
+    }
+
+    const docSnap = await getDoc(cardsOrderListRef);
+    if (!docSnap.exists()) return this.setLocalCardOrderList([]);
+
+    runInAction(() => {
+      const cardOrderList = docSnap.data()?.cardOrderList || [];
+      this.cardStore.cardOrderList = cardOrderList;
+      this.setLocalCardOrderList(this.cardStore.cardOrderList);
+    });
+  }
+
+  private getLocalCardOrderList(): string[] | null {
+    const localList = localStorage.getItem("cardOrderList");
+    if (!localList) return null;
+    return JSON.parse(localList || "[]");
+  }
+
+  private setLocalCardOrderList(cardOrderList: string[]) {
+    localStorage.setItem("cardOrderList", JSON.stringify(cardOrderList));
+  }
+
+  private async getActiveCards() {
+    const uid = this.getUid();
+    if (!uid) return;
+
+    onSnapshot(this.getCardsQueryWith("active"), (querySnapshot) => {
+      const cards: ICardObject = {};
+      querySnapshot.forEach((doc) => {
+        cards[doc.id] = doc.data() as ICard;
+      });
+      runInAction(() => (this.cardStore.cards = cards || []));
+    });
+  }
+
+  private getCardsQueryWith(status: "active" | "archived") {
+    const statusMapper = {
+      active: false,
+      archived: true,
+    };
+    const cardsRef = collection(db, "user_cards", this.getUid(), "cards");
+    const queryArchived = where("isArchived", "==", statusMapper[status]);
+    return query(cardsRef, queryArchived);
   }
 
   async getArchivedCards() {
