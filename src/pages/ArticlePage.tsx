@@ -5,43 +5,14 @@ import {
   Spacer,
   useDisclosure,
 } from "@nextui-org/react";
-import { format, parseISO } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { Navigate, useParams } from "react-router-dom";
 import CardTags from "../components/Card/CardTags";
 import ModalEditor from "../components/Editor/ModalEditor";
 import useDocTitle from "../hooks/useDocTitle";
 import { useStopShortcut } from "../hooks/useStopShortcut";
-import { NewNote, cardStore } from "../store/cardStore";
-
-class Note {
-  private note: NewNote;
-
-  constructor(note: NewNote) {
-    this.note = note;
-  }
-
-  get details() {
-    return this.note;
-  }
-
-  get noteTitle() {
-    return this.note.noteTitle;
-  }
-
-  get noteHTML() {
-    return this.note.noteHTML;
-  }
-
-  get createdTime() {
-    const parsedDate = parseISO(this.note.createdTime);
-    return format(parsedDate, "yyyy-MM-dd");
-  }
-
-  get tags() {
-    return this.note.tags;
-  }
-}
+import { cardStore } from "../store/cardStore";
+import { Note } from "../utils/data";
 
 const ArticlePage = observer(() => {
   const { id: noteId } = useParams();
