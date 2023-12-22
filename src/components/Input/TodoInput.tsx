@@ -14,7 +14,8 @@ import toast from "react-hot-toast";
 import { CiCalendarDate } from "react-icons/ci";
 import { IoIosAdd } from "react-icons/io";
 import { useLocation } from "react-router-dom";
-import { NewCard, cardStore } from "../../store/cardStore";
+import { NewCard } from "../../models/NewCard";
+import { cardStore } from "../../store/cardStore";
 import { uiStore } from "../../store/uiStore";
 import { getObjectFilteredTags } from "../../utils/input";
 

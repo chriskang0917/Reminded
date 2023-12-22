@@ -7,8 +7,9 @@ import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { makeAutoObservable, runInAction } from "mobx";
 import toast from "react-hot-toast";
 import { auth, db } from "../config/firebase";
+import { NewCard } from "../models/NewCard";
 import { cookie } from "../utils/cookie";
-import { NewCard, NewNote, cardStore } from "./cardStore";
+import { NewNote, cardStore } from "./cardStore";
 
 interface IProfile {
   email: string;

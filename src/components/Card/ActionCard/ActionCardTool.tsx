@@ -11,12 +11,8 @@ import { format, parseISO } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import "react-day-picker/dist/style.css";
-import {
-  ICard,
-  NewCard,
-  cardStatus,
-  cardStore,
-} from "../../../store/cardStore";
+import { NewCard } from "../../../models/NewCard";
+import { ICard, cardStatus, cardStore } from "../../../store/cardStore";
 import DatePicker from "../DatePicker";
 
 interface CardToolProps {

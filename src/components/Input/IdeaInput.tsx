@@ -9,7 +9,8 @@ import { observer } from "mobx-react-lite";
 import { Key, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { IoIosAdd } from "react-icons/io";
-import { NewCard, cardStore } from "../../store/cardStore";
+import { NewCard } from "../../models/NewCard";
+import { cardStore } from "../../store/cardStore";
 import { uiStore } from "../../store/uiStore";
 import { getObjectFilteredTags } from "../../utils/input";
 

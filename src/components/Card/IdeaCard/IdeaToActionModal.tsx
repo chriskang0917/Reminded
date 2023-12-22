@@ -12,7 +12,8 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { useStopShortcut } from "../../../hooks/useStopShortcut";
-import { ICard, NewCard, cardStore } from "../../../store/cardStore";
+import { NewCard } from "../../../models/NewCard";
+import { ICard, cardStore } from "../../../store/cardStore";
 
 interface ActionModalProps {
   card: ICard;

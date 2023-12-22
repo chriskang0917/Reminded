@@ -13,7 +13,8 @@ import { FormEvent, useEffect, useState } from "react";
 import { BsListTask } from "react-icons/bs";
 import { FaRegLightbulb } from "react-icons/fa";
 import { QuickInput } from ".";
-import { NewCard, cardStore } from "../../../store/cardStore";
+import { NewCard } from "../../../models/NewCard";
+import { cardStore } from "../../../store/cardStore";
 import { uiStore } from "../../../store/uiStore";
 import { getFilteredTags, getPlainText } from "../../../utils/input";
 
