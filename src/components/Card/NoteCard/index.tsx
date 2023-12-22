@@ -1,7 +1,7 @@
 import { Card, CardBody, Image } from "@nextui-org/react";
 import { format, parseISO } from "date-fns";
 import { Link } from "react-router-dom";
-import { NewNote } from "../../../store/cardStore";
+import { NewNote } from "../../../models/NewNote";
 import BasicCard from "../BasicCard";
 import NoteIcon from "./note-icon.svg";
 

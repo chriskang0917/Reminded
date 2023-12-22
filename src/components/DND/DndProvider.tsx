@@ -13,7 +13,8 @@ import {
 import { arrayMove } from "@dnd-kit/sortable";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { ICard, NewNote, cardStatus, cardStore } from "../../store/cardStore";
+import { NewNote } from "../../models/NewNote";
+import { ICard, cardStatus, cardStore } from "../../store/cardStore";
 import { cardUtils } from "../../utils/cardUtils";
 import { ActionCard, IdeaCard, TodoCard } from "../Card";
 import { NoteCard } from "../Card/NoteCard";

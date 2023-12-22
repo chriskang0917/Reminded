@@ -13,6 +13,7 @@ import {
 import { makeAutoObservable, runInAction } from "mobx";
 import { db } from "../config/firebase";
 import { NewCard } from "../models/NewCard";
+import { NewNote } from "../models/NewNote";
 import { cardUtils } from "../utils/cardUtils";
 import { cookie } from "../utils/cookie";
 import { debounceCardsOrderList } from "../utils/debounce";
@@ -61,27 +62,6 @@ interface IFirebaseService {
   updateCardToFirebase: (cardId: string, card: Partial<ICard>) => void;
   addCardToFireStore: (card: ICard, updateCard?: Partial<ICard>) => void;
   deleteCardFromFireStore: (cardId: string) => void;
-}
-
-/* ===============================
-===========  NewCard  ============
-=============================== */
-
-export class NewNote extends NewCard {
-  noteTitle: string = "";
-  noteHTML: string = "";
-
-  constructor(
-    noteTitle: string,
-    content: string,
-    noteHTML: string,
-    tags: string[],
-    status: cardStatus = "note",
-  ) {
-    super(content, tags, status);
-    this.noteTitle = noteTitle;
-    this.noteHTML = noteHTML;
-  }
 }
 
 /* ===============================

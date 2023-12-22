@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useSearch } from "../../../hooks/useSearch";
-import { NewNote } from "../../../store/cardStore";
+import { NewNote } from "../../../models/NewNote";
 import { NoteCard } from "../../Card/NoteCard";
 import { Heading, HeadingDivider } from "../../Heading";
 import { IdeaSearchInput } from "../../Input";

@@ -8,8 +8,9 @@ import { makeAutoObservable, runInAction } from "mobx";
 import toast from "react-hot-toast";
 import { auth, db } from "../config/firebase";
 import { NewCard } from "../models/NewCard";
+import { NewNote } from "../models/NewNote";
 import { cookie } from "../utils/cookie";
-import { NewNote, cardStore } from "./cardStore";
+import { cardStore } from "./cardStore";
 
 interface IProfile {
   email: string;

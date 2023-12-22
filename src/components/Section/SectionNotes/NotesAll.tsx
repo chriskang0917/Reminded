@@ -1,6 +1,7 @@
 import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { NewNote, NotesAllCards, cardStore } from "../../../store/cardStore";
+import { NewNote } from "../../../models/NewNote";
+import { NotesAllCards, cardStore } from "../../../store/cardStore";
 import EmptyCard from "../../Card/EmptyCard";
 import { NoteCard } from "../../Card/NoteCard";
 import { Heading, HeadingDivider } from "../../Heading";
