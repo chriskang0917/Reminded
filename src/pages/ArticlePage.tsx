@@ -11,8 +11,8 @@ import CardTags from "../components/Card/CardTags";
 import ModalEditor from "../components/Editor/ModalEditor";
 import useDocTitle from "../hooks/useDocTitle";
 import { useStopShortcut } from "../hooks/useStopShortcut";
+import { Note } from "../models/Note";
 import { cardStore } from "../store/cardStore";
-import { Note } from "../utils/data";
 
 const ArticlePage = observer(() => {
   const { id: noteId } = useParams();
