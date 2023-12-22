@@ -13,9 +13,10 @@ import {
 import { arrayMove } from "@dnd-kit/sortable";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { ICard, cardStatus, cardStore } from "../../store/cardStore";
+import { ICard, NewNote, cardStatus, cardStore } from "../../store/cardStore";
 import { cardUtils } from "../../utils/cardUtils";
 import { ActionCard, IdeaCard, TodoCard } from "../Card";
+import { NoteCard } from "../Card/NoteCard";
 
 interface DndContextProps {
   children: React.ReactNode;
@@ -68,10 +69,7 @@ interface CardsProps {
   overCard: ICard;
 }
 
-type strategy =
-  | "action_to_todo_tomorrow"
-  | "todo_tomorrow_to_action"
-  | "default";
+type strategy = keyof typeof switchStrategy;
 
 const switchCards = (cards: CardsProps, strategy: strategy) => {
   const { activeCard, overCard } = cards;
@@ -140,28 +138,29 @@ export const DndProvider = ({ children }: DndContextProps) => {
     const overCard = over.data.current?.card;
     const activeCard = active.data.current?.card;
 
+    if (activeCard?.id === overCard?.id) return;
+
     if (shouldSwitchActionToTodo(overId, activeCard, overCard)) {
       return switchCards({ activeCard, overCard }, "action_to_todo_tomorrow");
     }
     if (shouldSwitchTodoToAction(overId, activeCard, overCard)) {
       return switchCards({ activeCard, overCard }, "todo_tomorrow_to_action");
     }
-    if (activeCard?.id === overCard?.id) return;
     return switchCards({ activeCard, overCard }, "default");
   };
 
   const getCardType = (cardStatus: cardStatus) => {
     if (!activeCard) return;
-    switch (cardStatus) {
-      case "todo":
-        return <TodoCard card={activeCard} />;
-      case "idea":
-        return <IdeaCard card={activeCard} />;
-      case "action":
-        return <ActionCard card={activeCard} />;
-      default:
-        return "";
-    }
+
+    const cardStrategy = {
+      todo: <TodoCard card={activeCard} />,
+      idea: <IdeaCard card={activeCard} />,
+      action: <ActionCard card={activeCard} />,
+      execute: <ActionCard card={activeCard} />,
+      note: <NoteCard note={activeCard as NewNote} />,
+    };
+
+    if (cardStatus in cardStrategy) return cardStrategy[cardStatus];
   };
 
   return (

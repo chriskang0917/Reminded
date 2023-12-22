@@ -19,13 +19,7 @@ import { cookie } from "../utils/cookie";
 import { debounceCardsOrderList } from "../utils/debounce";
 import { authStore } from "./authStore";
 
-export type cardStatus =
-  | "idea"
-  | "action"
-  | "todo"
-  | "remind"
-  | "note"
-  | "execute";
+export type cardStatus = "idea" | "action" | "todo" | "note" | "execute";
 
 export interface ICard {
   id: string;
