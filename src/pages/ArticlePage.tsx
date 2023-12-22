@@ -44,21 +44,21 @@ class Note {
 }
 
 const ArticlePage = observer(() => {
-  const { id } = useParams();
+  const { id: noteId } = useParams();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-  if (!id) return <Navigate to="/notes/all" />;
-  const note = new Note(cardStore.getNoteWithId(id));
+  if (!noteId) return <Navigate to="/notes/all" />;
+  const note = new Note(cardStore.getNoteWithId(noteId));
 
   useStopShortcut(isOpen);
   useDocTitle(`Reminded | ${note.noteTitle}`);
 
   if (!note) return <div>Loading...</div>;
 
-  return (
-    <section className="pb-5">
+  const renderNoteHeader = () => {
+    return (
       <Card className="relative top-6 z-10 mx-auto mb-10 w-[95%] px-6 py-5">
-        {note.tags.length ? <CardTags card={note.details} /> : ""}
+        {note.tags.length === 0 && <CardTags card={note.details} />}
         <div className="flex items-center justify-between">
           <h1 className="my-4 text-2xl font-bold text-primary">
             {note.noteTitle}
@@ -79,6 +79,12 @@ const ArticlePage = observer(() => {
         <Spacer y={1} />
         <div>{note.createdTime}</div>
       </Card>
+    );
+  };
+
+  return (
+    <section className="pb-5">
+      {renderNoteHeader()}
       <ModalEditor
         pageTitle="編輯筆記"
         card={note.details}
