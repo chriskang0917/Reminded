@@ -39,13 +39,6 @@ export const Sidebar = () => {
   const location = useLocation();
   const pathname = location.pathname;
 
-  const isNoteHomePage = (page: string) => {
-    return pathname.includes(page) && pathname !== "/" && page !== "/";
-  };
-  const isHomePage = (page: string) => {
-    return pathname === "/" && page === "/";
-  };
-
   const renderLogo = () => {
     return (
       <li className="absolute left-[22px] top-8">
@@ -54,6 +47,13 @@ export const Sidebar = () => {
         </Card>
       </li>
     );
+  };
+
+  const isNoteHomePage = (page: string) => {
+    return pathname.includes(page) && pathname !== "/" && page !== "/";
+  };
+  const isHomePage = (page: string) => {
+    return pathname === "/" && page === "/";
   };
 
   const renderButtons = () => {
