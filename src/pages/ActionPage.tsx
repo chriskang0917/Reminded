@@ -11,21 +11,20 @@ import useDocTitle from "../hooks/useDocTitle";
 import useTutorial from "../hooks/useTutorial";
 import { TutorialType } from "../utils/tutorial";
 
-const renderActionPage = (route: string | undefined) => {
-  switch (route) {
-    case "all":
-      return <ActionAll />;
-    case "search":
-      return <ActionSearch />;
-    case "expire":
-      return <ActionExpire />;
-    case "executed":
-      return <ActionExecute />;
-    case "archive":
-      return <ActionArchive />;
-    default:
-      return <Navigate to="/" replace />;
-  }
+type Route = keyof typeof routeStrategy;
+
+const routeStrategy = {
+  all: <ActionAll />,
+  search: <ActionSearch />,
+  expire: <ActionExpire />,
+  executed: <ActionExecute />,
+  archive: <ActionArchive />,
+};
+
+const renderActionPage = (route: Route | undefined) => {
+  if (!route) return <Navigate to="/" replace />;
+  if (route in routeStrategy) return routeStrategy[route];
+  return <Navigate to="/" replace />;
 };
 
 const ActionPage = observer(() => {
@@ -34,7 +33,9 @@ const ActionPage = observer(() => {
   useDocTitle("Reminded | 行動");
   useTutorial(TutorialType.action);
 
-  return <section className="relative">{renderActionPage(route)}</section>;
+  return (
+    <section className="relative">{renderActionPage(route as Route)}</section>
+  );
 });
 
 export default ActionPage;
