@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { authStore } from "../store/authStore";
 import { cookie } from "./cookie";
@@ -48,5 +48,20 @@ export const database = {
     const [root, ...rest] = paths;
     const docRef = doc(db, root, ...rest);
     return await setDoc(docRef, data, { merge: true });
+  },
+  async getCollection(paths: string[] = ["user_cards", getUid(), "cards"]) {
+    if (!this.validatePath("collection", paths)) return;
+    if (!getUid()) return;
+    const [root, ...rest] = paths;
+    const docRef = doc(db, root, ...rest);
+    const docSnap = await getDoc(docRef);
+    return docSnap.data();
+  },
+  async deleteDoc(paths: string[]) {
+    if (!this.validatePath("doc", paths)) return;
+    if (!getUid()) return;
+    const [root, ...rest] = paths;
+    const docRef = doc(db, root, ...rest);
+    return await deleteDoc(docRef);
   },
 };
