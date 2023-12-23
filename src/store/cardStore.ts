@@ -10,10 +10,11 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { db } from "../config/firebase";
 import { NewCard } from "../models/NewCard";
 import { NewNote } from "../models/NewNote";
-import { cardUtils } from "../utils/cardUtils";
 import { database, getUid } from "../utils/database";
+import { dates } from "../utils/dates";
 import { debounceCardsOrderList } from "../utils/debounce";
 import { local } from "../utils/local";
+import { sort } from "../utils/sort";
 
 export type cardStatus = "idea" | "action" | "todo" | "note" | "execute";
 
@@ -78,23 +79,18 @@ abstract class CardsStrategy implements ICardsStrategy {
   }
 
   protected getSortedCardsByOrderList() {
-    return cardUtils.getSortedCardsByOrderList(
+    return sort.getSortedCardsByOrderList(
       this.cardStore.cardOrderList,
       this.cardStore.cards,
     );
   }
 
   getCards() {
-    this.cardStore = cardStore;
     return this.getSortedCardsByOrderList();
   }
 }
 
-export class AllCards extends CardsStrategy {
-  getCards() {
-    return this.getSortedCardsByOrderList();
-  }
-}
+export class AllCards extends CardsStrategy {}
 
 export class TodoAllCards extends CardsStrategy {
   getCards() {
@@ -102,7 +98,7 @@ export class TodoAllCards extends CardsStrategy {
       const isDueAction = card.dueDate && card.status === "action";
       return (isDueAction || card.status === "todo") && !card.isArchived;
     });
-    const descSortedCards = cardUtils.sortCardsDescBy("dueDate", sortedCards);
+    const descSortedCards = sort.sortCardsDescBy("dueDate", sortedCards);
     return descSortedCards;
   }
 }
@@ -114,7 +110,7 @@ export class TodoTodayCards extends CardsStrategy {
       if (!card.dueDate) return false;
       return (
         (card.status === "todo" || card.status === "action") &&
-        cardUtils.isToday(card.dueDate) &&
+        dates.isToday(card.dueDate) &&
         !card.isArchived
       );
     });
@@ -128,7 +124,7 @@ export class TodoTomorrowCards extends CardsStrategy {
       if (!card.dueDate) return false;
       return (
         card.status === "todo" &&
-        cardUtils.isTomorrow(card.dueDate) &&
+        dates.isTomorrow(card.dueDate) &&
         !card.isArchived
       );
     });
@@ -141,11 +137,11 @@ export class TodoThisWeekCards extends CardsStrategy {
     const cards = sortedCards.filter((card) => {
       if (!card.dueDate) return false;
       const isTodoOrAction = card.status === "todo" || card.status === "action";
-      const isThisWeek = cardUtils.isThisWeek(card.dueDate);
+      const isThisWeek = dates.isThisWeek(card.dueDate);
 
       return isTodoOrAction && isThisWeek && !card.isArchived;
     });
-    const sortedCardsDesc = cardUtils.sortCardsDescBy("dueDate", cards);
+    const sortedCardsDesc = sort.sortCardsDescBy("dueDate", cards);
     return sortedCardsDesc;
   }
 }
@@ -156,7 +152,7 @@ export class TodoExpiredCards extends CardsStrategy {
     if (sortedCards.length === 0) return [];
     return sortedCards.filter((card) => {
       if (!card.dueDate) return false;
-      const isExceedToday = cardUtils.isExceedToday(card.dueDate);
+      const isExceedToday = dates.isExceedToday(card.dueDate);
       const isTodoOrAction = card.status === "todo" || card.status === "action";
 
       return isTodoOrAction && isExceedToday && !card.isArchived;
@@ -173,7 +169,7 @@ export class TodoCompletedCards extends CardsStrategy {
         card.status === "todo" || card.status === "execute";
       return isTodoOrExecute && card.isArchived;
     });
-    const sortedCardsDesc = cardUtils.sortCardsDescBy("dueDate", filteredCards);
+    const sortedCardsDesc = sort.sortCardsDescBy("dueDate", filteredCards);
     return sortedCardsDesc;
   }
 }
@@ -191,7 +187,7 @@ export class IdeaTodayCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     return sortedCards.filter((card) => {
-      const isToday = cardUtils.isToday(card.createdTime);
+      const isToday = dates.isToday(card.createdTime);
       return card.status === "idea" && isToday && !card.isArchived;
     });
   }
@@ -201,7 +197,7 @@ export class IdeaThisWeekCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     return sortedCards.filter((card) => {
-      const isThisWeek = cardUtils.isThisWeek(card.createdTime);
+      const isThisWeek = dates.isThisWeek(card.createdTime);
       return card.status === "idea" && isThisWeek && !card.isArchived;
     });
   }
@@ -222,7 +218,7 @@ export class ActionExpiredCards extends CardsStrategy {
     if (sortedCards.length === 0) return [];
     return sortedCards.filter((card) => {
       if (!card.dueDate) return false;
-      const isExceedToday = cardUtils.isExceedToday(card.dueDate);
+      const isExceedToday = dates.isExceedToday(card.dueDate);
       return card.status === "action" && isExceedToday && !card.isArchived;
     });
   }
@@ -234,7 +230,7 @@ export class ActionTodoCards extends CardsStrategy {
     const cards = sortedCards.filter(
       (card) => card.status === "action" && card.dueDate && !card.isArchived,
     );
-    const sortedCardsDesc = cardUtils.sortCardsDescBy("dueDate", cards);
+    const sortedCardsDesc = sort.sortCardsDescBy("dueDate", cards);
     return sortedCardsDesc;
   }
 }
@@ -244,7 +240,7 @@ export class TodoAndActionTomorrowCards extends CardsStrategy {
     const sortedCards = this.getSortedCardsByOrderList();
     const isDateTomorrow = (dueDate: string | null) => {
       if (!dueDate) return null;
-      return cardUtils.isTomorrow(dueDate);
+      return dates.isTomorrow(dueDate);
     };
     return sortedCards.filter(
       (card) =>
@@ -277,7 +273,7 @@ export class ActionArchiveCards extends CardsStrategy {
     const hasArchived = this.cardStore.archivedCards.filter((card) => {
       return card.status === "action";
     });
-    const sortedCardsDesc = cardUtils.sortCardsDescBy("updatedTime", [
+    const sortedCardsDesc = sort.sortCardsDescBy("updatedTime", [
       ...justArchived,
       ...hasArchived,
     ]);
@@ -303,17 +299,11 @@ class CardService implements ICardService {
     this.cardStore = cardStore;
   }
 
-  private getSortedCardsByOrderList() {
-    const sortedCards: ICard[] = [];
-    this.cardStore.cardOrderList.forEach((id) => {
-      if (this.cardStore.cards.hasOwnProperty(id))
-        sortedCards.push(this.cardStore.cards[id]);
-    });
-    return sortedCards;
-  }
-
   public getAllTags() {
-    const sortedCards = this.getSortedCardsByOrderList();
+    const sortedCards = sort.getSortedCardsByOrderList(
+      this.cardStore.cardOrderList,
+      this.cardStore.cards,
+    );
     const tags = sortedCards.map((card) => card.tags).flat() || [];
     if (!tags) return [];
     return [...new Set(tags)];

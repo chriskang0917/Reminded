@@ -3,7 +3,6 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { ICard, cardStore } from "../../store/cardStore";
-import { cardUtils } from "../../utils/cardUtils";
 
 const CardTags = observer(({ card }: { card: ICard }) => {
   const tagInputRef = useRef<HTMLInputElement>(null);
@@ -29,6 +28,11 @@ const CardTags = observer(({ card }: { card: ICard }) => {
     cardStore.updateCardToFirebase(card.id, { tags: updatedTags });
   };
 
+  const textTruncate = (text: string, length: number) => {
+    if (text.length > length) return text.substring(0, length) + "...";
+    return text;
+  };
+
   return (
     <div className="flex flex-wrap items-center justify-start gap-2">
       {card.tags.map((tag: string) => (
@@ -38,7 +42,7 @@ const CardTags = observer(({ card }: { card: ICard }) => {
           className="px-2"
           onClose={() => handleDeleteTag(tag)}
         >
-          {cardUtils.textTruncate(tag, 20)}
+          {textTruncate(tag, 20)}
         </Chip>
       ))}
       {!isTagInputShow && (

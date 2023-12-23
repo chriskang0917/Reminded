@@ -15,7 +15,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { NewNote } from "../../models/NewNote";
 import { ICard, cardStatus, cardStore } from "../../store/cardStore";
-import { cardUtils } from "../../utils/cardUtils";
+import { dates } from "../../utils/dates";
 import { ActionCard, IdeaCard, TodoCard } from "../Card";
 import { NoteCard } from "../Card/NoteCard";
 
@@ -36,7 +36,7 @@ const moveCard = (card: { activeCard: ICard; overCard: ICard }) => {
 const actionToTodoTomorrow = (card: { activeCard: ICard }) => {
   const cardOrderList = cardStore.cardOrderList;
   const activeCardIndex = cardOrderList.indexOf(card.activeCard.id);
-  const tomorrow = cardUtils.generateTomorrowDate().toISOString();
+  const tomorrow = dates.generateTomorrowDate().toISOString();
   cardStore.updateCard(card.activeCard.id, { dueDate: tomorrow });
   cardStore.updateCardToFirebase(card.activeCard.id, { dueDate: tomorrow });
 
