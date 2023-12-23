@@ -9,7 +9,7 @@ import {
 } from "../../../store/cardStore";
 import { style } from "../../../utils/style";
 import { TutorialType } from "../../../utils/tutorial";
-import { TodoCard } from "../../Card";
+import { ActionCard, TodoCard } from "../../Card";
 import EmptyCard from "../../Card/EmptyCard";
 import { Heading, HeadingDivider } from "../../Heading";
 import { TodoInput } from "../../Input";
@@ -76,7 +76,7 @@ export const TodoTomorrow = observer(() => {
                 {actionCards.length !== 0 ? (
                   actionCards.map((card) => (
                     <MotionItem key={card.id}>
-                      <TodoCard key={card.id} card={card} />
+                      <ActionCard key={card.id} card={card} />
                     </MotionItem>
                   ))
                 ) : (

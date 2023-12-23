@@ -7,12 +7,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
-import { format, parseISO } from "date-fns";
+import { parseISO } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import "react-day-picker/dist/style.css";
 import { NewCard } from "../../../models/NewCard";
-import { ICard, cardStatus, cardStore } from "../../../store/cardStore";
+import { ICard, cardStore } from "../../../store/cardStore";
 import DatePicker from "../DatePicker";
 
 interface CardToolProps {
@@ -68,60 +68,14 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
     cardStore.deleteCardFromFireStore(card.id);
   };
 
-  const handleUpdateStatus = (status: cardStatus) => {
-    cardStore.updateCard(card.id, { status });
-    cardStore.updateCardToFirebase(card.id, { status });
-  };
-
   const menuList: IList[] = [
     { label: "複製", color: "default", onPress: handleDuplicate },
     { label: "封存", color: "danger", onPress: handleArchive },
     { label: "刪除", color: "danger", onPress: handleDelete },
   ];
 
-  const actionList: IList[] = [
-    {
-      label: "靈感",
-      color: "default",
-      onPress: () => handleUpdateStatus("idea"),
-    },
-  ];
-
-  const formatDate = (date: Date | undefined) => {
-    if (!date) return;
-    return format(date, "MMM dd");
-  };
-
   const hasDateLabel = setting.label === "date";
-  const hasActionLabel = setting.label === "action";
   const hasMoreLabel = setting.label === "more";
-
-  const renderDatePickerWithDate = () => {
-    if (!selectedDate) return null;
-    return (
-      <Popover
-        isOpen={isOpen}
-        onOpenChange={() => setIsOpen(!isOpen)}
-        placement="bottom"
-      >
-        <PopoverTrigger>
-          <button>
-            <p className="text-[0.75rem] underline">
-              {formatDate(selectedDate)}
-            </p>
-          </button>
-        </PopoverTrigger>
-        <PopoverContent>
-          <DatePicker
-            card={card}
-            date={selectedDate}
-            setDate={handleDateChange}
-            onClose={() => setIsOpen(false)}
-          />
-        </PopoverContent>
-      </Popover>
-    );
-  };
 
   const renderDatePickerWithoutDate = () => {
     return (
@@ -144,31 +98,6 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
           )}
         </PopoverContent>
       </Popover>
-    );
-  };
-
-  const renderTransformDropdown = () => {
-    return (
-      <Dropdown>
-        <DropdownTrigger>
-          <button className="w-4">{setting.icon}</button>
-        </DropdownTrigger>
-        <DropdownMenu aria-label="Action">
-          {actionList.map((action) => {
-            return (
-              <DropdownItem
-                textValue={action.label || ""}
-                key={action.label}
-                color={action.color}
-                onPress={action.onPress}
-              >
-                <span>轉換為 </span>
-                <strong>{action.label}</strong>
-              </DropdownItem>
-            );
-          })}
-        </DropdownMenu>
-      </Dropdown>
     );
   };
 
@@ -200,10 +129,7 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
 
   return (
     <>
-      {hasDateLabel && selectedDate
-        ? renderDatePickerWithDate()
-        : renderDatePickerWithoutDate()}
-      {hasActionLabel && renderTransformDropdown()}
+      {hasDateLabel && renderDatePickerWithoutDate()}
       {hasMoreLabel && renderSettingDropdown()}
     </>
   );
