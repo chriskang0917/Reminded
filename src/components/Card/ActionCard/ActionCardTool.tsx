@@ -92,101 +92,119 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
     return format(date, "MMM dd");
   };
 
-  const isDateLabel = setting.label === "date";
-  const isActionLabel = setting.label === "action";
-  const isMoreLabel = setting.label === "more";
+  const hasDateLabel = setting.label === "date";
+  const hasActionLabel = setting.label === "action";
+  const hasMoreLabel = setting.label === "more";
 
-  return (
-    <>
-      {isDateLabel && selectedDate && (
-        <Popover
-          isOpen={isOpen}
-          onOpenChange={() => setIsOpen(!isOpen)}
-          placement="bottom"
-        >
-          <PopoverTrigger>
-            <button>
-              <p className="text-[0.75rem] underline">
-                {formatDate(selectedDate)}
-              </p>
-            </button>
-          </PopoverTrigger>
-          <PopoverContent>
+  const renderDatePickerWithDate = () => {
+    if (!selectedDate) return null;
+    return (
+      <Popover
+        isOpen={isOpen}
+        onOpenChange={() => setIsOpen(!isOpen)}
+        placement="bottom"
+      >
+        <PopoverTrigger>
+          <button>
+            <p className="text-[0.75rem] underline">
+              {formatDate(selectedDate)}
+            </p>
+          </button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <DatePicker
+            card={card}
+            date={selectedDate}
+            setDate={handleDateChange}
+            onClose={() => setIsOpen(false)}
+          />
+        </PopoverContent>
+      </Popover>
+    );
+  };
+
+  const renderDatePickerWithoutDate = () => {
+    return (
+      <Popover
+        placement="bottom"
+        isOpen={isOpen}
+        onOpenChange={() => setIsOpen(!isOpen)}
+      >
+        <PopoverTrigger>
+          <button>{setting.icon}</button>
+        </PopoverTrigger>
+        <PopoverContent>
+          {!selectedDate && (
             <DatePicker
               card={card}
               date={selectedDate}
               setDate={handleDateChange}
               onClose={() => setIsOpen(false)}
             />
-          </PopoverContent>
-        </Popover>
-      )}
-      {isDateLabel && !selectedDate && (
-        <Popover
-          placement="bottom"
-          isOpen={isOpen}
-          onOpenChange={() => setIsOpen(!isOpen)}
-        >
-          <PopoverTrigger>
-            <button>{setting.icon}</button>
-          </PopoverTrigger>
-          <PopoverContent>
-            {!selectedDate && (
-              <DatePicker
-                card={card}
-                date={selectedDate}
-                setDate={handleDateChange}
-                onClose={() => setIsOpen(false)}
-              />
-            )}
-          </PopoverContent>
-        </Popover>
-      )}
-      {isActionLabel && (
-        <Dropdown>
+          )}
+        </PopoverContent>
+      </Popover>
+    );
+  };
+
+  const renderTransformDropdown = () => {
+    return (
+      <Dropdown>
+        <DropdownTrigger>
+          <button className="w-4">{setting.icon}</button>
+        </DropdownTrigger>
+        <DropdownMenu aria-label="Action">
+          {actionList.map((action) => {
+            return (
+              <DropdownItem
+                textValue={action.label || ""}
+                key={action.label}
+                color={action.color}
+                onPress={action.onPress}
+              >
+                <span>轉換為 </span>
+                <strong>{action.label}</strong>
+              </DropdownItem>
+            );
+          })}
+        </DropdownMenu>
+      </Dropdown>
+    );
+  };
+
+  const renderSettingDropdown = () => {
+    return (
+      <div className="w-4">
+        <Dropdown key={setting.label} backdrop="opaque">
           <DropdownTrigger>
-            <button className="w-4">{setting.icon}</button>
+            <button>{setting.icon}</button>
           </DropdownTrigger>
-          <DropdownMenu aria-label="Action">
-            {actionList.map((action) => {
-              return (
+          {setting.label === "more" && (
+            <DropdownMenu aria-label="Setting">
+              {menuList.map((menu) => (
                 <DropdownItem
-                  textValue={action.label || ""}
-                  key={action.label}
-                  color={action.color}
-                  onPress={action.onPress}
+                  textValue={menu.label || ""}
+                  key={menu.label}
+                  color={menu.color}
+                  onPress={menu.onPress}
                 >
-                  <span>轉換為 </span>
-                  <strong>{action.label}</strong>
+                  {menu.label}
                 </DropdownItem>
-              );
-            })}
-          </DropdownMenu>
+              ))}
+            </DropdownMenu>
+          )}
         </Dropdown>
-      )}
-      {isMoreLabel && (
-        <div className="w-4">
-          <Dropdown key={setting.label} backdrop="opaque">
-            <DropdownTrigger>
-              <button>{setting.icon}</button>
-            </DropdownTrigger>
-            {setting.label === "more" && (
-              <DropdownMenu aria-label="Setting">
-                {menuList.map((menu) => (
-                  <DropdownItem
-                    textValue={menu.label || ""}
-                    key={menu.label}
-                    color={menu.color}
-                    onPress={menu.onPress}
-                  >
-                    {menu.label}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            )}
-          </Dropdown>
-        </div>
-      )}
+      </div>
+    );
+  };
+
+  return (
+    <>
+      {hasDateLabel && selectedDate
+        ? renderDatePickerWithDate()
+        : renderDatePickerWithoutDate()}
+      {hasActionLabel && renderTransformDropdown()}
+      {hasMoreLabel && renderSettingDropdown()}
     </>
   );
 });
