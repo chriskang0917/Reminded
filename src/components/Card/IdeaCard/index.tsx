@@ -54,46 +54,70 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
     { icon: <HiOutlineDotsVertical />, label: "more", onClick: () => {} },
   ];
 
-  return (
-    <>
-      <BasicCard card={card}>
-        <EditableWrapper>
-          <Editable
-            id={card.id}
-            text={card.content}
-            placeholder="暫無內容..."
-            childRef={inputRef}
-            type="input"
-          >
-            <input
-              className="inline-block w-full bg-transparent tracking-wide outline-none"
-              type="text"
-              name={card.status}
-              defaultValue={card.content}
-              ref={inputRef}
-            />
-          </Editable>
-          <ul className="ml-2 flex min-w-unit-24 items-center justify-between">
-            {settingList.map((setting) => (
-              <li id={setting.id} key={setting.label}>
-                <IdeaCardTool card={card} setting={setting} />
-              </li>
-            ))}
-          </ul>
-        </EditableWrapper>
-      </BasicCard>
+  const renderCardEditable = () => {
+    return (
+      <Editable
+        id={card.id}
+        text={card.content}
+        placeholder="暫無內容..."
+        childRef={inputRef}
+        type="input"
+      >
+        <input
+          className="inline-block w-full bg-transparent tracking-wide outline-none"
+          type="text"
+          name={card.status}
+          defaultValue={card.content}
+          ref={inputRef}
+        />
+      </Editable>
+    );
+  };
+
+  const renderToolList = () => {
+    return (
+      <ul className="ml-2 flex min-w-unit-24 items-center justify-between">
+        {settingList.map((setting) => (
+          <li id={setting.id} key={setting.label}>
+            <IdeaCardTool card={card} setting={setting} />
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  const renderIdeaToActionModal = () => {
+    return (
       <IdeaToActionModal
         card={card}
         isOpen={isOpenAction}
         onOpenChange={onOpenChangeAction}
         onClose={onCloseAction}
       />
+    );
+  };
+
+  const renderIdeaNoteModal = () => {
+    return (
       <IdeaNoteModal
         card={card}
         isOpen={isOpenNote}
         onOpenChange={onOpenChangeNote}
         onClose={onCloseNote}
       />
+    );
+  };
+
+  return (
+    <>
+      <BasicCard card={card}>
+        <EditableWrapper>
+          {renderCardEditable()}
+          {renderToolList()}
+        </EditableWrapper>
+      </BasicCard>
+      {renderIdeaToActionModal()}
+      {renderIdeaNoteModal()}
     </>
   );
 };
