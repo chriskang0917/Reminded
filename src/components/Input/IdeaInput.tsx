@@ -81,7 +81,7 @@ export const IdeaInput = observer(() => {
   return (
     <section id="tutorial-today-1" className="mb-8 flex flex-col items-center">
       <Tabs
-        className="mb-5"
+        className="z-10 mb-5"
         size="lg"
         onSelectionChange={(key) => setSelectedTab(key as "idea" | "todo")}
         selectedKey={selectedTab}
