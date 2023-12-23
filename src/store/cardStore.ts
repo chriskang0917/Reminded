@@ -2,11 +2,8 @@ import {
   FieldValue,
   Timestamp,
   collection,
-  deleteDoc,
-  doc,
   onSnapshot,
   query,
-  setDoc,
   where,
 } from "firebase/firestore";
 import { makeAutoObservable, runInAction } from "mobx";
@@ -16,6 +13,7 @@ import { NewNote } from "../models/NewNote";
 import { cardUtils } from "../utils/cardUtils";
 import { database, getUid } from "../utils/database";
 import { debounceCardsOrderList } from "../utils/debounce";
+import { local } from "../utils/local";
 
 export type cardStatus = "idea" | "action" | "todo" | "note" | "execute";
 
@@ -51,6 +49,8 @@ interface ICardService {
   addNote: (newNote: NewNote, updateNote?: Partial<ICard>) => void;
   deleteCard: (id: string) => void;
   updateCard: (id: string, updateCard: Partial<ICard>) => void;
+  updateNote: (id: string, updateNote: Partial<NewNote>) => void;
+  updateCardOrderList: (cardOrderList: string[]) => void;
 }
 
 interface IFirebaseService {
@@ -77,7 +77,7 @@ abstract class CardsStrategy implements ICardsStrategy {
     this.cardStore = cardStore;
   }
 
-  getSortedCardsByOrderList() {
+  protected getSortedCardsByOrderList() {
     return cardUtils.getSortedCardsByOrderList(
       this.cardStore.cardOrderList,
       this.cardStore.cards,
@@ -312,7 +312,7 @@ class CardService implements ICardService {
     return sortedCards;
   }
 
-  getAllTags() {
+  public getAllTags() {
     const sortedCards = this.getSortedCardsByOrderList();
     const tags = sortedCards.map((card) => card.tags).flat() || [];
     if (!tags) return [];
@@ -327,20 +327,13 @@ class CardService implements ICardService {
     return this.cardStore.cards[noteId] as NewNote;
   }
 
-  private updateLocalList() {
-    localStorage.setItem(
-      "cardOrderList",
-      JSON.stringify(this.cardStore.cardOrderList),
-    );
-  }
-
   public addCard(newCard: NewCard, updateCard?: Partial<ICard>) {
     const updatedCard = { ...newCard, ...updateCard };
     runInAction(() => {
       this.cardStore.cards[newCard.id] = updatedCard;
       this.cardStore.cardOrderList.unshift(newCard.id);
     });
-    this.updateLocalList();
+    local.set("cardOrderList", this.cardStore.cardOrderList);
   }
 
   public addNote(newNote: NewNote, updateNote?: Partial<ICard>) {
@@ -349,7 +342,7 @@ class CardService implements ICardService {
       this.cardStore.cards[newNote.id] = updatedNote;
       this.cardStore.cardOrderList.unshift(newNote.id);
     });
-    this.updateLocalList();
+    local.set("cardOrderList", this.cardStore.cardOrderList);
   }
 
   public updateCard(id: string, updateCard: Partial<ICard>) {
@@ -375,12 +368,12 @@ class CardService implements ICardService {
         (cardId) => cardId !== id,
       );
     });
-    this.updateLocalList();
+    local.set("cardOrderList", this.cardStore.cardOrderList);
   }
 
   public updateCardOrderList(cardOrderList: string[]) {
     runInAction(() => (this.cardStore.cardOrderList = cardOrderList));
-    this.updateLocalList();
+    local.set("cardOrderList", this.cardStore.cardOrderList);
   }
 }
 
@@ -409,44 +402,32 @@ class FirebaseService implements IFirebaseService {
     const uid = getUid();
     if (!uid) return;
 
-    const cardOrderList = this.getLocalList();
+    const cardOrderList = local.get("cardOrderList");
     if (cardOrderList) {
       database.setDoc(undefined, { cardOrderList });
       return runInAction(() => (this.cardStore.cardOrderList = cardOrderList));
     }
     const data = await database.getDoc();
-    if (!data?.cardOrderList) return this.updateLocalList([]);
+    if (!data?.cardOrderList) return local.set("cardOrderList", []);
 
     runInAction(() => {
       const cardOrderList = data?.cardOrderList || [];
       this.cardStore.cardOrderList = cardOrderList;
-      this.updateLocalList(cardOrderList);
+      local.set("cardOrderList", cardOrderList);
     });
-  }
-
-  private getLocalList(): string[] | null {
-    const localList = localStorage.getItem("cardOrderList");
-    if (!localList) return null;
-    return JSON.parse(localList || "[]");
-  }
-
-  private updateLocalList(cardOrderList: string[]) {
-    localStorage.setItem("cardOrderList", JSON.stringify(cardOrderList));
   }
 
   private async getActiveCards() {
     const uid = getUid();
     if (!uid) return;
-    onSnapshot(this.getCardsQueryWith("active"), (querySnapshot) => {
+    return onSnapshot(this.getCardsQueryWith("active"), (querySnapshot) => {
       const cards: ICardObject = {};
-      querySnapshot.forEach((doc) => {
-        cards[doc.id] = doc.data() as ICard;
-      });
+      querySnapshot.forEach((doc) => (cards[doc.id] = doc.data() as ICard));
       runInAction(() => (this.cardStore.cards = cards || []));
     });
   }
 
-  async getArchivedCards() {
+  public async getArchivedCards() {
     try {
       const uid = getUid();
       if (!uid) return;
@@ -461,25 +442,17 @@ class FirebaseService implements IFirebaseService {
   }
 
   private getCardsQueryWith(status: "active" | "archived") {
-    const statusMapper = {
-      active: false,
-      archived: true,
-    };
+    const statusMapper = { active: false, archived: true };
     const cardsRef = collection(db, "user_cards", getUid(), "cards");
     const queryArchived = where("isArchived", "==", statusMapper[status]);
     return query(cardsRef, queryArchived);
   }
 
-  async getExecutedActionCards() {
+  public async getExecutedActionCards() {
     const uid = getUid();
     if (!uid) return;
 
-    const cardsRef = collection(db, "user_cards", uid, "cards");
-    const oneWeekAgo = new Date().setDate(new Date().getDate() - 7);
-    const serverTimestamp = Timestamp.fromDate(new Date(oneWeekAgo));
-    const q = query(cardsRef, where("serverTimestamp", ">=", serverTimestamp));
-
-    return onSnapshot(q, (querySnapshot) => {
+    return onSnapshot(this.getOneWeekCardsQuery(), (querySnapshot) => {
       const executedActionCards: ICard[] = [];
       querySnapshot.forEach((doc) => {
         if (doc.data().status !== "execute") return;
@@ -492,19 +465,24 @@ class FirebaseService implements IFirebaseService {
     });
   }
 
-  async addCardToFireStore(card: ICard, updateCard?: Partial<ICard>) {
+  private getOneWeekCardsQuery() {
+    const oneWeekAgo = new Date().setDate(new Date().getDate() - 7);
+    const serverTimestamp = Timestamp.fromDate(new Date(oneWeekAgo));
+    const q = query(
+      collection(db, "user_cards", getUid(), "cards"),
+      where("serverTimestamp", ">=", serverTimestamp),
+    );
+    return q;
+  }
+
+  public async addCardToFireStore(card: ICard, updateCard?: Partial<ICard>) {
     try {
       const uid = getUid();
       if (!uid) return;
-
-      const cardsRef = doc(db, "user_cards", uid, "cards", card.id);
-      const cardOrderListRef = doc(db, "user_cards", uid);
-      await setDoc(cardsRef, Object.assign({}, { ...card, ...updateCard }), {
-        merge: true,
-      });
-      await setDoc(cardOrderListRef, {
-        cardOrderList: [...this.cardStore.cardOrderList],
-      });
+      const updatedDetails = Object.assign({}, { ...card, ...updateCard });
+      const cardOrderList = [...this.cardStore.cardOrderList];
+      database.setDoc(["user_cards", uid, "cards", card.id], updatedDetails);
+      database.setDoc(undefined, { cardOrderList });
     } catch (error) {
       console.error(error);
     }
@@ -514,15 +492,10 @@ class FirebaseService implements IFirebaseService {
     try {
       const uid = getUid();
       if (!uid) return;
-
-      const cardsRef = doc(db, "user_cards", uid, "cards", note.id);
-      const cardOrderListRef = doc(db, "user_cards", uid);
-      await setDoc(cardsRef, Object.assign({}, { ...note, ...updateNote }), {
-        merge: true,
-      });
-      await setDoc(cardOrderListRef, {
-        cardOrderList: [...this.cardStore.cardOrderList],
-      });
+      const updatedDetails = Object.assign({}, { ...note, ...updateNote });
+      const cardOrderList = [...this.cardStore.cardOrderList];
+      database.setDoc(["user_cards", uid, "cards", note.id], updatedDetails);
+      database.setDoc(undefined, { cardOrderList });
     } catch (error) {
       console.error(error);
     }
@@ -532,8 +505,7 @@ class FirebaseService implements IFirebaseService {
     try {
       const uid = getUid();
       if (!uid) return;
-      const cardsRef = doc(db, "user_cards", uid, "cards", cardId);
-      await setDoc(cardsRef, { ...updateCard }, { merge: true });
+      database.setDoc(["user_cards", uid, "cards", cardId], { ...updateCard });
     } catch (error) {
       console.error("update_card_error", error);
     }
@@ -543,8 +515,7 @@ class FirebaseService implements IFirebaseService {
     try {
       const uid = getUid();
       if (!uid) return;
-      const cardsRef = doc(db, "user_cards", uid, "cards", noteId);
-      await setDoc(cardsRef, { ...updateNote }, { merge: true });
+      database.setDoc(["user_cards", uid, "cards", noteId], { ...updateNote });
     } catch (error) {
       console.error("update_note_error", error);
     }
@@ -553,7 +524,7 @@ class FirebaseService implements IFirebaseService {
   async updateCardOrderListToFirebase(cardOrderList: string[]) {
     try {
       debounceCardsOrderList(cardOrderList);
-      localStorage.setItem("cardOrderList", JSON.stringify(cardOrderList));
+      local.set("cardOrderList", cardOrderList);
     } catch (error) {
       console.error("updateCardOrderList_error", error);
     }
@@ -563,9 +534,7 @@ class FirebaseService implements IFirebaseService {
     try {
       const uid = getUid();
       if (!uid) return;
-
-      const cardsRef = doc(db, "user_cards", uid, "cards", cardId);
-      await deleteDoc(cardsRef);
+      database.deleteDoc(["user_cards", uid, "cards", cardId]);
     } catch (error) {
       console.error(error);
     }
