@@ -89,7 +89,10 @@ export const IdeaInput = observer(() => {
       >
         {(item) => <Tab key={item.id} title={item.label} />}
       </Tabs>
-      <form onSubmit={handleSubmit} className="flex items-center gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="mx-3 flex justify-between gap-2 md:items-center md:gap-4"
+      >
         <Input
           value={input}
           name={selectedTab}
