@@ -1,5 +1,5 @@
 import { format, parseISO } from "date-fns";
-import { NewNote } from "../store/cardStore";
+import { NewNote } from "./NewNote";
 
 export class Note {
   private note: NewNote;
