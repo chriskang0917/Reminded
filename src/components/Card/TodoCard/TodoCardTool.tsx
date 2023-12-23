@@ -90,82 +90,94 @@ export const TodoCardTool = observer(({ card, setting }: CardToolProps) => {
     return format(date, "MMM dd");
   };
 
-  const isDateLabel = setting.label === "date";
-  const isActionLabel = setting.label === "action";
-  const isMoreLabel = setting.label === "more";
+  const hasDateLabel = setting.label === "date";
+  const hasActionLabel = setting.label === "action";
+  const hasMoreLabel = setting.label === "more";
+
+  const renderDateButtonAndPopover = () => {
+    return (
+      <Popover
+        isOpen={isOpen}
+        onOpenChange={() => setIsOpen(!isOpen)}
+        placement="bottom"
+      >
+        <PopoverTrigger>
+          <button>
+            {card.dueDate ? (
+              <p className="text-[0.75rem] underline">
+                {formatDate(selectedDate || undefined)}
+              </p>
+            ) : (
+              <>{setting.icon}</>
+            )}
+          </button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <DatePicker
+            card={card}
+            date={selectedDate}
+            setDate={handleDateChange}
+            onClose={() => setIsOpen(false)}
+          />
+        </PopoverContent>
+      </Popover>
+    );
+  };
+
+  const renderActionDropdown = () => {
+    return (
+      <Dropdown>
+        <DropdownTrigger>
+          <button className="w-4">{setting.icon}</button>
+        </DropdownTrigger>
+        <DropdownMenu aria-label="Action">
+          {actionList.map((action) => (
+            <DropdownItem
+              textValue={action.label || ""}
+              key={action.label}
+              color={action.color}
+              onPress={action.onPress}
+            >
+              <span>轉換為 </span>
+              <strong>{action.label}</strong>
+            </DropdownItem>
+          ))}
+        </DropdownMenu>
+      </Dropdown>
+    );
+  };
+
+  const renderSettingDropdown = () => {
+    return (
+      <div className="w-4">
+        <Dropdown key={setting.label} backdrop="opaque">
+          <DropdownTrigger>
+            <button>{setting.icon}</button>
+          </DropdownTrigger>
+          {setting.label === "more" && (
+            <DropdownMenu aria-label="Setting">
+              {menuList.map((menu) => (
+                <DropdownItem
+                  textValue={menu.label || ""}
+                  key={menu.label}
+                  color={menu.color}
+                  onPress={menu.onPress}
+                >
+                  {menu.label}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          )}
+        </Dropdown>
+      </div>
+    );
+  };
 
   return (
     <>
-      {isDateLabel && (
-        <Popover
-          isOpen={isOpen}
-          onOpenChange={() => setIsOpen(!isOpen)}
-          placement="bottom"
-        >
-          <PopoverTrigger>
-            <button>
-              {card.dueDate ? (
-                <p className="text-[0.75rem] underline">
-                  {formatDate(selectedDate || undefined)}
-                </p>
-              ) : (
-                <>{setting.icon}</>
-              )}
-            </button>
-          </PopoverTrigger>
-          <PopoverContent>
-            <DatePicker
-              card={card}
-              date={selectedDate}
-              setDate={handleDateChange}
-              onClose={() => setIsOpen(false)}
-            />
-          </PopoverContent>
-        </Popover>
-      )}
-      {isActionLabel && (
-        <Dropdown>
-          <DropdownTrigger>
-            <button className="w-4">{setting.icon}</button>
-          </DropdownTrigger>
-          <DropdownMenu aria-label="Action">
-            {actionList.map((action) => (
-              <DropdownItem
-                textValue={action.label || ""}
-                key={action.label}
-                color={action.color}
-                onPress={action.onPress}
-              >
-                <span>轉換為 </span>
-                <strong>{action.label}</strong>
-              </DropdownItem>
-            ))}
-          </DropdownMenu>
-        </Dropdown>
-      )}
-      {isMoreLabel && (
-        <div className="w-4">
-          <Dropdown key={setting.label} backdrop="opaque">
-            <DropdownTrigger>
-              <button>{setting.icon}</button>
-            </DropdownTrigger>
-            {setting.label === "more" && (
-              <DropdownMenu aria-label="Setting">
-                {menuList.map((menu) => (
-                  <DropdownItem
-                    textValue={menu.label || ""}
-                    key={menu.label}
-                    color={menu.color}
-                    onPress={menu.onPress}
-                  >
-                    {menu.label}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            )}
-          </Dropdown>
-        </div>
-      )}
+      {hasDateLabel && renderDateButtonAndPopover()}
+      {hasActionLabel && renderActionDropdown()}
+      {hasMoreLabel && renderSettingDropdown()}
     </>
   );
 });
