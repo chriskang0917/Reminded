@@ -24,7 +24,7 @@ interface CardToolProps {
   onOpen?: () => void;
 }
 
-type color =
+type Color =
   | "default"
   | "warning"
   | "danger"
@@ -35,7 +35,7 @@ type color =
 
 interface IList {
   label: string;
-  color: color;
+  color: Color;
   onPress?: () => void;
 }
 
@@ -77,7 +77,7 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
   const hasDateLabel = setting.label === "date";
   const hasMoreLabel = setting.label === "more";
 
-  const renderDatePickerWithoutDate = () => {
+  const renderDatePicker = () => {
     return (
       <Popover
         placement="bottom"
@@ -129,7 +129,7 @@ export const ActionCardTool = observer(({ card, setting }: CardToolProps) => {
 
   return (
     <>
-      {hasDateLabel && renderDatePickerWithoutDate()}
+      {hasDateLabel && renderDatePicker()}
       {hasMoreLabel && renderSettingDropdown()}
     </>
   );
