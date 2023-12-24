@@ -116,7 +116,7 @@ export const QuickInputModal = observer(() => {
 
   return (
     <Modal
-      className="top-8 overflow-visible drop-shadow-xl md:fixed md:right-[calc(50vw-360px)] md:max-w-xl"
+      className="fixed top-20 max-w-[90%] overflow-visible drop-shadow-xl md:right-[calc(50vw-360px)] md:top-8 md:max-w-xl"
       classNames={{
         backdrop: "backdrop-blur-lg backdrop-opacity-30",
       }}

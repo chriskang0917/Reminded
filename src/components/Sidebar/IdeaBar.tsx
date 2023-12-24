@@ -23,7 +23,7 @@ const ideaActionList: IAction[] = [
   },
   {
     label: "所有靈感",
-    path: "/idea/pools",
+    path: "/idea/all",
     icon: <FcParallelTasks />,
   },
   {

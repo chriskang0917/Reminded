@@ -1,4 +1,4 @@
 export { IdeaInput } from "./IdeaInput";
-export { IdeaSearchInput } from "./IdeaSearchInput";
 export { QuickInput } from "./QuickInput";
+export { SearchInput as IdeaSearchInput } from "./SearchInput";
 export { TodoInput } from "./TodoInput";

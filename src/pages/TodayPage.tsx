@@ -19,8 +19,8 @@ const Homepage = observer(() => {
   const countIdea = cardStore.getFilteredCardsWith(new IdeaTodayCards()).length;
 
   return (
-    <div className="-ml-20 flex w-full flex-col items-center">
-      <div className="fixed left-0 top-0 ml-20 h-[100svh] w-full rounded-[40px] bg-white" />
+    <div className="flex w-full flex-col items-center md:-ml-20">
+      <div className="fixed left-0 top-0 h-[100svh] w-full rounded-[40px] bg-white md:ml-20" />
       <IdeaInput />
       <Tabs
         id="tutorial-today-2"

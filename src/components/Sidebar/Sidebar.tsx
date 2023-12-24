@@ -116,7 +116,7 @@ export const Sidebar = () => {
   };
 
   return (
-    <nav className="fixed left-0 top-0 flex h-[100svh] w-36 flex-col items-center justify-between bg-secondary pr-10 opacity-60">
+    <nav className="fixed left-0 top-0 hidden h-[100svh] w-36 flex-col items-center justify-between bg-secondary pr-10 opacity-60 md:flex">
       <ul className="mt-36 flex flex-col gap-7 pr-6">
         {renderLogo()}
         {renderButtons()}

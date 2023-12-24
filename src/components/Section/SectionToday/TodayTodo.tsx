@@ -14,7 +14,7 @@ export const TodayTodo = observer(() => {
 
   if (todoCards.length === 0) {
     return (
-      <section className="flex flex-col items-center">
+      <section className="flex flex-col items-center px-2">
         <EmptyCard placeholder={placeholder} />
         <Spacer y={10} />
       </section>

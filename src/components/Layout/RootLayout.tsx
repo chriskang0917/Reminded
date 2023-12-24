@@ -7,7 +7,7 @@ import { cookie } from "../../utils/cookie";
 import { DndProvider, SortableProvider } from "../DND";
 import Helper from "../Helper/Helper";
 import { QuickInputModal } from "../Input/QuickInput";
-import { Sidebar } from "../Sidebar";
+import { MobileMenu, Sidebar } from "../Sidebar";
 
 const RootLayout = observer(() => {
   const uid = cookie.getCookie("uid");
@@ -18,8 +18,9 @@ const RootLayout = observer(() => {
   return (
     <DndProvider>
       <Sidebar />
+      <MobileMenu />
       <SortableProvider>
-        <main className="ml-64 h-[100vh] bg-background pt-10 text-foreground">
+        <main className="h-[100vh] bg-secondary pt-10 text-foreground md:ml-64">
           <div className="mx-auto max-w-[550px]">
             <Suspense fallback={<Loading />}>
               {uid && isLogin ? <Outlet /> : <Navigate to="/login" replace />}
