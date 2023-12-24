@@ -17,7 +17,7 @@ export const Heading = ({ title, subtitle, counts, gif }: HeadingProps) => {
             <h1 className="mb-1 text-2xl font-bold tracking-wide text-stone-100 md:mb-0 md:text-3xl">
               {title}
             </h1>
-            <h2 className="hidden items-center text-sm leading-none text-primary min-[320px]:flex md:text-base">
+            <h2 className="hidden items-center text-sm leading-none text-primary min-[330px]:flex md:text-base">
               <p className="hidden md:block"> 總共有</p>
               <span className="mx-2 flex items-center text-xl leading-none text-black md:text-2xl">
                 {counts || 0}
