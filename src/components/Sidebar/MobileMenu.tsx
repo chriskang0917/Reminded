@@ -134,7 +134,7 @@ export function MobileMenu() {
                   {subtitles?.map(({ subtitle, path }) => {
                     return (
                       <li
-                        className="ml-2 flex items-center gap-2"
+                        className="ml-3 flex items-center gap-2"
                         key={subtitle}
                       >
                         <Link
@@ -144,7 +144,7 @@ export function MobileMenu() {
                         >
                           <h2
                             className={cn(
-                              "w-full rounded-md py-2 pl-2",
+                              "w-full rounded-md py-2 pl-4",
                               "text-secondary",
                               "transition-all duration-300 ease-in-out",
                               location.pathname === path &&
