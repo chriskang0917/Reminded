@@ -12,7 +12,7 @@ interface SearchInputProps {
 export const SearchInput = observer(
   ({ searchText, onSearch, placeholder }: SearchInputProps) => {
     return (
-      <div className="my-4 w-full items-center justify-center gap-2">
+      <div className="mx-auto my-4 w-11/12 items-center justify-center gap-2 md:w-full">
         <Input
           value={searchText}
           onValueChange={onSearch}

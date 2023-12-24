@@ -18,7 +18,9 @@ export const IdeaSearch = observer(() => {
     <>
       <Heading title={title} subtitle={subtitle} counts={total} />
       <IdeaSearchInput searchText={text} onSearch={onSearch} />
-      <p className="self-start text-sm text-gray-400">{searchCountsText}</p>
+      <p className="ml-6 self-start text-sm text-gray-400 md:ml-0">
+        {searchCountsText}
+      </p>
       <HeadingDivider />
       <SectionShadow className="h-[calc(100svh-250px)]">
         <MotionList>
