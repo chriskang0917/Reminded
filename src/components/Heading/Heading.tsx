@@ -11,7 +11,7 @@ interface HeadingProps {
 export const Heading = ({ title, subtitle, counts, gif }: HeadingProps) => {
   return (
     <>
-      <Card className="relative left-[24%] -mt-6 flex h-12 w-8/12 items-center bg-fourthDark md:left-0 md:mt-0 md:h-20 md:w-full">
+      <Card className="relative left-[20%] -mt-6 flex h-12 w-[75%] items-center bg-fourthDark min-[660px]:left-[4%] min-[660px]:w-11/12 md:left-0 md:mt-0 md:h-20 md:w-full">
         <CardBody className="flex flex-row justify-center overflow-hidden md:justify-between md:px-8">
           <section className="flex items-center justify-start gap-4">
             <h1 className="mb-1 text-2xl font-bold tracking-wide text-stone-100 md:mb-0 md:text-3xl">
