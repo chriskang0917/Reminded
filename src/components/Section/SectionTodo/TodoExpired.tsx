@@ -4,7 +4,6 @@ import { TodoExpiredCards, cardStore } from "../../../store/cardStore";
 import { TodoCard } from "../../Card";
 import EmptyCard from "../../Card/EmptyCard";
 import { Heading, HeadingDivider } from "../../Heading";
-import { TodoInput } from "../../Input";
 import MotionItem from "../../Motion/MotionItem";
 import MotionList from "../../Motion/MotionList";
 import SectionShadow from "../SectionShadow";
@@ -19,7 +18,6 @@ export const TodoExpired = observer(() => {
   return (
     <>
       <Heading title={title} subtitle={subtitle} counts={expiredCards.length} />
-      <TodoInput />
       <HeadingDivider />
       <SectionShadow>
         <MotionList>
