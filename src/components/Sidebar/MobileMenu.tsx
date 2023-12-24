@@ -5,6 +5,7 @@ import { BsListTask } from "react-icons/bs";
 import { CiMenuBurger } from "react-icons/ci";
 import { FaRegLightbulb, FaRegStickyNote } from "react-icons/fa";
 import { IoCloseOutline, IoHomeOutline } from "react-icons/io5";
+import { RxAvatar } from "react-icons/rx";
 import { Link, useLocation } from "react-router-dom";
 
 const transformStyle = "translate-y-[2px]";
@@ -105,6 +106,11 @@ export function MobileMenu() {
           isOpen ? "translate-x-[-35px]" : "translate-x-[-100%]",
         )}
       >
+        <div className="fixed right-10 top-6">
+          <Link to="/profile" onClick={handleMenuToggle}>
+            <RxAvatar className="h-10 w-10 text-secondary/70" />
+          </Link>
+        </div>
         <ScrollShadow
           className="max-h-[85svh] p-2"
           hideScrollBar
