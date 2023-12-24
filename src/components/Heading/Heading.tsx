@@ -12,15 +12,14 @@ export const Heading = ({ title, subtitle, counts, gif }: HeadingProps) => {
   return (
     <>
       <Card className="relative left-[24%] -mt-6 flex h-12 w-8/12 items-center bg-fourthDark md:left-0 md:mt-0 md:h-20 md:w-full">
-        <CardBody className="flex flex-row justify-center overflow-hidden px-8 md:justify-between">
+        <CardBody className="flex flex-row justify-center overflow-hidden md:justify-between md:px-8">
           <section className="flex items-center justify-start gap-4">
-            <h1 className="text-2xl font-bold tracking-wide text-stone-100 md:text-3xl">
+            <h1 className="mb-1 text-2xl font-bold tracking-wide text-stone-100 md:mb-0 md:text-3xl">
               {title}
             </h1>
-            <h2 className="hidden items-center leading-none text-primary md:flex">
-              {" "}
-              總共有
-              <span className="mx-2 flex items-center text-2xl leading-none text-black">
+            <h2 className="hidden items-center text-sm leading-none text-primary min-[320px]:flex md:text-base">
+              <p className="hidden md:block"> 總共有</p>
+              <span className="mx-2 flex items-center text-xl leading-none text-black md:text-2xl">
                 {counts || 0}
               </span>
               個{subtitle}
