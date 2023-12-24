@@ -15,8 +15,8 @@ const ProfilePage = observer(() => {
   };
 
   return (
-    <section className="-ml-48 flex items-start justify-center pt-[10svh]">
-      <div className="fixed left-0 top-0 ml-20 h-[100svh] w-full rounded-[40px] bg-white" />
+    <section className="flex items-start justify-center pt-[10svh] md:-ml-48">
+      <div className="fixed left-0 top-0 h-[100svh] w-full rounded-[40px] bg-white md:ml-20" />
       <Card className="mx-auto mt-20 w-4/5 max-w-[400px] py-10">
         <CardHeader className="flex justify-center">
           <h1 className="text-xl font-bold">個人頁面</h1>
