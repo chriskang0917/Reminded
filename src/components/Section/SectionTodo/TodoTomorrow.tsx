@@ -7,7 +7,6 @@ import {
   TodoAndActionTomorrowCards,
   cardStore,
 } from "../../../store/cardStore";
-import { style } from "../../../utils/style";
 import { TutorialType } from "../../../utils/tutorial";
 import { ActionCard, TodoCard } from "../../Card";
 import EmptyCard from "../../Card/EmptyCard";
@@ -68,7 +67,9 @@ export const TodoTomorrow = observer(() => {
       <Spacer y={5} />
       <section className="mb-12 w-full">
         <div id="tutorial-todo-1" className="flex w-full flex-col">
-          <h2 className={style.pageSubtitle}>已儲存的行動</h2>
+          <h2 className="text-xl font-bold leading-none tracking-wide text-secondary">
+            已儲存的行動
+          </h2>
           <HeadingDivider />
           <SectionShadow className="h-[calc(50svh-190px)]">
             <div ref={actionRef} className="flex w-full flex-col gap-3">
