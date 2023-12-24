@@ -99,10 +99,10 @@ export function MobileMenu() {
     return (
       <div
         className={cn(
-          "fixed z-50 h-[100svh] w-[90svw] pl-12 pr-5 pt-20",
+          "fixed left-0 z-50 h-[100svh] w-[90svw] pl-12 pr-5 pt-20",
           "rounded-[40px] bg-white drop-shadow-md",
           "transition-transform duration-300 ease-in-out",
-          isOpen ? "translate-x-[-10%]" : "translate-x-[-100%]",
+          isOpen ? "translate-x-[-35px]" : "translate-x-[-100%]",
         )}
       >
         <ScrollShadow
