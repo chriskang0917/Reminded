@@ -16,7 +16,7 @@ type Route = keyof typeof routeStrategy;
 const routeStrategy = {
   week: <IdeaWeek />,
   search: <IdeaSearch />,
-  pools: <IdeaAll />,
+  all: <IdeaAll />,
   action: <IdeaAction />,
   archive: <IdeaArchive />,
 };
