@@ -52,8 +52,8 @@ const titles = [
     title: "筆記",
     icon: <FaRegStickyNote className={transformStyle} />,
     subtitles: [
-      { subtitle: "所有筆記", path: "/note/all" },
-      { subtitle: "搜尋筆記", path: "/note/search" },
+      { subtitle: "所有筆記", path: "/notes/all" },
+      { subtitle: "搜尋筆記", path: "/notes/search" },
     ],
   },
 ];
@@ -70,12 +70,12 @@ export function MobileMenu() {
     return (
       <div
         className={cn(
-          "fixed left-5 top-5 z-[9999]",
-          "block md:hidden",
-          "h-10 w-10 rounded-full drop-shadow-md",
-          "flex items-center justify-center",
-          isOpen ? "bg-white text-secondary" : "bg-fourth text-primary",
-          "hover:bg-white hover:text-secondary",
+          "fixed left-5 top-5 z-[9999] h-10 w-10",
+          "flex items-center justify-center md:hidden",
+          "bg-fourth",
+          "rounded-full drop-shadow-md",
+          isOpen ? "text-secondary" : "text-primary",
+          "hover:text-secondary",
         )}
       >
         {isOpen ? (
@@ -100,7 +100,7 @@ export function MobileMenu() {
       <div
         className={cn(
           "fixed z-50 h-[100svh] w-[90svw] pl-12 pr-5 pt-20",
-          "rounded-[40px] bg-fourth drop-shadow-md",
+          "rounded-[40px] bg-white drop-shadow-md",
           "transition-transform duration-300 ease-in-out",
           isOpen ? "translate-x-[-10%]" : "translate-x-[-100%]",
         )}
@@ -134,6 +134,7 @@ export function MobileMenu() {
                         <Link
                           to={path}
                           className="flex w-full items-center gap-2"
+                          onClick={handleMenuToggle}
                         >
                           <h2
                             className={cn(
@@ -141,7 +142,7 @@ export function MobileMenu() {
                               "text-secondary",
                               "transition-all duration-300 ease-in-out",
                               location.pathname === path &&
-                                "bg-white/80 text-primaryDark drop-shadow-sm",
+                                "bg-fourth/80 text-primaryDark drop-shadow-sm",
                             )}
                           >
                             {subtitle}
@@ -162,7 +163,7 @@ export function MobileMenu() {
   const renderBackdrop = () => {
     return (
       <div
-        className="fixed left-0 top-0 z-10 h-[100svh] w-full bg-primary opacity-50"
+        className="fixed left-0 top-0 z-40 h-[100svh] w-full bg-primary opacity-50"
         onClick={handleMenuToggle}
       />
     );
