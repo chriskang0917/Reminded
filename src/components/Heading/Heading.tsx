@@ -11,13 +11,13 @@ interface HeadingProps {
 export const Heading = ({ title, subtitle, counts, gif }: HeadingProps) => {
   return (
     <>
-      <Card className="flex h-20 w-full items-center bg-fourthDark">
-        <CardBody className="flex flex-row justify-between overflow-hidden px-8">
+      <Card className="relative left-[24%] -mt-6 flex h-12 w-8/12 items-center bg-fourthDark md:left-0 md:mt-0 md:h-20 md:w-full">
+        <CardBody className="flex flex-row justify-center overflow-hidden px-8 md:justify-between">
           <section className="flex items-center justify-start gap-4">
-            <h1 className="text-stone-100 text-3xl font-bold tracking-wide">
+            <h1 className="text-2xl font-bold tracking-wide text-stone-100 md:text-3xl">
               {title}
             </h1>
-            <h2 className="flex items-center leading-none text-primary">
+            <h2 className="hidden items-center leading-none text-primary md:flex">
               {" "}
               總共有
               <span className="mx-2 flex items-center text-2xl leading-none text-black">
@@ -26,7 +26,7 @@ export const Heading = ({ title, subtitle, counts, gif }: HeadingProps) => {
               個{subtitle}
             </h2>
           </section>
-          <figure className="h-28 w-28 -translate-y-2">
+          <figure className="hidden h-28 w-28 -translate-y-2 md:block">
             <img src={gif || Animation} alt="An animation gif" />
           </figure>
         </CardBody>

@@ -30,6 +30,9 @@ export default {
       fourth: "#E1DCD9",
       fourthDark: "#b4ada9",
     },
+    screens: {
+      md: "876px",
+    },
     extend: {},
   },
   darkMode: "class",
