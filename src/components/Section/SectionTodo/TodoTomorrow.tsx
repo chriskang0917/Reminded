@@ -67,7 +67,7 @@ export const TodoTomorrow = observer(() => {
       <Spacer y={5} />
       <section className="mb-12 w-full">
         <div id="tutorial-todo-1" className="flex w-full flex-col">
-          <h2 className="text-xl font-bold leading-none tracking-wide text-secondary">
+          <h2 className="ml-4 text-lg font-bold leading-none tracking-wide text-secondary md:ml-0 md:text-xl">
             已儲存的行動
           </h2>
           <HeadingDivider />
