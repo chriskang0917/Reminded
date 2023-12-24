@@ -108,7 +108,7 @@ export const TodoInput = observer(() => {
 
   return (
     <form
-      className="my-4 flex w-full items-center justify-center gap-2"
+      className="my-4 flex w-full items-center justify-center gap-2 px-3 md:px-0"
       onSubmit={handleSubmit}
     >
       <Input
