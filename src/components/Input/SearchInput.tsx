@@ -3,14 +3,14 @@ import { observer } from "mobx-react-lite";
 import { CiSearch } from "react-icons/ci";
 import { uiStore } from "../../store/uiStore";
 
-interface IdeaSearchInputProps {
+interface SearchInputProps {
   searchText: string;
   onSearch: (text: string) => void;
   placeholder?: string;
 }
 
-export const IdeaSearchInput = observer(
-  ({ searchText, onSearch, placeholder }: IdeaSearchInputProps) => {
+export const SearchInput = observer(
+  ({ searchText, onSearch, placeholder }: SearchInputProps) => {
     return (
       <div className="my-4 w-full items-center justify-center gap-2">
         <Input
