@@ -16,7 +16,7 @@ type Route = keyof typeof routeStrategy;
 const routeStrategy = {
   all: <ActionAll />,
   search: <ActionSearch />,
-  expire: <ActionExpire />,
+  expired: <ActionExpire />,
   executed: <ActionExecute />,
   archive: <ActionArchive />,
 };
