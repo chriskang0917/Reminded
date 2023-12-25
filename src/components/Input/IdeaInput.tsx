@@ -12,7 +12,7 @@ import { IoIosAdd } from "react-icons/io";
 import { NewCard } from "../../models/NewCard";
 import { cardStore } from "../../store/cardStore";
 import { uiStore } from "../../store/uiStore";
-import { getObjectFilteredTags } from "../../utils/input";
+import { inputs } from "../../utils/inputs";
 
 const tabs = [
   { label: "靈感", id: "idea" },
@@ -71,7 +71,7 @@ export const IdeaInput = observer(() => {
     };
   }, [selectedTab, input, tagInput]);
 
-  const filteredTags = getObjectFilteredTags(tagInput);
+  const filteredTags = inputs.getObjectFilteredTags(tagInput);
   const placeholder =
     selectedTab === "idea" ? "捕捉您的靈感..." : "新增待辦...";
   const AddIcon = (
