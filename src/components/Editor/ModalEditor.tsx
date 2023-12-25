@@ -102,6 +102,7 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
       isKeyboardDismissDisabled
       isDismissable={false}
       isOpen={isOpen}
+      placement="center"
       onOpenChange={onOpenChange}
     >
       <ModalContent>
