@@ -535,7 +535,7 @@ class FirebaseService implements IFirebaseService {
 ==========  CardStore  ===========
 =============================== */
 
-class CardStore {
+export class CardStore {
   isLoaded: boolean = false;
   cardService: CardService;
   firebaseService: FirebaseService;
