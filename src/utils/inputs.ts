@@ -28,7 +28,7 @@ export const inputs = {
     return fuse.search(searchText);
   },
   getPlainText(text: string) {
-    return text.replace(/#\[[^\]]+\]\([^)]+\)\s*/g, "") || "";
+    return text.replace(/#\[[^\]]+\]\([^)]+\)\s*/g, "").trim() || "";
   },
   getFilteredTags(text: string) {
     const regex = /\(([^)]+)\)/g;
