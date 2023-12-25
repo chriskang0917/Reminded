@@ -16,7 +16,7 @@ import { QuickInput } from ".";
 import { NewCard } from "../../../models/NewCard";
 import { cardStore } from "../../../store/cardStore";
 import { uiStore } from "../../../store/uiStore";
-import { getFilteredTags, getPlainText } from "../../../utils/input";
+import { inputs } from "../../../utils/inputs";
 
 export const QuickInputModal = observer(() => {
   const [input, setInput] = useState<string>("");
@@ -51,9 +51,9 @@ export const QuickInputModal = observer(() => {
 
   const handleSubmit = (e?: FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
-    const filteredTags = getFilteredTags(input);
+    const filteredTags = inputs.getFilteredTags(input);
     const uniqueTags = [...new Set(filteredTags)];
-    const content = getPlainText(input);
+    const content = inputs.getPlainText(input);
     const status = isIdeaInput ? "idea" : "todo";
     const newCard = new NewCard(content, uniqueTags, status);
     cardStore.addCard(newCard);
@@ -93,7 +93,7 @@ export const QuickInputModal = observer(() => {
   };
 
   const tags = extractTags();
-  const plainInput = getPlainText(input);
+  const plainInput = inputs.getPlainText(input);
   const newTag = getCurrentHashTag(plainInput);
   const hasHash = plainInput.includes("#");
   const hasNewTag = isNewTagValid(newTag, tags);

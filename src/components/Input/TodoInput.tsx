@@ -17,7 +17,7 @@ import { useLocation } from "react-router-dom";
 import { NewCard } from "../../models/NewCard";
 import { cardStore } from "../../store/cardStore";
 import { uiStore } from "../../store/uiStore";
-import { getObjectFilteredTags } from "../../utils/input";
+import { inputs } from "../../utils/inputs";
 
 interface IInput {
   content: string;
@@ -101,7 +101,7 @@ export const TodoInput = observer(() => {
     </div>
   );
 
-  const filteredTags = getObjectFilteredTags(input.tag);
+  const filteredTags = inputs.getObjectFilteredTags(input.tag);
   const AddButton = (
     <IoIosAdd className="cursor-pointer" onClick={handleSubmit} />
   );
