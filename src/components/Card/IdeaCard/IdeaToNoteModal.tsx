@@ -1,5 +1,6 @@
 import { useStopShortcut } from "../../../hooks/useStopShortcut";
-import { ICard, NewNote } from "../../../store/cardStore";
+import { NewNote } from "../../../models/NewNote";
+import { ICard } from "../../../store/cardStore";
 import ModalEditor from "../../Editor/ModalEditor";
 
 interface IdeaNoteModalProp {

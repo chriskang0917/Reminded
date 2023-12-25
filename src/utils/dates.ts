@@ -7,7 +7,6 @@ import {
   parseISO,
   startOfWeek,
 } from "date-fns";
-import { ICard, ICardObject } from "./../store/cardStore";
 
 export const enum WeekStartsOn {
   Sunday = 0,
@@ -19,7 +18,7 @@ export const enum WeekStartsOn {
   Saturday = 6,
 }
 
-export const cardUtils = {
+export const dates = {
   dateFormat: "yyyy-MM-dd",
   weekStartsOn: WeekStartsOn.Sunday,
   isToday(date: string) {
@@ -51,36 +50,5 @@ export const cardUtils = {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     return tomorrow;
-  },
-  sortCardsDescBy(strategy: string, cards: ICard[]) {
-    switch (strategy) {
-      case "dueDate":
-        return cards.sort((a, b) => {
-          if (a.dueDate === null) return 1;
-          if (b.dueDate === null) return -1;
-          if (a.dueDate > b.dueDate) return -1;
-          if (a.dueDate < b.dueDate) return 1;
-          return 0;
-        });
-      case "createdTime":
-        return cards.sort((a, b) => {
-          if (a.createdTime > b.createdTime) return -1;
-          if (a.createdTime < b.createdTime) return 1;
-          return 0;
-        });
-      default:
-        return cards;
-    }
-  },
-  getSortedCardsByOrderList(cardOrderList: string[], cardsObject: ICardObject) {
-    const sortedCards: ICard[] = [];
-    cardOrderList.forEach((id) => {
-      if (cardsObject.hasOwnProperty(id)) sortedCards.push(cardsObject[id]);
-    });
-    return sortedCards;
-  },
-  textTruncate(text: string, length: number) {
-    if (text.length > length) return text.substring(0, length) + "...";
-    return text;
   },
 };

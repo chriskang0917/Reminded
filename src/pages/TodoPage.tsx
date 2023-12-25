@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import {
   TodoAll,
   TodoComplete,
@@ -9,27 +9,29 @@ import {
 import { TodoExpired } from "../components/Section/SectionTodo/TodoExpired";
 import useDocTitle from "../hooks/useDocTitle";
 
-const renderTodoPage = (route: string | undefined) => {
-  switch (route) {
-    case "tomorrow":
-      return <TodoTomorrow />;
-    case "all":
-      return <TodoAll />;
-    case "today":
-      return <TodoToday />;
-    case "week":
-      return <TodoWeek />;
-    case "expired":
-      return <TodoExpired />;
-    case "complete":
-      return <TodoComplete />;
-  }
+type Route = keyof typeof routeStrategy;
+
+const routeStrategy = {
+  today: <TodoToday />,
+  tomorrow: <TodoTomorrow />,
+  week: <TodoWeek />,
+  expired: <TodoExpired />,
+  all: <TodoAll />,
+  complete: <TodoComplete />,
+};
+
+const renderTodoPage = (route: Route | undefined) => {
+  if (!route) return <Navigate to="/" replace />;
+  if (route in routeStrategy) return routeStrategy[route];
+  return <Navigate to="/" replace />;
 };
 
 function TodoPage() {
   const { route } = useParams();
   useDocTitle("Reminded | 待辦");
-  return <section className="relative">{renderTodoPage(route)}</section>;
+  return (
+    <section className="relative">{renderTodoPage(route as Route)}</section>
+  );
 }
 
 export default TodoPage;

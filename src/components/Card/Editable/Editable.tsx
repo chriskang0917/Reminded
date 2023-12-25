@@ -1,3 +1,4 @@
+import { cn } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -27,6 +28,14 @@ const Editable = observer(
       cardStore.updateCard(id, { content: currentText });
       cardStore.updateCardToFirebase(id, { content: currentText });
     }, [isEditing, childRef, currentText]);
+
+    useEffect(() => {
+      if (isEditing) {
+        uiStore.setInputEditing();
+      } else {
+        uiStore.stopInputEditing();
+      }
+    }, [isEditing]);
 
     const handleKeyDown = ({ key: keyDown, metaKey }: React.KeyboardEvent) => {
       const keys = ["Escape"];
@@ -69,7 +78,10 @@ const Editable = observer(
           </form>
         ) : (
           <div
-            className="w-full cursor-pointer tracking-wide"
+            className={cn(
+              "w-full cursor-pointer tracking-wide",
+              !isEditing && "select-none",
+            )}
             onClick={() => setIsEditing(true)}
           >
             {text || placeholder || "請輸入您的內容..."}

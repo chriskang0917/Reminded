@@ -9,9 +9,10 @@ import { observer } from "mobx-react-lite";
 import { Key, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { IoIosAdd } from "react-icons/io";
-import { NewCard, cardStore } from "../../store/cardStore";
+import { NewCard } from "../../models/NewCard";
+import { cardStore } from "../../store/cardStore";
 import { uiStore } from "../../store/uiStore";
-import { getObjectFilteredTags } from "../../utils/input";
+import { inputs } from "../../utils/inputs";
 
 const tabs = [
   { label: "靈感", id: "idea" },
@@ -70,7 +71,7 @@ export const IdeaInput = observer(() => {
     };
   }, [selectedTab, input, tagInput]);
 
-  const filteredTags = getObjectFilteredTags(tagInput);
+  const filteredTags = inputs.getObjectFilteredTags(tagInput);
   const placeholder =
     selectedTab === "idea" ? "捕捉您的靈感..." : "新增待辦...";
   const AddIcon = (
@@ -80,7 +81,7 @@ export const IdeaInput = observer(() => {
   return (
     <section id="tutorial-today-1" className="mb-8 flex flex-col items-center">
       <Tabs
-        className="mb-5"
+        className="z-10 mb-5"
         size="lg"
         onSelectionChange={(key) => setSelectedTab(key as "idea" | "todo")}
         selectedKey={selectedTab}
@@ -88,7 +89,10 @@ export const IdeaInput = observer(() => {
       >
         {(item) => <Tab key={item.id} title={item.label} />}
       </Tabs>
-      <form onSubmit={handleSubmit} className="flex items-center gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="mx-3 flex justify-between gap-2 md:items-center md:gap-4"
+      >
         <Input
           value={input}
           name={selectedTab}

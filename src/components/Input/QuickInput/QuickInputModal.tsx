@@ -13,15 +13,15 @@ import { FormEvent, useEffect, useState } from "react";
 import { BsListTask } from "react-icons/bs";
 import { FaRegLightbulb } from "react-icons/fa";
 import { QuickInput } from ".";
-import { NewCard, cardStore } from "../../../store/cardStore";
+import { NewCard } from "../../../models/NewCard";
+import { cardStore } from "../../../store/cardStore";
 import { uiStore } from "../../../store/uiStore";
-import { getFilteredTags, getPlainText } from "../../../utils/input";
+import { inputs } from "../../../utils/inputs";
 
 export const QuickInputModal = observer(() => {
   const [input, setInput] = useState<string>("");
   const [isIdeaInput, setSelected] = useState<boolean>(true);
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-  // const isIdeaInput = isIdeaInput;
 
   const handleKeyDown = (e: KeyboardEvent) => {
     const EscapeKeys = ["Escape"];
@@ -51,9 +51,9 @@ export const QuickInputModal = observer(() => {
 
   const handleSubmit = (e?: FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
-    const filteredTags = getFilteredTags(input);
+    const filteredTags = inputs.getFilteredTags(input);
     const uniqueTags = [...new Set(filteredTags)];
-    const content = getPlainText(input);
+    const content = inputs.getPlainText(input);
     const status = isIdeaInput ? "idea" : "todo";
     const newCard = new NewCard(content, uniqueTags, status);
     cardStore.addCard(newCard);
@@ -93,7 +93,7 @@ export const QuickInputModal = observer(() => {
   };
 
   const tags = extractTags();
-  const plainInput = getPlainText(input);
+  const plainInput = inputs.getPlainText(input);
   const newTag = getCurrentHashTag(plainInput);
   const hasHash = plainInput.includes("#");
   const hasNewTag = isNewTagValid(newTag, tags);
@@ -116,7 +116,7 @@ export const QuickInputModal = observer(() => {
 
   return (
     <Modal
-      className="top-8 overflow-visible drop-shadow-xl md:fixed md:right-[calc(50vw-360px)] md:max-w-xl"
+      className="fixed top-20 max-w-[90%] overflow-visible drop-shadow-xl md:right-[calc(50vw-360px)] md:top-8 md:max-w-xl"
       classNames={{
         backdrop: "backdrop-blur-lg backdrop-opacity-30",
       }}

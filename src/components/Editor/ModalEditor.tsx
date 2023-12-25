@@ -10,7 +10,8 @@ import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { NewNote, cardStore } from "../../store/cardStore";
+import { NewNote } from "../../models/NewNote";
+import { cardStore } from "../../store/cardStore";
 import { uiStore } from "../../store/uiStore";
 import NoteEditor from "./NoteEditor";
 

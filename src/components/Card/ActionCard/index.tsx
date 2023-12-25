@@ -49,57 +49,75 @@ export const ActionCard = ({ card }: { card: ICard }) => {
     }
   };
 
-  const isTodo = card.dueDate || card.status === "execute";
+  const renderCheckbox = () => {
+    return (
+      <Checkbox
+        size="sm"
+        radius="sm"
+        name="checkbox"
+        onValueChange={handleComplete}
+        isSelected={isSelect}
+        lineThrough
+        defaultSelected
+      />
+    );
+  };
 
-  return (
-    <>
-      <BasicCard card={card}>
-        <EditableWrapper>
-          {isTodo && (
-            <Checkbox
-              size="sm"
-              radius="sm"
-              name="checkbox"
-              onValueChange={handleComplete}
-              isSelected={isSelect}
-              lineThrough
-              defaultSelected
-            />
-          )}
-          <Editable
-            id={card.id}
-            text={card.content}
-            placeholder="暫無內容..."
-            childRef={inputRef}
-            type="input"
-          >
-            <input
-              className="inline-block w-full bg-transparent tracking-wide outline-none"
-              type="text"
-              name={card.status}
-              defaultValue={card.content}
-              ref={inputRef}
-            />
-          </Editable>
-          <ul className="ml-2 flex min-w-unit-24 items-center justify-end gap-5">
-            {settingList.map((setting) => (
-              <li id={setting.id} key={setting.label}>
-                <ActionCardTool
-                  setting={setting}
-                  onOpen={onOpenNote}
-                  card={card}
-                />
-              </li>
-            ))}
-          </ul>
-        </EditableWrapper>
-      </BasicCard>
+  const renderCardEditable = () => {
+    return (
+      <Editable
+        id={card.id}
+        text={card.content}
+        placeholder="暫無內容..."
+        childRef={inputRef}
+        type="input"
+      >
+        <input
+          className="inline-block w-full bg-transparent tracking-wide outline-none"
+          type="text"
+          name={card.status}
+          defaultValue={card.content}
+          ref={inputRef}
+        />
+      </Editable>
+    );
+  };
+
+  const renderSettingDropdown = () => {
+    return (
+      <ul className="ml-2 flex min-w-unit-24 items-center justify-end gap-5">
+        {settingList.map((setting) => (
+          <li id={setting.id} key={setting.label}>
+            <ActionCardTool setting={setting} onOpen={onOpenNote} card={card} />
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  const renderNoteModal = () => {
+    return (
       <IdeaNoteModal
         card={card}
         isOpen={isOpenNote}
         onOpenChange={onOpenChangeNote}
         onClose={onCloseNote}
       />
+    );
+  };
+
+  const isTodo = card.dueDate || card.status === "execute";
+
+  return (
+    <>
+      <BasicCard card={card}>
+        <EditableWrapper>
+          {isTodo && renderCheckbox()}
+          {renderCardEditable()}
+          {renderSettingDropdown()}
+        </EditableWrapper>
+      </BasicCard>
+      {renderNoteModal()}
     </>
   );
 };

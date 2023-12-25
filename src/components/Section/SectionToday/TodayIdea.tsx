@@ -14,7 +14,7 @@ export const TodayIdea = observer(() => {
 
   if (ideaCards.length === 0) {
     return (
-      <section className="flex flex-col items-center">
+      <section className="flex flex-col items-center px-2">
         <EmptyCard placeholder={placeholder} />
         <Spacer y={10} />
       </section>

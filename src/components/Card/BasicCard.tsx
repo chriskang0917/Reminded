@@ -16,6 +16,7 @@ function BasicCard({ card, children, className }: BasicCardProps) {
         <CardBody
           className={cn(
             "min-h-20 my-1 flex cursor-default flex-col",
+            "text-sm md:text-base",
             className,
           )}
         >

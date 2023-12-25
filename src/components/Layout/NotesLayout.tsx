@@ -6,7 +6,7 @@ function NotesLayout() {
   return (
     <>
       <NotesBar />
-      <div className="relative z-50">
+      <div className="relative z-20">
         <MainBackdrop>
           <Outlet />
         </MainBackdrop>

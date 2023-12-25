@@ -12,7 +12,8 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { useStopShortcut } from "../../../hooks/useStopShortcut";
-import { ICard, NewCard, cardStore } from "../../../store/cardStore";
+import { NewCard } from "../../../models/NewCard";
+import { ICard, cardStore } from "../../../store/cardStore";
 
 interface ActionModalProps {
   card: ICard;
@@ -115,6 +116,39 @@ export const IdeaToActionModal = observer(
       </p>
     );
 
+    const renderButtons = () => {
+      return (
+        <>
+          <Button size="sm" color="danger" onPress={handleDelete}>
+            刪除
+          </Button>
+          <div className="flex gap-2">
+            {buttonsList.map((button) => {
+              if (card.isArchived && button.label === "封存") return;
+              return (
+                <Tooltip
+                  key={button.label}
+                  content={button.tooltip}
+                  placement="bottom"
+                  delay={300}
+                  closeDelay={100}
+                >
+                  <Button
+                    size="sm"
+                    variant={button.variant}
+                    color={button.color}
+                    onPress={button.onPress}
+                  >
+                    {button.label}
+                  </Button>
+                </Tooltip>
+              );
+            })}
+          </div>
+        </>
+      );
+    };
+
     return (
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
@@ -139,32 +173,7 @@ export const IdeaToActionModal = observer(
                 <section>{modalExample}</section>
               </ModalBody>
               <ModalFooter className="flex justify-between">
-                <Button size="sm" color="danger" onPress={handleDelete}>
-                  刪除
-                </Button>
-                <div className="flex gap-2">
-                  {buttonsList.map((button) => {
-                    if (card.isArchived && button.label === "封存") return;
-                    return (
-                      <Tooltip
-                        key={button.label}
-                        content={button.tooltip}
-                        placement="bottom"
-                        delay={300}
-                        closeDelay={100}
-                      >
-                        <Button
-                          size="sm"
-                          variant={button.variant}
-                          color={button.color}
-                          onPress={button.onPress}
-                        >
-                          {button.label}
-                        </Button>
-                      </Tooltip>
-                    );
-                  })}
-                </div>
+                {renderButtons()}
               </ModalFooter>
             </>
           )}

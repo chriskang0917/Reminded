@@ -5,7 +5,8 @@ import {
   DropdownTrigger,
 } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { ICard, NewCard, cardStore } from "../../../store/cardStore";
+import { NewCard } from "../../../models/NewCard";
+import { ICard, cardStore } from "../../../store/cardStore";
 
 interface IdeaCardToolProps {
   card: ICard;

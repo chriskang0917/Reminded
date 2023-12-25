@@ -69,7 +69,7 @@ export const AfterMenu = ({ editor }: AfterMenuProps) => {
   ];
 
   return (
-    <div className="relative right-6 flex flex-wrap justify-end gap-2 p-2">
+    <div className="relative flex flex-wrap justify-start gap-2 md:right-6 md:justify-end md:p-2">
       {ButtonList.map((btn) => (
         <Fragment key={btn.label}>
           <Button

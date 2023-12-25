@@ -14,9 +14,10 @@ import toast from "react-hot-toast";
 import { CiCalendarDate } from "react-icons/ci";
 import { IoIosAdd } from "react-icons/io";
 import { useLocation } from "react-router-dom";
-import { NewCard, cardStore } from "../../store/cardStore";
+import { NewCard } from "../../models/NewCard";
+import { cardStore } from "../../store/cardStore";
 import { uiStore } from "../../store/uiStore";
-import { getObjectFilteredTags } from "../../utils/input";
+import { inputs } from "../../utils/inputs";
 
 interface IInput {
   content: string;
@@ -100,14 +101,14 @@ export const TodoInput = observer(() => {
     </div>
   );
 
-  const filteredTags = getObjectFilteredTags(input.tag);
+  const filteredTags = inputs.getObjectFilteredTags(input.tag);
   const AddButton = (
     <IoIosAdd className="cursor-pointer" onClick={handleSubmit} />
   );
 
   return (
     <form
-      className="my-4 flex w-full items-center justify-center gap-2"
+      className="my-4 flex w-full items-center justify-center gap-2 px-3 md:px-0"
       onSubmit={handleSubmit}
     >
       <Input

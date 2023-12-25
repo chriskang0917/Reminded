@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useSearch } from "../../../hooks/useSearch";
-import { NewNote } from "../../../store/cardStore";
+import { NewNote } from "../../../models/NewNote";
 import { NoteCard } from "../../Card/NoteCard";
 import { Heading, HeadingDivider } from "../../Heading";
 import { IdeaSearchInput } from "../../Input";
@@ -19,7 +19,9 @@ export const NoteSearch = observer(() => {
     <>
       <Heading title={title} subtitle={subtitle} counts={total} />
       <IdeaSearchInput searchText={text} onSearch={onSearch} />
-      <p className="self-start text-sm text-gray-400">{searchCountsText}</p>
+      <p className="ml-6 self-start text-sm text-gray-400 md:ml-0">
+        {searchCountsText}
+      </p>
       <HeadingDivider />
       <SectionShadow>
         <MotionList>

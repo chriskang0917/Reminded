@@ -19,7 +19,7 @@ const ideaActionList: IAction[] = [
   { label: "搜尋行動", path: "/action/search", icon: <IoIosSearch /> },
   {
     label: "已過期",
-    path: "/action/expire",
+    path: "/action/expired",
     icon: <FaRegCalendarXmark />,
     id: "tutorial-actions-2",
   },

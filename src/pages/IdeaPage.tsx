@@ -11,21 +11,20 @@ import useDocTitle from "../hooks/useDocTitle";
 import useTutorial from "../hooks/useTutorial";
 import { TutorialType } from "../utils/tutorial";
 
-const renderIdeaPage = (route: string | undefined) => {
-  switch (route) {
-    case "week":
-      return <IdeaWeek />;
-    case "search":
-      return <IdeaSearch />;
-    case "pools":
-      return <IdeaAll />;
-    case "action":
-      return <IdeaAction />;
-    case "archive":
-      return <IdeaArchive />;
-    default:
-      return <Navigate to="/" replace />;
-  }
+type Route = keyof typeof routeStrategy;
+
+const routeStrategy = {
+  week: <IdeaWeek />,
+  search: <IdeaSearch />,
+  all: <IdeaAll />,
+  action: <IdeaAction />,
+  archive: <IdeaArchive />,
+};
+
+const renderIdeaPage = (route: Route | undefined) => {
+  if (!route) return <Navigate to="/" replace />;
+  if (route in routeStrategy) return routeStrategy[route];
+  return <Navigate to="/" replace />;
 };
 
 const IdeaPage = observer(() => {
@@ -34,7 +33,9 @@ const IdeaPage = observer(() => {
   useDocTitle("Reminded | 靈感");
   useTutorial(TutorialType.idea);
 
-  return <section className="relative">{renderIdeaPage(route)}</section>;
+  return (
+    <section className="relative">{renderIdeaPage(route as Route)}</section>
+  );
 });
 
 export default IdeaPage;

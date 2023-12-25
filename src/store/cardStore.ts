@@ -2,30 +2,21 @@ import {
   FieldValue,
   Timestamp,
   collection,
-  deleteDoc,
-  doc,
-  getDoc,
   onSnapshot,
   query,
-  serverTimestamp,
-  setDoc,
   where,
 } from "firebase/firestore";
 import { makeAutoObservable, runInAction } from "mobx";
-import { nanoid } from "nanoid";
 import { db } from "../config/firebase";
-import { cardUtils } from "../utils/cardUtils";
-import { cookie } from "../utils/cookie";
+import { NewCard } from "../models/NewCard";
+import { NewNote } from "../models/NewNote";
+import { database, getUid } from "../utils/database";
+import { dates } from "../utils/dates";
 import { debounceCardsOrderList } from "../utils/debounce";
-import { authStore } from "./authStore";
+import { local } from "../utils/local";
+import { sort } from "../utils/sort";
 
-export type cardStatus =
-  | "idea"
-  | "action"
-  | "todo"
-  | "remind"
-  | "note"
-  | "execute";
+export type cardStatus = "idea" | "action" | "todo" | "note" | "execute";
 
 export interface ICard {
   id: string;
@@ -52,13 +43,15 @@ export interface INewNoteObject {
 }
 
 interface ICardService {
-  getAllTags: string[];
+  getAllTags: () => string[];
   getFilteredCardsWith: (cardsStrategy: CardsStrategy) => ICard[];
   getNoteWithId: (noteId: string) => NewNote;
   addCard: (newCard: NewCard, updateCard?: Partial<ICard>) => void;
   addNote: (newNote: NewNote, updateNote?: Partial<ICard>) => void;
   deleteCard: (id: string) => void;
   updateCard: (id: string, updateCard: Partial<ICard>) => void;
+  updateNote: (id: string, updateNote: Partial<NewNote>) => void;
+  updateCardOrderList: (cardOrderList: string[]) => void;
 }
 
 interface IFirebaseService {
@@ -68,55 +61,6 @@ interface IFirebaseService {
   updateCardToFirebase: (cardId: string, card: Partial<ICard>) => void;
   addCardToFireStore: (card: ICard, updateCard?: Partial<ICard>) => void;
   deleteCardFromFireStore: (cardId: string) => void;
-}
-
-/* ===============================
-===========  NewCard  ============
-=============================== */
-
-export class NewCard implements ICard {
-  id: string;
-  content: string;
-  tags: string[];
-  status: cardStatus;
-  isArchived: boolean = false;
-  isTransformed: boolean = false;
-  isImportant: boolean = false;
-  serverTimestamp: FieldValue;
-  createdTime: string;
-  updatedTime: string;
-  dueDate: string | null;
-  reminderStartDate: number | null = null;
-  reminderEndDate: number | null = null;
-
-  constructor(content: string, tags: string[], status: cardStatus) {
-    const currentDate = new Date().toISOString();
-    this.id = nanoid();
-    this.content = content;
-    this.tags = tags[0] ? tags : [];
-    this.status = status;
-    this.serverTimestamp = serverTimestamp();
-    this.createdTime = currentDate;
-    this.updatedTime = currentDate;
-    this.dueDate = status === "todo" ? currentDate : null;
-  }
-}
-
-export class NewNote extends NewCard {
-  noteTitle: string = "";
-  noteHTML: string = "";
-
-  constructor(
-    noteTitle: string,
-    content: string,
-    noteHTML: string,
-    tags: string[],
-    status: cardStatus = "note",
-  ) {
-    super(content, tags, status);
-    this.noteTitle = noteTitle;
-    this.noteHTML = noteHTML;
-  }
 }
 
 /* ===============================
@@ -130,39 +74,31 @@ interface ICardsStrategy {
 abstract class CardsStrategy implements ICardsStrategy {
   public cardStore: CardStore;
 
-  constructor() {
-    this.cardStore = cardStore;
+  constructor(store?: CardStore) {
+    this.cardStore = store || cardStore;
   }
 
-  getSortedCardsByOrderList() {
-    return cardUtils.getSortedCardsByOrderList(
+  protected getSortedCardsByOrderList() {
+    return sort.getSortedCardsByOrderList(
       this.cardStore.cardOrderList,
       this.cardStore.cards,
     );
   }
 
   getCards() {
-    this.cardStore = cardStore;
-    // 這裡的 getCards() 會被子類別覆寫，預設回傳全部的卡片
     return this.getSortedCardsByOrderList();
   }
 }
 
-export class AllCards extends CardsStrategy {
-  getCards() {
-    return this.getSortedCardsByOrderList();
-  }
-}
+export class AllCards extends CardsStrategy {}
 
 export class TodoAllCards extends CardsStrategy {
   getCards() {
-    const sortedCards = this.getSortedCardsByOrderList().filter(
-      (card) =>
-        ((card.dueDate && card.status === "action") ||
-          card.status === "todo") &&
-        !card.isArchived,
-    );
-    const descSortedCards = cardUtils.sortCardsDescBy("dueDate", sortedCards);
+    const sortedCards = this.getSortedCardsByOrderList().filter((card) => {
+      const isDueAction = card.dueDate && card.status === "action";
+      return (isDueAction || card.status === "todo") && !card.isArchived;
+    });
+    const descSortedCards = sort.sortCardsDescBy("dueDate", sortedCards);
     return descSortedCards;
   }
 }
@@ -174,7 +110,7 @@ export class TodoTodayCards extends CardsStrategy {
       if (!card.dueDate) return false;
       return (
         (card.status === "todo" || card.status === "action") &&
-        cardUtils.isToday(card.dueDate) &&
+        dates.isToday(card.dueDate) &&
         !card.isArchived
       );
     });
@@ -188,7 +124,7 @@ export class TodoTomorrowCards extends CardsStrategy {
       if (!card.dueDate) return false;
       return (
         card.status === "todo" &&
-        cardUtils.isTomorrow(card.dueDate) &&
+        dates.isTomorrow(card.dueDate) &&
         !card.isArchived
       );
     });
@@ -200,13 +136,12 @@ export class TodoThisWeekCards extends CardsStrategy {
     const sortedCards = this.getSortedCardsByOrderList();
     const cards = sortedCards.filter((card) => {
       if (!card.dueDate) return false;
-      return (
-        card.status === "todo" &&
-        cardUtils.isThisWeek(card.dueDate) &&
-        !card.isArchived
-      );
+      const isTodoOrAction = card.status === "todo" || card.status === "action";
+      const isThisWeek = dates.isThisWeek(card.dueDate);
+
+      return isTodoOrAction && isThisWeek && !card.isArchived;
     });
-    const sortedCardsDesc = cardUtils.sortCardsDescBy("dueDate", cards);
+    const sortedCardsDesc = sort.sortCardsDescBy("dueDate", cards);
     return sortedCardsDesc;
   }
 }
@@ -215,13 +150,13 @@ export class TodoExpiredCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     if (sortedCards.length === 0) return [];
-    return sortedCards.filter(
-      (card) =>
-        (card.status === "action" || card.status === "todo") &&
-        card.dueDate &&
-        cardUtils.isExceedToday(card.dueDate) &&
-        !card.isArchived,
-    );
+    return sortedCards.filter((card) => {
+      if (!card.dueDate) return false;
+      const isExceedToday = dates.isExceedToday(card.dueDate);
+      const isTodoOrAction = card.status === "todo" || card.status === "action";
+
+      return isTodoOrAction && isExceedToday && !card.isArchived;
+    });
   }
 }
 
@@ -229,12 +164,12 @@ export class TodoCompletedCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     const totalCards = [...sortedCards, ...this.cardStore.archivedCards];
-    const filteredCards = totalCards.filter(
-      (card) =>
-        (card.status === "todo" || card.status === "execute") &&
-        card.isArchived,
-    );
-    const sortedCardsDesc = cardUtils.sortCardsDescBy("dueDate", filteredCards);
+    const filteredCards = totalCards.filter((card) => {
+      const isTodoOrExecute =
+        card.status === "todo" || card.status === "execute";
+      return isTodoOrExecute && card.isArchived;
+    });
+    const sortedCardsDesc = sort.sortCardsDescBy("dueDate", filteredCards);
     return sortedCardsDesc;
   }
 }
@@ -252,11 +187,8 @@ export class IdeaTodayCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     return sortedCards.filter((card) => {
-      return (
-        card.status === "idea" &&
-        cardUtils.isToday(card.createdTime) &&
-        !card.isArchived
-      );
+      const isToday = dates.isToday(card.createdTime);
+      return card.status === "idea" && isToday && !card.isArchived;
     });
   }
 }
@@ -265,11 +197,8 @@ export class IdeaThisWeekCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     return sortedCards.filter((card) => {
-      return (
-        card.status === "idea" &&
-        cardUtils.isThisWeek(card.createdTime) &&
-        !card.isArchived
-      );
+      const isThisWeek = dates.isThisWeek(card.createdTime);
+      return card.status === "idea" && isThisWeek && !card.isArchived;
     });
   }
 }
@@ -277,9 +206,9 @@ export class IdeaThisWeekCards extends CardsStrategy {
 export class ActionAllCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
-    return sortedCards.filter(
-      (card) => card.status === "action" && !card.dueDate && !card.isArchived,
-    );
+    return sortedCards.filter((card) => {
+      return card.status === "action" && !card.dueDate && !card.isArchived;
+    });
   }
 }
 
@@ -287,13 +216,11 @@ export class ActionExpiredCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
     if (sortedCards.length === 0) return [];
-    return sortedCards.filter(
-      (card) =>
-        card.status === "action" &&
-        card.dueDate &&
-        cardUtils.isExceedToday(card.dueDate) &&
-        !card.isArchived,
-    );
+    return sortedCards.filter((card) => {
+      if (!card.dueDate) return false;
+      const isExceedToday = dates.isExceedToday(card.dueDate);
+      return card.status === "action" && isExceedToday && !card.isArchived;
+    });
   }
 }
 
@@ -303,7 +230,7 @@ export class ActionTodoCards extends CardsStrategy {
     const cards = sortedCards.filter(
       (card) => card.status === "action" && card.dueDate && !card.isArchived,
     );
-    const sortedCardsDesc = cardUtils.sortCardsDescBy("dueDate", cards);
+    const sortedCardsDesc = sort.sortCardsDescBy("dueDate", cards);
     return sortedCardsDesc;
   }
 }
@@ -313,7 +240,7 @@ export class TodoAndActionTomorrowCards extends CardsStrategy {
     const sortedCards = this.getSortedCardsByOrderList();
     const isDateTomorrow = (dueDate: string | null) => {
       if (!dueDate) return null;
-      return cardUtils.isTomorrow(dueDate);
+      return dates.isTomorrow(dueDate);
     };
     return sortedCards.filter(
       (card) =>
@@ -327,12 +254,12 @@ export class TodoAndActionTomorrowCards extends CardsStrategy {
 export class ActionExecutedCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
-    const justArchived = sortedCards.filter(
-      (card) => card.status === "execute",
-    );
-    const hasArchived = this.cardStore.archivedCards.filter(
-      (card) => card.status === "execute",
-    );
+    const justArchived = sortedCards.filter((card) => {
+      return card.status === "execute";
+    });
+    const hasArchived = this.cardStore.archivedCards.filter((card) => {
+      return card.status === "execute";
+    });
     return [...justArchived, ...hasArchived];
   }
 }
@@ -340,13 +267,13 @@ export class ActionExecutedCards extends CardsStrategy {
 export class ActionArchiveCards extends CardsStrategy {
   getCards() {
     const sortedCards = this.getSortedCardsByOrderList();
-    const justArchived = sortedCards.filter(
-      (card) => card.status === "action" && card.isArchived,
-    );
-    const hasArchived = this.cardStore.archivedCards.filter(
-      (card) => card.status === "action",
-    );
-    const sortedCardsDesc = cardUtils.sortCardsDescBy("updatedTime", [
+    const justArchived = sortedCards.filter((card) => {
+      return card.status === "action" && card.isArchived;
+    });
+    const hasArchived = this.cardStore.archivedCards.filter((card) => {
+      return card.status === "action";
+    });
+    const sortedCardsDesc = sort.sortCardsDescBy("updatedTime", [
       ...justArchived,
       ...hasArchived,
     ]);
@@ -372,56 +299,43 @@ class CardService implements ICardService {
     this.cardStore = cardStore;
   }
 
-  private getSortedCardsByOrderList() {
-    const sortedCards: ICard[] = [];
-    this.cardStore.cardOrderList.forEach((id) => {
-      if (this.cardStore.cards.hasOwnProperty(id))
-        sortedCards.push(this.cardStore.cards[id]);
-    });
-    return sortedCards;
-  }
-
-  get getAllTags() {
-    const sortedCards = this.getSortedCardsByOrderList();
+  public getAllTags() {
+    const sortedCards = sort.getSortedCardsByOrderList(
+      this.cardStore.cardOrderList,
+      this.cardStore.cards,
+    );
     const tags = sortedCards.map((card) => card.tags).flat() || [];
     if (!tags) return [];
     return [...new Set(tags)];
   }
 
-  getFilteredCardsWith(cardStrategy: CardsStrategy) {
+  public getFilteredCardsWith(cardStrategy: CardsStrategy) {
     return cardStrategy.getCards();
   }
 
-  getNoteWithId(noteId: string) {
+  public getNoteWithId(noteId: string) {
     return this.cardStore.cards[noteId] as NewNote;
   }
 
-  private updateLocalList() {
-    localStorage.setItem(
-      "cardOrderList",
-      JSON.stringify(this.cardStore.cardOrderList),
-    );
-  }
-
-  addCard(newCard: NewCard, updateCard?: Partial<ICard>) {
+  public addCard(newCard: NewCard, updateCard?: Partial<ICard>) {
     const updatedCard = { ...newCard, ...updateCard };
     runInAction(() => {
       this.cardStore.cards[newCard.id] = updatedCard;
       this.cardStore.cardOrderList.unshift(newCard.id);
     });
-    this.updateLocalList();
+    local.set("cardOrderList", this.cardStore.cardOrderList);
   }
 
-  addNote(newNote: NewNote, updateNote?: Partial<ICard>) {
+  public addNote(newNote: NewNote, updateNote?: Partial<ICard>) {
     const updatedNote = { ...newNote, ...updateNote };
     runInAction(() => {
       this.cardStore.cards[newNote.id] = updatedNote;
       this.cardStore.cardOrderList.unshift(newNote.id);
     });
-    this.updateLocalList();
+    local.set("cardOrderList", this.cardStore.cardOrderList);
   }
 
-  updateCard(id: string, updateCard: Partial<ICard>) {
+  public updateCard(id: string, updateCard: Partial<ICard>) {
     const card = this.cardStore.cards[id];
     if (!card) return;
     const updatedTime = new Date().toISOString();
@@ -429,7 +343,7 @@ class CardService implements ICardService {
     runInAction(() => (this.cardStore.cards[id] = updatedCard));
   }
 
-  updateNote(id: string, updateNote: Partial<NewNote>) {
+  public updateNote(id: string, updateNote: Partial<NewNote>) {
     const card = cardStore.cards[id];
     if (!card) return;
     const updatedTime = new Date().toISOString();
@@ -437,19 +351,19 @@ class CardService implements ICardService {
     runInAction(() => (cardStore.cards[id] = updatedNote));
   }
 
-  deleteCard(id: string) {
+  public deleteCard(id: string) {
     runInAction(() => {
       delete this.cardStore.cards[id];
       this.cardStore.cardOrderList = this.cardStore.cardOrderList.filter(
         (cardId) => cardId !== id,
       );
     });
-    this.updateLocalList();
+    local.set("cardOrderList", this.cardStore.cardOrderList);
   }
 
-  updateCardOrderList(cardOrderList: string[]) {
+  public updateCardOrderList(cardOrderList: string[]) {
     runInAction(() => (this.cardStore.cardOrderList = cardOrderList));
-    this.updateLocalList();
+    local.set("cardOrderList", this.cardStore.cardOrderList);
   }
 }
 
@@ -464,53 +378,7 @@ class FirebaseService implements IFirebaseService {
     this.cardStore = cardStore;
   }
 
-  private getUid() {
-    return authStore.uid || cookie.getCookie("uid");
-  }
-
-  private async getCardOrderList() {
-    const uid = this.getUid();
-    if (!uid) return;
-
-    const cardsOrderListRef = doc(db, "user_cards", uid);
-    const localList = localStorage.getItem("cardOrderList");
-
-    if (localList) {
-      const cardOrderList = JSON.parse(localList || "[]");
-      await setDoc(cardsOrderListRef, { cardOrderList }, { merge: true });
-      return runInAction(() => (this.cardStore.cardOrderList = cardOrderList));
-    }
-
-    const docSnap = await getDoc(cardsOrderListRef);
-    if (!docSnap.exists()) {
-      localStorage.setItem("cardOrderList", JSON.stringify([]));
-      return;
-    }
-    runInAction(() => {
-      this.cardStore.cardOrderList = docSnap.data()?.cardOrderList || [];
-      const stringifiedList = JSON.stringify(this.cardStore.cardOrderList);
-      localStorage.setItem("cardOrderList", stringifiedList);
-    });
-  }
-
-  private async getActiveCards() {
-    const uid = this.getUid();
-    if (!uid) return;
-
-    const cardsRef = collection(db, "user_cards", uid, "cards");
-    const queryArchived = where("isArchived", "==", false);
-    const q = query(cardsRef, queryArchived);
-
-    return onSnapshot(q, (querySnapshot) => {
-      const cards: ICardObject = {};
-      querySnapshot.forEach((doc) => {
-        cards[doc.id] = doc.data() as ICard;
-      });
-      runInAction(() => (this.cardStore.cards = cards || []));
-    });
-  }
-
-  async initActiveCards() {
+  public async initActiveCards() {
     try {
       await this.getCardOrderList();
       await this.getActiveCards();
@@ -520,16 +388,40 @@ class FirebaseService implements IFirebaseService {
     }
   }
 
-  async getArchivedCards() {
+  private async getCardOrderList() {
+    const uid = getUid();
+    if (!uid) return;
+
+    const cardOrderList = local.get("cardOrderList");
+    if (cardOrderList) {
+      database.setDoc(undefined, { cardOrderList });
+      return runInAction(() => (this.cardStore.cardOrderList = cardOrderList));
+    }
+    const data = await database.getDoc();
+    if (!data?.cardOrderList) return local.set("cardOrderList", []);
+
+    runInAction(() => {
+      const cardOrderList = data?.cardOrderList || [];
+      this.cardStore.cardOrderList = cardOrderList;
+      local.set("cardOrderList", cardOrderList);
+    });
+  }
+
+  private async getActiveCards() {
+    const uid = getUid();
+    if (!uid) return;
+    return onSnapshot(this.getCardsQueryWith("active"), (querySnapshot) => {
+      const cards: ICardObject = {};
+      querySnapshot.forEach((doc) => (cards[doc.id] = doc.data() as ICard));
+      runInAction(() => (this.cardStore.cards = cards || []));
+    });
+  }
+
+  public async getArchivedCards() {
     try {
-      const uid = this.getUid();
+      const uid = getUid();
       if (!uid) return;
-
-      const cardsRef = collection(db, "user_cards", uid, "cards");
-      const queryActive = where("isArchived", "==", true);
-      const q = query(cardsRef, queryActive);
-
-      return onSnapshot(q, (querySnapshot) => {
+      return onSnapshot(this.getCardsQueryWith("archived"), (querySnapshot) => {
         const archivedCards: ICard[] = [];
         querySnapshot.forEach((doc) => archivedCards.push(doc.data() as ICard));
         runInAction(() => (this.cardStore.archivedCards = archivedCards || []));
@@ -539,16 +431,18 @@ class FirebaseService implements IFirebaseService {
     }
   }
 
-  async getExecutedActionCards() {
-    const uid = this.getUid();
+  private getCardsQueryWith(status: "active" | "archived") {
+    const statusMapper = { active: false, archived: true };
+    const cardsRef = collection(db, "user_cards", getUid(), "cards");
+    const queryArchived = where("isArchived", "==", statusMapper[status]);
+    return query(cardsRef, queryArchived);
+  }
+
+  public async getExecutedActionCards() {
+    const uid = getUid();
     if (!uid) return;
 
-    const cardsRef = collection(db, "user_cards", uid, "cards");
-    const oneWeekAgo = new Date().setDate(new Date().getDate() - 7);
-    const serverTimestamp = Timestamp.fromDate(new Date(oneWeekAgo));
-    const q = query(cardsRef, where("serverTimestamp", ">=", serverTimestamp));
-
-    return onSnapshot(q, (querySnapshot) => {
+    return onSnapshot(this.getOneWeekCardsQuery(), (querySnapshot) => {
       const executedActionCards: ICard[] = [];
       querySnapshot.forEach((doc) => {
         if (doc.data().status !== "execute") return;
@@ -561,19 +455,24 @@ class FirebaseService implements IFirebaseService {
     });
   }
 
-  async addCardToFireStore(card: ICard, updateCard?: Partial<ICard>) {
-    try {
-      const uid = this.getUid();
-      if (!uid) return;
+  private getOneWeekCardsQuery() {
+    const oneWeekAgo = new Date().setDate(new Date().getDate() - 7);
+    const serverTimestamp = Timestamp.fromDate(new Date(oneWeekAgo));
+    const q = query(
+      collection(db, "user_cards", getUid(), "cards"),
+      where("serverTimestamp", ">=", serverTimestamp),
+    );
+    return q;
+  }
 
-      const cardsRef = doc(db, "user_cards", uid, "cards", card.id);
-      const cardOrderListRef = doc(db, "user_cards", uid);
-      await setDoc(cardsRef, Object.assign({}, { ...card, ...updateCard }), {
-        merge: true,
-      });
-      await setDoc(cardOrderListRef, {
-        cardOrderList: [...this.cardStore.cardOrderList],
-      });
+  public async addCardToFireStore(card: ICard, updateCard?: Partial<ICard>) {
+    try {
+      const uid = getUid();
+      if (!uid) return;
+      const updatedDetails = Object.assign({}, { ...card, ...updateCard });
+      const cardOrderList = [...this.cardStore.cardOrderList];
+      database.setDoc(["user_cards", uid, "cards", card.id], updatedDetails);
+      database.setDoc(undefined, { cardOrderList });
     } catch (error) {
       console.error(error);
     }
@@ -581,17 +480,12 @@ class FirebaseService implements IFirebaseService {
 
   async addNoteToFireStore(note: NewNote, updateNote?: Partial<NewNote>) {
     try {
-      const uid = this.getUid();
+      const uid = getUid();
       if (!uid) return;
-
-      const cardsRef = doc(db, "user_cards", uid, "cards", note.id);
-      const cardOrderListRef = doc(db, "user_cards", uid);
-      await setDoc(cardsRef, Object.assign({}, { ...note, ...updateNote }), {
-        merge: true,
-      });
-      await setDoc(cardOrderListRef, {
-        cardOrderList: [...this.cardStore.cardOrderList],
-      });
+      const updatedDetails = Object.assign({}, { ...note, ...updateNote });
+      const cardOrderList = [...this.cardStore.cardOrderList];
+      database.setDoc(["user_cards", uid, "cards", note.id], updatedDetails);
+      database.setDoc(undefined, { cardOrderList });
     } catch (error) {
       console.error(error);
     }
@@ -599,11 +493,9 @@ class FirebaseService implements IFirebaseService {
 
   async updateCardToFirebase(cardId: string, updateCard: Partial<ICard>) {
     try {
-      const uid = this.getUid();
+      const uid = getUid();
       if (!uid) return;
-
-      const cardsRef = doc(db, "user_cards", uid, "cards", cardId);
-      await setDoc(cardsRef, { ...updateCard }, { merge: true });
+      database.setDoc(["user_cards", uid, "cards", cardId], { ...updateCard });
     } catch (error) {
       console.error("update_card_error", error);
     }
@@ -611,11 +503,9 @@ class FirebaseService implements IFirebaseService {
 
   async updateNoteToFirebase(noteId: string, updateNote: Partial<NewNote>) {
     try {
-      const uid = this.getUid();
+      const uid = getUid();
       if (!uid) return;
-
-      const cardsRef = doc(db, "user_cards", uid, "cards", noteId);
-      await setDoc(cardsRef, { ...updateNote }, { merge: true });
+      database.setDoc(["user_cards", uid, "cards", noteId], { ...updateNote });
     } catch (error) {
       console.error("update_note_error", error);
     }
@@ -624,7 +514,7 @@ class FirebaseService implements IFirebaseService {
   async updateCardOrderListToFirebase(cardOrderList: string[]) {
     try {
       debounceCardsOrderList(cardOrderList);
-      localStorage.setItem("cardOrderList", JSON.stringify(cardOrderList));
+      local.set("cardOrderList", cardOrderList);
     } catch (error) {
       console.error("updateCardOrderList_error", error);
     }
@@ -632,11 +522,9 @@ class FirebaseService implements IFirebaseService {
 
   async deleteCardFromFireStore(cardId: string) {
     try {
-      const uid = this.getUid();
+      const uid = getUid();
       if (!uid) return;
-
-      const cardsRef = doc(db, "user_cards", uid, "cards", cardId);
-      await deleteDoc(cardsRef);
+      database.deleteDoc(["user_cards", uid, "cards", cardId]);
     } catch (error) {
       console.error(error);
     }
@@ -647,7 +535,7 @@ class FirebaseService implements IFirebaseService {
 ==========  CardStore  ===========
 =============================== */
 
-class CardStore {
+export class CardStore {
   isLoaded: boolean = false;
   cardService: CardService;
   firebaseService: FirebaseService;
@@ -699,7 +587,7 @@ class CardStore {
   }
 
   get getAllTags() {
-    return this.cardService.getAllTags;
+    return this.cardService.getAllTags();
   }
 
   getFilteredCardsWith(cardsStrategy: CardsStrategy) {

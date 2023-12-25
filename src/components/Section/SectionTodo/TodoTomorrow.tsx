@@ -7,9 +7,8 @@ import {
   TodoAndActionTomorrowCards,
   cardStore,
 } from "../../../store/cardStore";
-import { style } from "../../../utils/style";
 import { TutorialType } from "../../../utils/tutorial";
-import { TodoCard } from "../../Card";
+import { ActionCard, TodoCard } from "../../Card";
 import EmptyCard from "../../Card/EmptyCard";
 import { Heading, HeadingDivider } from "../../Heading";
 import { TodoInput } from "../../Input";
@@ -68,7 +67,9 @@ export const TodoTomorrow = observer(() => {
       <Spacer y={5} />
       <section className="mb-12 w-full">
         <div id="tutorial-todo-1" className="flex w-full flex-col">
-          <h2 className={style.pageSubtitle}>已儲存的行動</h2>
+          <h2 className="ml-4 text-lg font-bold leading-none tracking-wide text-secondary md:ml-0 md:text-xl">
+            已儲存的行動
+          </h2>
           <HeadingDivider />
           <SectionShadow className="h-[calc(50svh-190px)]">
             <div ref={actionRef} className="flex w-full flex-col gap-3">
@@ -76,7 +77,7 @@ export const TodoTomorrow = observer(() => {
                 {actionCards.length !== 0 ? (
                   actionCards.map((card) => (
                     <MotionItem key={card.id}>
-                      <TodoCard key={card.id} card={card} />
+                      <ActionCard key={card.id} card={card} />
                     </MotionItem>
                   ))
                 ) : (

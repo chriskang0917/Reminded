@@ -3,7 +3,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
-import { NewNote } from "../../store/cardStore";
+import { NewNote } from "../../models/NewNote";
 import { AfterMenu } from "./AfterMenu";
 
 const extensions = [
