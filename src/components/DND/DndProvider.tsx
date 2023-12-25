@@ -120,7 +120,7 @@ export const DndProvider = ({ children }: DndContextProps) => {
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 700,
+        delay: 300,
         tolerance: 5,
       },
     }),
