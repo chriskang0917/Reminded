@@ -74,8 +74,8 @@ interface ICardsStrategy {
 abstract class CardsStrategy implements ICardsStrategy {
   public cardStore: CardStore;
 
-  constructor() {
-    this.cardStore = cardStore;
+  constructor(store?: CardStore) {
+    this.cardStore = store || cardStore;
   }
 
   protected getSortedCardsByOrderList() {
