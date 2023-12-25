@@ -60,6 +60,18 @@ const cardsExample: CardExample[] = [
     update: { dueDate: "2023-11-28T15:39:16.190Z" },
   },
   {
+    content: "todo card with today due date",
+    tags: ["tag1", "tag2"],
+    status: "todo",
+    update: { dueDate: new Date().toISOString() },
+  },
+  {
+    content: "action-todo card with today due date",
+    tags: ["tag1", "tag2"],
+    status: "action",
+    update: { dueDate: new Date().toISOString() },
+  },
+  {
     content: "test archived todo card",
     tags: ["tag1", "tag2"],
     status: "todo",
@@ -77,22 +89,22 @@ describe("CardStore Cards", () => {
     testCardStore.updateCardOrderList(cardOrderList);
   });
 
-  it("should be contained 8 cards", () => {
+  it("should be contained all cards", () => {
     const allCards = Object.keys(testCardStore.cards);
-    expect(allCards).toHaveLength(8);
+    expect(allCards).toHaveLength(cardsExample.length);
   });
 
-  it("should get all 8 cards", () => {
+  it("should get all cards", () => {
     const allCards = testCardStore.getFilteredCardsWith(
       new AllCards(testCardStore),
     );
-    expect(allCards).toHaveLength(8);
+    expect(allCards).toHaveLength(cardsExample.length);
   });
 
-  it("should get 3 todo-all cards", () => {
+  it("should get 6 todo-all cards", () => {
     const todoAllCards = testCardStore.getFilteredCardsWith(
       new TodoAllCards(testCardStore),
     );
-    expect(todoAllCards).toHaveLength(3);
+    expect(todoAllCards).toHaveLength(5);
   });
 });
