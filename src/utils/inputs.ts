@@ -31,7 +31,7 @@ export const inputs = {
     return text.replace(/#\[[^\]]+\]\([^)]+\)\s*/g, "").trim() || "";
   },
   getFilteredTags(text: string) {
-    const regex = /\(([^)]+)\)/g;
+    const regex = /#\[(.*?)\]\(([^)]+)\)/g;
     const matches = text.match(regex) || [];
 
     const filteredMatches = matches.map((match) => {
@@ -39,6 +39,6 @@ export const inputs = {
       let innerMatch = innerRegex.exec(match);
       return innerMatch ? innerMatch[1] : "";
     });
-    return filteredMatches.length > 0 ? filteredMatches : [];
+    return filteredMatches.length > 0 ? [...new Set(filteredMatches)] : [];
   },
 };
