@@ -49,9 +49,14 @@ export const TodoTomorrow = observer(() => {
       <SectionShadow className="h-[calc(50svh-100px)] pt-0">
         <MotionList>
           <MotionItem key="placeholder">
-            <div ref={todoTomorrowRef} className="mt-5 w-full">
+            <div ref={todoTomorrowRef} className="w-full">
               {todoAndActionAll.length === 0 && (
-                <EmptyCard id="tutorial-todo-2" placeholder={todoPlaceholder} />
+                <div className="mt-5">
+                  <EmptyCard
+                    id="tutorial-todo-2"
+                    placeholder={todoPlaceholder}
+                  />
+                </div>
               )}
             </div>
           </MotionItem>
