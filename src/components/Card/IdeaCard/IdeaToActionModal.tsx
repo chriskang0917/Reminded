@@ -108,7 +108,11 @@ export const IdeaToActionModal = observer(
       buttonsList[1].onPress();
     };
 
-    const modalHeader = "根據靈感卡片新增行動。以動詞開頭，轉換你的行動...";
+    const modalHeader = (
+      <h2>
+        以<strong> 動詞 </strong>開頭，將靈感轉換成你的行動...
+      </h2>
+    );
     const modalExample = (
       <p className="text-slate-500 text-sm">
         <strong>範例</strong>：<strong>寫一篇</strong> 500 字的文章、
@@ -150,7 +154,12 @@ export const IdeaToActionModal = observer(
     };
 
     return (
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal
+        className="mx-2 mt-20"
+        placement="top-center"
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      >
         <ModalContent>
           {() => (
             <>
