@@ -39,7 +39,7 @@ const CardTags = observer(({ card }: { card: ICard }) => {
         <Chip
           size="sm"
           key={tag}
-          className="px-2"
+          className="select-none px-2"
           onClose={() => handleDeleteTag(tag)}
         >
           {textTruncate(tag, 20)}
