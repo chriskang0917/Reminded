@@ -1,3 +1,4 @@
+import { Spinner } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { Navigate, useParams } from "react-router-dom";
 import Article from "../components/Section/SectionNotes/Article";
@@ -13,8 +14,7 @@ const ArticlePage = observer(() => {
 
   useDocTitle(`Reminded | ${note.noteTitle}`);
 
-  if (!note) return <div>Loading...</div>;
-
+  if (!note) return <Spinner />;
   return <Article note={note} />;
 });
 
