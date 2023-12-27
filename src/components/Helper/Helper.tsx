@@ -44,7 +44,7 @@ const disabledKeys = ["quickInput", "switchInput", "focus", "switch", "enter"];
 
 const Helper = observer(() => {
   return (
-    <div className="fixed bottom-4 right-7 z-50 cursor-pointer">
+    <div className="fixed bottom-4 right-7 z-50 hidden cursor-pointer md:block">
       <Dropdown>
         <DropdownTrigger>
           <button>
