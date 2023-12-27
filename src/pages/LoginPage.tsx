@@ -12,6 +12,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
@@ -22,17 +23,21 @@ import Typed from "react-typed";
 import useDocTitle from "../hooks/useDocTitle";
 import { authStore } from "../store/authStore";
 
-const DEFAULT_EMAIL = "test@gmail.com";
+const TEST_ACCOUNT = {
+  email: "test@gmail.com",
+  password: "123456",
+};
 
 const LoginPage = observer(() => {
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [loginState, setLoginState] = useState({
     newUserName: "",
-    email: DEFAULT_EMAIL,
+    email: "",
     password: "",
     isLoginPage: true,
     isSettingName: false,
+    isApplyTestAccount: false,
   });
 
   useDocTitle("Reminded");
@@ -73,6 +78,19 @@ const LoginPage = observer(() => {
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onLoginSubmit();
+  };
+
+  useEffect(() => {
+    if (loginState.isApplyTestAccount) onLoginSubmit();
+  }, [loginState.isApplyTestAccount]);
+
+  const handleLoginWithTestAccount = () => {
+    setLoginState((prevState) => ({
+      ...prevState,
+      email: TEST_ACCOUNT.email,
+      password: TEST_ACCOUNT.password,
+      isApplyTestAccount: true,
+    }));
   };
 
   const handleSwitchPage = () => {
@@ -132,6 +150,19 @@ const LoginPage = observer(() => {
 
   const bgVideoUrl = "https://www.pexels.com/download/video/2795165/";
 
+  const renderTestAccountButton = () => {
+    return (
+      <Tooltip content="使用測試帳號直接登入" closeDelay={100}>
+        <button
+          className="mx-3 cursor-pointer text-third underline"
+          onClick={handleLoginWithTestAccount}
+        >
+          測試帳號
+        </button>
+      </Tooltip>
+    );
+  };
+
   const BackdropBlur = () => (
     <div className="absolute left-0 top-0 z-10 h-[100vh] w-full backdrop-blur-lg" />
   );
@@ -190,6 +221,7 @@ const LoginPage = observer(() => {
               {loginState.isLoginPage ? "登入" : "註冊"}
             </Button>
             <div>
+              {renderTestAccountButton()}
               <span className=" text-slate-700 font-light">
                 {loginState.isLoginPage
                   ? "還沒有帳號嗎？ "
