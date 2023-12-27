@@ -12,6 +12,7 @@ import { observer } from "mobx-react-lite";
 import { FormEvent, useEffect, useState } from "react";
 import { BsListTask } from "react-icons/bs";
 import { FaRegLightbulb } from "react-icons/fa";
+import { IoMdAddCircle } from "react-icons/io";
 import { QuickInput } from ".";
 import { NewCard } from "../../../models/NewCard";
 import { cardStore } from "../../../store/cardStore";
@@ -59,6 +60,10 @@ export const QuickInputModal = observer(() => {
     cardStore.addCard(newCard);
     cardStore.addCardToFireStore(newCard);
     onClose();
+  };
+
+  const handleShowModal = () => {
+    onOpen();
   };
 
   const extractTags = (): { id: string; display: string }[] => {
@@ -114,42 +119,56 @@ export const QuickInputModal = observer(() => {
     </Card>
   );
 
+  const renderMobileInputToggle = () => {
+    return (
+      <button
+        className="fixed bottom-4 right-7 z-50 block cursor-pointer md:hidden"
+        onClick={handleShowModal}
+      >
+        <IoMdAddCircle className="h-12 w-12 text-third transition-colors hover:text-third" />
+      </button>
+    );
+  };
+
   return (
-    <Modal
-      className="fixed top-20 max-w-[90%] overflow-visible drop-shadow-xl md:right-[calc(50vw-360px)] md:top-8 md:max-w-xl"
-      classNames={{
-        backdrop: "backdrop-blur-lg backdrop-opacity-30",
-      }}
-      isOpen={isOpen}
-      onClose={onClose}
-      backdrop="blur"
-      placement="top"
-      hideCloseButton={true}
-      onOpenChange={onOpenChange}
-    >
-      <ModalContent>
-        <form onSubmit={handleSubmit}>
-          <ModalBody className="pt-5">
-            <h1 className="text-lg font-bold tracking-wider text-third">
-              新增 {inputType}
-            </h1>
-            <div className="flex items-center gap-3">
-              <SwitchButton />
-              <QuickInput
-                input={input}
-                tags={hasHash && hasNewTag ? newTags : tags}
-                onInputChange={handleInputChange}
-                onClose={onClose}
-              />
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button type="submit" size="sm" variant="shadow">
-              新增
-            </Button>
-          </ModalFooter>
-        </form>
-      </ModalContent>
-    </Modal>
+    <>
+      <Modal
+        className="fixed top-20 max-w-[90%] overflow-visible drop-shadow-xl md:right-[calc(50vw-360px)] md:top-8 md:max-w-xl"
+        classNames={{
+          backdrop: "backdrop-blur-lg backdrop-opacity-30",
+        }}
+        isOpen={isOpen}
+        onClose={onClose}
+        backdrop="blur"
+        placement="top"
+        hideCloseButton={true}
+        onOpenChange={onOpenChange}
+      >
+        <ModalContent>
+          <form onSubmit={handleSubmit}>
+            <ModalBody className="pt-5">
+              <h1 className="text-lg font-bold tracking-wider text-third">
+                新增 {inputType}
+              </h1>
+              <div className="flex items-center gap-3">
+                <SwitchButton />
+                <QuickInput
+                  input={input}
+                  tags={hasHash && hasNewTag ? newTags : tags}
+                  onInputChange={handleInputChange}
+                  onClose={onClose}
+                />
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button type="submit" size="sm" variant="shadow">
+                新增
+              </Button>
+            </ModalFooter>
+          </form>
+        </ModalContent>
+      </Modal>
+      {renderMobileInputToggle()}
+    </>
   );
 });
