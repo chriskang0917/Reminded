@@ -48,7 +48,7 @@ const ArticlePage = observer(() => {
         </span>
         <Divider />
         <Spacer y={1} />
-        <div>{note.createdTime}</div>
+        <div>{note.parsedNoteHTML}</div>
       </Card>
     );
   };
