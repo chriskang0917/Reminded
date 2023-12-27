@@ -10,7 +10,7 @@ function SectionShadow({ children, className }: SectionShadowProps) {
     <ScrollShadow
       className={cn(
         "flex w-full flex-col gap-3 px-4 py-3",
-        "h-[calc(100svh-250px)]",
+        "h-[calc(100svh-200px)]",
         className,
       )}
       hideScrollBar
