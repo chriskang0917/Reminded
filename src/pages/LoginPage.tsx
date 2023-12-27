@@ -152,7 +152,10 @@ const LoginPage = observer(() => {
 
   const renderTestAccountButton = () => {
     return (
-      <Tooltip content="使用測試帳號直接登入" closeDelay={100}>
+      <Tooltip
+        content="點選登入後，請於登入後右下角的「？」在桌面板重製引導教學"
+        closeDelay={100}
+      >
         <button
           className="mx-3 cursor-pointer text-third underline"
           onClick={handleLoginWithTestAccount}
