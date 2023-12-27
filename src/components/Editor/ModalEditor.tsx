@@ -108,7 +108,7 @@ const ModalEditor = observer((prop: ModalEditorProp) => {
       <ModalContent>
         <ModalHeader className="flex justify-between">
           <div className="flex items-center gap-2">
-            {card ? (
+            {card?.noteTitle ? (
               <Button
                 className="min-w-3 px-3 tracking-wider"
                 color="danger"

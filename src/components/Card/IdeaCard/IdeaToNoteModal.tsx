@@ -14,7 +14,7 @@ export const IdeaNoteModal = (prop: IdeaNoteModalProp) => {
   const { card, isOpen, onOpenChange, onClose } = prop;
   useStopShortcut(isOpen);
 
-  const pageTitle = "轉換你的靈感...";
+  const pageTitle = "轉換靈感...";
 
   return (
     <ModalEditor
