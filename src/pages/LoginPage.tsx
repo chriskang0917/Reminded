@@ -141,6 +141,7 @@ const LoginPage = observer(() => {
       <div className="fixed left-0 top-0 h-[100svh] w-full bg-black backdrop-blur">
         <video
           className="absolute z-0 h-[100vh] w-[100vw] object-cover opacity-50"
+          onClick={(e) => e.preventDefault()}
           muted
           loop
           autoPlay
