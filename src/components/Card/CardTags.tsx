@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { ICard, cardStore } from "../../store/cardStore";
+import { uiStore } from "../../store/uiStore";
 
 const CardTags = observer(({ card }: { card: ICard }) => {
   const tagInputRef = useRef<HTMLInputElement>(null);
@@ -14,12 +15,13 @@ const CardTags = observer(({ card }: { card: ICard }) => {
 
   const handleTagSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!tagInputRef.current) return;
+    if (!tagInputRef.current?.value) return tagInputRef.current?.blur();
     const newTag = tagInputRef.current?.value;
     const updatedTags = [...card.tags, newTag];
     cardStore.updateCard(card.id, { tags: updatedTags });
     cardStore.updateCardToFirebase(card.id, { tags: updatedTags });
     setIsTagInputShow(false);
+    uiStore.stopInputEditing();
   };
 
   const handleDeleteTag = (tag: string) => {
@@ -62,7 +64,11 @@ const CardTags = observer(({ card }: { card: ICard }) => {
             variant="underlined"
             placeholder="新增標籤..."
             className="w-20"
-            onBlur={() => setIsTagInputShow(!isTagInputShow)}
+            onFocus={() => uiStore.setInputEditing()}
+            onBlur={() => {
+              uiStore.stopInputEditing();
+              setIsTagInputShow(!isTagInputShow);
+            }}
           />
           <button type="submit"></button>
         </form>
