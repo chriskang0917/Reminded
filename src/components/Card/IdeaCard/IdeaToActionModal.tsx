@@ -109,7 +109,7 @@ export const IdeaToActionModal = observer(
     };
 
     const modalHeader = (
-      <h2>
+      <h2 className="text-[0.85rem] tracking-wider text-gray-500">
         以<strong> 動詞 </strong>開頭，將靈感轉換成你的行動...
       </h2>
     );
@@ -167,9 +167,7 @@ export const IdeaToActionModal = observer(
                 <h1 className="tracking-wide text-primary">轉換你的靈感</h1>
               </ModalHeader>
               <ModalBody>
-                <h2 className="text-[0.85rem] tracking-wider text-gray-500">
-                  {modalHeader}
-                </h2>
+                {modalHeader}
                 <form onSubmit={handleSubmit}>
                   <Input
                     ref={inputRef}
