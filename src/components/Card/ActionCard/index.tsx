@@ -1,17 +1,17 @@
 import { Checkbox, useDisclosure } from "@nextui-org/react";
 import { useRef, useState } from "react";
-import { CiCalendarDate } from "react-icons/ci";
-import { HiOutlineDotsVertical } from "react-icons/hi";
 import { ICard, cardStore } from "../../../store/cardStore";
 import BasicCard from "../BasicCard";
 import Editable from "../Editable/Editable";
 import EditableWrapper from "../Editable/EditableWrapper";
 import { IdeaNoteModal } from "../IdeaCard/IdeaToNoteModal";
 import { ActionCardTool } from "./ActionCardTool";
+import { CalendarIcon } from "../Icons/CalendarIcon";
+import { MenuIcon } from "../Icons/MenuIcon";
 
 const settingList = [
-  { icon: <CiCalendarDate />, label: "date", id: "tutorial-actions-1" },
-  { icon: <HiOutlineDotsVertical />, label: "more" },
+  { icon: <CalendarIcon />, label: "date", id: "tutorial-actions-1" },
+  { icon: <MenuIcon />, label: "more" },
 ];
 
 export const ActionCard = ({ card }: { card: ICard }) => {

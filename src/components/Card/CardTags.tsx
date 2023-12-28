@@ -1,9 +1,9 @@
 import { Chip, Input } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
-import { IoIosAddCircleOutline } from "react-icons/io";
 import { ICard, cardStore } from "../../store/cardStore";
 import { uiStore } from "../../store/uiStore";
+import { AddTagIcon } from "./Icons/AddTagIcon";
 
 const CardTags = observer(({ card }: { card: ICard }) => {
   const tagInputRef = useRef<HTMLInputElement>(null);
@@ -48,7 +48,7 @@ const CardTags = observer(({ card }: { card: ICard }) => {
         </Chip>
       ))}
       {!isTagInputShow && (
-        <IoIosAddCircleOutline
+        <AddTagIcon
           className="h-4 w-4 cursor-pointer"
           onClick={() => setIsTagInputShow(!isTagInputShow)}
         />

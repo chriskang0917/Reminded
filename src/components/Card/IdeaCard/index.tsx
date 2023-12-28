@@ -1,13 +1,13 @@
 import { useDisclosure } from "@nextui-org/react";
 import { useEffect, useRef } from "react";
-import { GrTransaction } from "react-icons/gr";
-import { HiOutlineDotsVertical } from "react-icons/hi";
-import { PiNoteBlankThin } from "react-icons/pi";
 import { ICard } from "../../../store/cardStore";
 import { uiStore } from "../../../store/uiStore";
 import BasicCard from "../BasicCard";
 import Editable from "../Editable/Editable";
 import EditableWrapper from "../Editable/EditableWrapper";
+import { ActionIcon } from "../Icons/ActionIcon";
+import { MenuIcon } from "../Icons/MenuIcon";
+import { NoteIcon } from "../Icons/NoteIcon";
 import IdeaCardTool from "./IdeaCardTool";
 import { IdeaToActionModal } from "./IdeaToActionModal";
 import { IdeaNoteModal } from "./IdeaToNoteModal";
@@ -34,7 +34,7 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
 
   const settingList = [
     {
-      icon: <PiNoteBlankThin />,
+      icon: <NoteIcon />,
       label: "note",
       id: "tutorial-ideas-4",
       onClick: () => {
@@ -43,7 +43,7 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
       },
     },
     {
-      icon: <GrTransaction className="h-3" />,
+      icon: <ActionIcon />,
       label: "action",
       id: "tutorial-ideas-2",
       onClick: () => {
@@ -51,7 +51,7 @@ export const IdeaCard = ({ card }: { card: ICard }) => {
         onOpenAction();
       },
     },
-    { icon: <HiOutlineDotsVertical />, label: "more", onClick: () => {} },
+    { icon: <MenuIcon />, label: "more", onClick: () => {} },
   ];
 
   const renderCardEditable = () => {
