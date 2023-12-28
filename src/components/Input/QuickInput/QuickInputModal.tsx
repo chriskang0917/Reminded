@@ -19,6 +19,33 @@ import { cardStore } from "../../../store/cardStore";
 import { uiStore } from "../../../store/uiStore";
 import { inputs } from "../../../utils/inputs";
 
+const getCurrentHashTag = (input: string): string => {
+  const regex = /#[^\s\[\]]+(?![^\[]*\])/g;
+  const matches = input.match(regex);
+  return matches ? matches[0].substring(1) : "";
+};
+
+const isNewTagValid = (
+  newTag: string,
+  tags: { id: string; display: string }[],
+): boolean => {
+  return newTag !== "" && tags.every((tag) => tag.id !== newTag);
+};
+
+const getUpdatedTags = (
+  hasNewTag: boolean,
+  newTag: string,
+  tags: { id: string; display: string }[],
+): { id: string; display: string }[] => {
+  return hasNewTag
+    ? [{ id: newTag, display: `新增 ${newTag}` }, ...tags]
+    : tags;
+};
+
+const getInputType = (isSelected: boolean): string => {
+  return isSelected ? "靈感" : "待辦";
+};
+
 export const QuickInputModal = observer(() => {
   const [input, setInput] = useState<string>("");
   const [isIdeaInput, setSelected] = useState<boolean>(true);
@@ -35,16 +62,6 @@ export const QuickInputModal = observer(() => {
     if (openKeys.includes(e.key)) onOpen();
     if (switchKeys.includes(e.key) && cmdKeys) setSelected(!isIdeaInput);
   };
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, isIdeaInput]);
-
-  useEffect(() => {
-    const timeId = setTimeout(() => setInput(""), 0);
-    return () => clearTimeout(timeId);
-  }, [isOpen]);
 
   const handleInputChange = (input: string) => {
     setInput(input);
@@ -65,40 +82,20 @@ export const QuickInputModal = observer(() => {
   const handleShowModal = () => onOpen();
   const handleSwitchInputType = () => {
     setSelected(!isIdeaInput);
+    console.log(isIdeaInput);
   };
 
-  const extractTags = (): { id: string; display: string }[] => {
-    return cardStore.getAllTags.map((tag) => ({ id: tag, display: tag }));
-  };
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, isIdeaInput]);
 
-  const getCurrentHashTag = (input: string): string => {
-    const regex = /#[^\s\[\]]+(?![^\[]*\])/g;
-    const matches = input.match(regex);
-    return matches ? matches[0].substring(1) : "";
-  };
+  useEffect(() => {
+    const timeId = setTimeout(() => setInput(""), 0);
+    return () => clearTimeout(timeId);
+  }, [isOpen]);
 
-  const isNewTagValid = (
-    newTag: string,
-    tags: { id: string; display: string }[],
-  ): boolean => {
-    return newTag !== "" && tags.every((tag) => tag.id !== newTag);
-  };
-
-  const getUpdatedTags = (
-    hasNewTag: boolean,
-    newTag: string,
-    tags: { id: string; display: string }[],
-  ): { id: string; display: string }[] => {
-    return hasNewTag
-      ? [{ id: newTag, display: `新增 ${newTag}` }, ...tags]
-      : tags;
-  };
-
-  const getInputType = (isSelected: boolean): string => {
-    return isSelected ? "靈感" : "待辦";
-  };
-
-  const tags = extractTags();
+  const tags = cardStore.getAllTags.map((tag) => ({ id: tag, display: tag }));
   const plainInput = inputs.getPlainText(input);
   const newTag = getCurrentHashTag(plainInput);
   const hasHash = plainInput.includes("#");
@@ -110,17 +107,17 @@ export const QuickInputModal = observer(() => {
     <Card
       className={cn(
         "h-10 w-10",
-        "flex items-center justify-center",
-        "rounded-lg drop-shadow-md hover:bg-fourthDark",
-        "transition-all",
+        "rounded-lg drop-shadow-md hover:bg-thirdDark",
+        "cursor-pointer transition-all",
         isIdeaInput ? "bg-fourthDark" : "bg-fourth",
       )}
     >
-      {isIdeaInput ? (
-        <FaRegLightbulb onClick={handleSwitchInputType} />
-      ) : (
-        <BsListTask onClick={handleSwitchInputType} />
-      )}
+      <div
+        className="flex h-full w-full items-center justify-center"
+        onClick={handleSwitchInputType}
+      >
+        {isIdeaInput ? <FaRegLightbulb /> : <BsListTask />}
+      </div>
     </Card>
   );
 
