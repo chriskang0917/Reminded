@@ -62,8 +62,9 @@ export const QuickInputModal = observer(() => {
     onClose();
   };
 
-  const handleShowModal = () => {
-    onOpen();
+  const handleShowModal = () => onOpen();
+  const handleSwitchInputType = () => {
+    setSelected(!isIdeaInput);
   };
 
   const extractTags = (): { id: string; display: string }[] => {
@@ -115,7 +116,11 @@ export const QuickInputModal = observer(() => {
         isIdeaInput ? "bg-fourthDark" : "bg-fourth",
       )}
     >
-      {isIdeaInput ? <FaRegLightbulb /> : <BsListTask />}
+      {isIdeaInput ? (
+        <FaRegLightbulb onClick={handleSwitchInputType} />
+      ) : (
+        <BsListTask onClick={handleSwitchInputType} />
+      )}
     </Card>
   );
 
