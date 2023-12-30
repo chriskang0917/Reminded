@@ -5,6 +5,8 @@
   <p align="center">
    <a href="#reminded">About</a>
     ｜
+   <a href="#language">Tech</a>
+    ｜
    <a href="#demo">Demo</a>
   </p>
   <p><a href="https://www.linkedin.com/in/chriskang0917/">
@@ -49,7 +51,7 @@ After setting action with due date, actions will transform to todo cards. During
 
 ![React](https://img.shields.io/badge/React-61DAFB.svg?style=for-the-badge&logo=React&logoColor=black) ![React Router](https://img.shields.io/badge/React%20Router-CA4245.svg?style=for-the-badge&logo=React-Router&logoColor=white) ![MobX](https://img.shields.io/badge/MobX-FF9955.svg?style=for-the-badge&logo=MobX&logoColor=white) ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4.svg?style=for-the-badge&logo=Tailwind-CSS&logoColor=white) ![Next UI](https://img.shields.io/badge/NextUI-000000.svg?style=for-the-badge&logo=NextUI&logoColor=white)
 
-`Driver.js` `Framer Motion`
+`Driver.js` `Framer Motion` `react-mentions`
 
 ### Tools and Services
 
@@ -77,15 +79,15 @@ After login, there are 6 main pages in the side bar. Each page has different var
 
 <img src="./public/assets/components.png" style="width:300px" alt="quick add" />
 
-- **Card** | idea/action/todo card and toolbar
-- **DND** | Drag-and-Drop with
-- **Editor** | Note editor and its modal
+- **Card** | Components of idea/action/todo card and toolbar
+- **DND** | Drag-and-Drop with dnd kit
+- **Editor** | Note editor and its modal with Tiptap
 - **Heading** | Title banner of each page
-- **Helper** | Tutorials components
+- **Helper** | Tutorial's components
 - **Input** | Shared Input in quick input modal and input in each page
 - **Layout** | All routers' page layout with Outlet
-- **Motion** | Compound Component of Framer Motion
-- **Section** | Each Section in the each page, including idea, action, todo, note, today, and its scroll shadow
+- **Motion** | Compound component with Framer Motion for animation
+- **Section** | All sections in the each page, including idea, action, todo, note, today, and its scroll shadow
 - **Sidebar** | Shared sidebar and subside bar in idea/action/todo
 
 ### Other folders
@@ -95,9 +97,9 @@ After login, there are 6 main pages in the side bar. Each page has different var
 - **config** | firebase config
 - **models** | All class constructors
 - **pages** | Each page displayed in different routers
-- **store** | all stores of MobX
-- **test** | unit test related to rapid addition of tags
-- **utils** | all util functions in this folder
+- **store** | All stores of MobX
+- **test** | Unit tests related to rapid addition of tags on input modal
+- **utils** | All utility functions
 
 ---
 
@@ -135,19 +137,19 @@ After login, there are 6 main pages in the side bar. Each page has different var
 
 ### Transform Todo
 
-###### Transform action card to todo with drag-and-drop or setting date with picker.
+###### Transform action to todo with setting date with picker or drag-and-drop.
 
 <img src="./public/assets/action_todo.gif" style="width:700px" alt="action to todo card" />
 
 ### Note Editor
 
-###### Record the note and idea more comprehensively.
+###### Record ideas as note to manage contents more comprehensively.
 
 <img src="./public/assets/note.gif" style="width:700px" alt="create note" />
 
 ### Search Idea / Action / Notes
 
-###### Search all the idea with fuzzy keywords
+###### Search all the idea about content and tags with fuzzy keywords
 
 <img src="./public/assets/search.gif" style="width:700px" alt="Search cards" />
 
