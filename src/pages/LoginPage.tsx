@@ -179,6 +179,7 @@ const LoginPage = observer(() => {
           muted
           loop
           autoPlay
+          playsInline
         >
           <source src={bgVideoUrl} type="video/mp4" />
         </video>
