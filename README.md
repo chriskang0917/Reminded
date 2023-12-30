@@ -67,6 +67,38 @@ After setting action with due date, actions will transform to todo cards. During
 - Built tutorial UI flow with `driver.js` for improved user guidance.
 - Implemented `Firebase Authentication` and `Cookies` for secure login with a 30-day expiration.
 
+### Page Structure
+
+After login, there are 6 main pages in the side bar. Each page has different variants inside each router.
+
+<img src="./public/assets/pages.png" style="width:700px" alt="pages' structure" />
+
+### Components' Structure
+
+<img src="./public/assets/components.png" style="width:300px" alt="quick add" />
+
+- **Card** | idea/action/todo card and toolbar
+- **DND** | Drag-and-Drop with
+- **Editor** | Note editor and its modal
+- **Heading** | Title banner of each page
+- **Helper** | Tutorials components
+- **Input** | Shared Input in quick input modal and input in each page
+- **Layout** | All routers' page layout with Outlet
+- **Motion** | Compound Component of Framer Motion
+- **Section** | Each Section in the each page, including idea, action, todo, note, today, and its scroll shadow
+- **Sidebar** | Shared sidebar and subside bar in idea/action/todo
+
+### Other folders
+
+<img src="./public/assets/folders.png" style="width:300px" alt="folders structure" />
+
+- **config** | firebase config
+- **models** | All class constructors
+- **pages** | Each page displayed in different routers
+- **store** | all stores of MobX
+- **test** | unit test related to rapid addition of tags
+- **utils** | all util functions in this folder
+
 ---
 
 ## Demo
@@ -75,48 +107,48 @@ After setting action with due date, actions will transform to todo cards. During
 
 ###### Login [Reminded](https://reminded.web.app) **test account** by clicking the button `測試帳號`.
 
-![Test Account](./public/assets/test_account.png)
+<img src="./public/assets/test_account.png" style="width:700px" alt="test account" />
 
 ### Product Tutorial
 
 ###### Understand the operation of Reminded.
 
-![Tutorial](./public/assets/tutorial.gif)
+<img src="./public/assets/tutorial.gif" style="width:700px" alt="tutorial" />
 
 ### Add Idea / Todo
 
 ###### Add ideas or todo with tags instantly with input modal by typing "N".
 
-![Quick Add](./public/assets/quick_add.gif)
+<img src="./public/assets/quick_add.gif" style="width:700px" alt="quick add" />
 
 ### Drag and Drop
 
 ###### Organize your idea / action / todo with drag and drop easily.
 
-![DND](./public/assets/dnd.gif)
+<img src="./public/assets/dnd.gif" style="width:700px" alt="drag and drop" />
 
 ### Transform Action
 
 ###### Transform idea card to actionable task.
 
-![Idea to Action](./public/assets/idea_action.gif)
+<img src="./public/assets/idea_action.gif" style="width:700px" alt="idea to action card" />
 
 ### Transform Todo
 
 ###### Transform action card to todo with drag-and-drop or setting date with picker.
 
-![Action to Todo](./public/assets/action_todo.gif)
+<img src="./public/assets/action_todo.gif" style="width:700px" alt="action to todo card" />
 
 ### Note Editor
 
 ###### Record the note and idea more comprehensively.
 
-![Notes](./public/assets/note.gif)
+<img src="./public/assets/note.gif" style="width:700px" alt="create note" />
 
 ### Search Idea / Action / Notes
 
 ###### Search all the idea with fuzzy keywords
 
-![Search](./public/assets/search.gif)
+<img src="./public/assets/search.gif" style="width:700px" alt="Search cards" />
 
 ---
