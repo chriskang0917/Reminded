@@ -7,7 +7,7 @@ import { IoHomeOutline } from "react-icons/io5";
 import { RxAvatar } from "react-icons/rx";
 import { Link, useLocation } from "react-router-dom";
 import { authStore } from "../../store/authStore";
-import Logo from "./logo.png";
+import Logo from "/assets/logo.png";
 
 const actionList = [
   { label: "今日", page: "/", path: "/", icon: <IoHomeOutline /> },
