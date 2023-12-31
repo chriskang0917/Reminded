@@ -82,7 +82,6 @@ export const QuickInputModal = observer(() => {
   const handleShowModal = () => onOpen();
   const handleSwitchInputType = () => {
     setSelected(!isIdeaInput);
-    console.log(isIdeaInput);
   };
 
   useEffect(() => {

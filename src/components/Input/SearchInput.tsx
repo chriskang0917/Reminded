@@ -1,5 +1,6 @@
 import { Input } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 import { CiSearch } from "react-icons/ci";
 import { uiStore } from "../../store/uiStore";
 
@@ -11,6 +12,10 @@ interface SearchInputProps {
 
 export const SearchInput = observer(
   ({ searchText, onSearch, placeholder }: SearchInputProps) => {
+    useEffect(() => {
+      if (searchText) uiStore.setInputEditing();
+    }, [searchText]);
+
     return (
       <div className="mx-auto my-4 w-11/12 items-center justify-center gap-2 md:w-full">
         <Input
