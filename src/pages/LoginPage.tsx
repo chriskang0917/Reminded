@@ -150,22 +150,6 @@ const LoginPage = observer(() => {
 
   const bgVideoUrl = "https://www.pexels.com/download/video/2795165/";
 
-  const renderTestAccountButton = () => {
-    return (
-      <Tooltip
-        content="點選登入後，請於登入後右下角的「？」在桌面板重製引導教學"
-        closeDelay={100}
-      >
-        <button
-          className="mx-3 cursor-pointer text-third underline"
-          onClick={handleLoginWithTestAccount}
-        >
-          測試帳號
-        </button>
-      </Tooltip>
-    );
-  };
-
   const BackdropBlur = () => (
     <div className="absolute left-0 top-0 z-10 h-[100vh] w-full backdrop-blur-lg" />
   );
@@ -225,7 +209,17 @@ const LoginPage = observer(() => {
               {loginState.isLoginPage ? "登入" : "註冊"}
             </Button>
             <div>
-              {renderTestAccountButton()}
+              <Tooltip
+                content="點選登入後，請於登入後右下角的「？」在桌面板重製引導教學"
+                closeDelay={100}
+              >
+                <button
+                  className="mx-3 cursor-pointer text-third underline"
+                  onClick={handleLoginWithTestAccount}
+                >
+                  測試帳號
+                </button>
+              </Tooltip>
               <span className=" text-slate-700 font-light">
                 {loginState.isLoginPage
                   ? "還沒有帳號嗎？ "
