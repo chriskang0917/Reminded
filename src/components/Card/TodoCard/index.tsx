@@ -1,18 +1,18 @@
-import { Checkbox } from "@nextui-org/react";
+import { Checkbox, cn } from "@nextui-org/react";
 import { useRef, useState } from "react";
-import { CiCalendarDate } from "react-icons/ci";
-import { GrTransaction } from "react-icons/gr";
-import { HiOutlineDotsVertical } from "react-icons/hi";
 import { ICard, cardStore } from "../../../store/cardStore";
 import BasicCard from "../BasicCard";
 import Editable from "../Editable/Editable";
 import EditableWrapper from "../Editable/EditableWrapper";
+import { ActionIcon } from "../Icons/ActionIcon";
+import { CalendarIcon } from "../Icons/CalendarIcon";
+import { MenuIcon } from "../Icons/MenuIcon";
 import { TodoCardTool } from "./TodoCardTool";
 
 const settingList = [
-  { icon: <CiCalendarDate />, label: "date" },
-  { icon: <GrTransaction className="h-3" />, label: "action" },
-  { icon: <HiOutlineDotsVertical />, label: "more" },
+  { icon: <CalendarIcon />, label: "date" },
+  { icon: <ActionIcon />, label: "action" },
+  { icon: <MenuIcon className="h-5 w-5 translate-y-[2px]" />, label: "more" },
 ];
 
 interface CardToolProps {
@@ -76,7 +76,12 @@ export const TodoCard = ({ card }: CardToolProps) => {
 
   const renderCardTools = () => {
     return (
-      <div className="ml-2 flex min-w-unit-24 items-center justify-between">
+      <div
+        className={cn(
+          "ml-2 flex items-center justify-between",
+          card.dueDate ? "min-w-unit-24" : "min-w-[74px]",
+        )}
+      >
         {settingList.map((setting) => (
           <TodoCardTool key={setting.label} setting={setting} card={card} />
         ))}

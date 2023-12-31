@@ -19,7 +19,7 @@ export const IdeaAll = observer(() => {
     <>
       <Heading title={title} subtitle={subtitle} counts={ideaCardsAll.length} />
       <HeadingDivider />
-      <SectionShadow className="h-[calc(100svh-170px)]">
+      <SectionShadow className="h-[calc(100svh-130px)]">
         <MotionList>
           {ideaCardsAll.map((card) => (
             <MotionItem key={card.id}>

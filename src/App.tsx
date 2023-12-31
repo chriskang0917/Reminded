@@ -84,6 +84,13 @@ const App = observer(() => {
     cardStore.initActiveCards();
   }, [authStore.uid]);
 
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    });
+  }, []);
+
   return (
     <NextUIProvider>
       <Toaster position="top-center" />

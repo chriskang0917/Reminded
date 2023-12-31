@@ -5,8 +5,8 @@ import {
   DropdownTrigger,
 } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import { FaRegCircleQuestion } from "react-icons/fa6";
 import { authStore } from "../../store/authStore";
+import { QuestionIcon } from "./QuestionIcon";
 
 const shortcuts = [
   {
@@ -44,11 +44,11 @@ const disabledKeys = ["quickInput", "switchInput", "focus", "switch", "enter"];
 
 const Helper = observer(() => {
   return (
-    <div className="fixed bottom-4 right-7 z-50 cursor-pointer">
+    <div className="fixed bottom-4 right-7 z-50 hidden cursor-pointer md:block">
       <Dropdown>
         <DropdownTrigger>
           <button>
-            <FaRegCircleQuestion className="h-6 w-6 text-primary transition-colors hover:text-third" />
+            <QuestionIcon className="h-8 w-8 text-primary transition-colors hover:text-third" />
           </button>
         </DropdownTrigger>
         <DropdownMenu

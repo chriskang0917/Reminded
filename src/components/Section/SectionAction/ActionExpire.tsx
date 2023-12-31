@@ -1,7 +1,7 @@
 import { Spacer } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { TodoExpiredCards, cardStore } from "../../../store/cardStore";
-import { ActionCard } from "../../Card";
+import { TodoCard } from "../../Card";
 import EmptyCard from "../../Card/EmptyCard";
 import { Heading, HeadingDivider } from "../../Heading";
 import MotionItem from "../../Motion/MotionItem";
@@ -29,7 +29,7 @@ export const ActionExpire = observer(() => {
         <MotionList>
           {actionTodoCards.map((card) => (
             <MotionItem key={card.id}>
-              <ActionCard card={card} />
+              <TodoCard card={card} />
             </MotionItem>
           ))}
           {!actionTodoCards.length && (

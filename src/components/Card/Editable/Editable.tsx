@@ -23,19 +23,15 @@ const Editable = observer(
     const currentText = childRef.current?.value.trim() || text;
 
     useEffect(() => {
+      if (isEditing) uiStore.setInputEditing();
+    }, [isEditing]);
+
+    useEffect(() => {
       if (isEditing && childRef) childRef.current?.focus();
       if (currentText === text) return;
       cardStore.updateCard(id, { content: currentText });
       cardStore.updateCardToFirebase(id, { content: currentText });
     }, [isEditing, childRef, currentText]);
-
-    useEffect(() => {
-      if (isEditing) {
-        uiStore.setInputEditing();
-      } else {
-        uiStore.stopInputEditing();
-      }
-    }, [isEditing]);
 
     const handleKeyDown = ({ key: keyDown, metaKey }: React.KeyboardEvent) => {
       const keys = ["Escape"];

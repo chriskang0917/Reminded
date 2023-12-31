@@ -1,4 +1,5 @@
 import { format, parseISO } from "date-fns";
+import parse from "html-react-parser";
 import { NewNote } from "./NewNote";
 
 export class Note {
@@ -16,8 +17,8 @@ export class Note {
     return this.note.noteTitle;
   }
 
-  get noteHTML() {
-    return this.note.noteHTML;
+  get parsedNoteHTML() {
+    return parse(this.note.noteHTML);
   }
 
   get createdTime() {
