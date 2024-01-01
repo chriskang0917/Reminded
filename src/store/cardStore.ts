@@ -392,8 +392,10 @@ class FirebaseService implements IFirebaseService {
     const uid = getUid();
     if (!uid) return;
 
-    const cardOrderList = local.get("cardOrderList");
-    if (cardOrderList) {
+    const cardOrderList = local.get<string[]>("cardOrderList");
+    const lastUpdated = local.get<string>("lastUpdated") || "";
+
+    if (cardOrderList && this.checkIsLocalListFresh(lastUpdated)) {
       database.setDoc(undefined, { cardOrderList });
       return runInAction(() => (this.cardStore.cardOrderList = cardOrderList));
     }
@@ -405,6 +407,14 @@ class FirebaseService implements IFirebaseService {
       this.cardStore.cardOrderList = cardOrderList;
       local.set("cardOrderList", cardOrderList);
     });
+  }
+
+  private checkIsLocalListFresh(lastUpdated: string) {
+    const tenSeconds = 10 * 1000;
+    const now = new Date().toISOString();
+    if (!lastUpdated) return false;
+    if (Date.parse(now) - Date.parse(lastUpdated) < tenSeconds) return true;
+    return false;
   }
 
   private async getActiveCards() {
