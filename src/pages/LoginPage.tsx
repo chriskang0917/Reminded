@@ -156,7 +156,7 @@ const LoginPage = observer(() => {
 
   return (
     <main className="flex h-[100svh] items-center justify-center">
-      <div className="fixed left-0 top-0 h-[100svh] w-full bg-black backdrop-blur">
+      <div className="fixed left-0 top-0 h-[100vh] w-full bg-black backdrop-blur">
         <video
           className="absolute z-0 h-[100vh] w-[100vw] object-cover opacity-50"
           onClick={(e) => e.preventDefault()}
