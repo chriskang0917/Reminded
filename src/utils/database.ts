@@ -1,4 +1,11 @@
-import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  deleteDoc,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../config/firebase";
 import { authStore } from "../store/authStore";
 import { cookie } from "./cookie";
@@ -63,5 +70,12 @@ export const database = {
     const [root, ...rest] = paths;
     const docRef = doc(db, root, ...rest);
     return await deleteDoc(docRef);
+  },
+  async arrayRemove(paths: string[] = ["user_cards", getUid()], data: unknown) {
+    if (!this.validatePath("doc", paths)) return;
+    if (!getUid()) return;
+    const [root, ...rest] = paths;
+    const docRef = doc(db, root, ...rest);
+    return await updateDoc(docRef, { cardOrderList: arrayRemove(data) });
   },
 };

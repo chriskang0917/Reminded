@@ -535,6 +535,7 @@ class FirebaseService implements IFirebaseService {
       const uid = getUid();
       if (!uid) return;
       database.deleteDoc(["user_cards", uid, "cards", cardId]);
+      database.arrayRemove(undefined, cardId);
     } catch (error) {
       console.error(error);
     }
