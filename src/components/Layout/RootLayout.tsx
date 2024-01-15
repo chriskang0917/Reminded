@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { authStore } from "../../store/authStore";
 import { cookie } from "../../utils/cookie";
-import { DndProvider, SortableProvider } from "../DND";
+import { DndProvider, SortableProvider } from "../Dnd";
 import Helper from "../Helper/Helper";
 import { QuickInputModal } from "../Input/QuickInput";
 import { MobileMenu, Sidebar } from "../Sidebar";

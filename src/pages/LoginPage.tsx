@@ -28,6 +28,8 @@ const TEST_ACCOUNT = {
   password: "123456",
 };
 
+const bgVideoUrl = "https://www.pexels.com/download/video/2795165/";
+
 const LoginPage = observer(() => {
   const nameInputRef = useRef<HTMLInputElement>(null);
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
@@ -147,8 +149,6 @@ const LoginPage = observer(() => {
   ].every((boolean) => boolean);
 
   if (isRedirect) return <Navigate to="/" replace />;
-
-  const bgVideoUrl = "https://www.pexels.com/download/video/2795165/";
 
   const BackdropBlur = () => (
     <div className="absolute left-0 top-0 z-10 h-[100vh] w-full backdrop-blur-lg" />

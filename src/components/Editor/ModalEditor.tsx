@@ -7,9 +7,10 @@ import {
 } from "@nextui-org/react";
 import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useStopShortcut } from "../../hooks/useStopShortcut";
 import { NewNote } from "../../models/NewNote";
 import { cardStore } from "../../store/cardStore";
 import { uiStore } from "../../store/uiStore";
@@ -33,6 +34,11 @@ interface NoteContent {
 const ModalEditor = observer((prop: ModalEditorProp) => {
   const { pageTitle, card, isOpen, onOpenChange, onClose } = prop;
   const navigate = useNavigate();
+  useStopShortcut(isOpen);
+
+  useEffect(() => {
+    if (isOpen) uiStore.setInputEditing();
+  }, [isOpen]);
 
   const [noteContent, setNoteContent] = useState<NoteContent>({
     noteTitle: card?.noteTitle || "",

@@ -22,8 +22,7 @@ const routeStrategy = {
 };
 
 const renderIdeaPage = (route: Route | undefined) => {
-  if (!route) return <Navigate to="/" replace />;
-  if (route in routeStrategy) return routeStrategy[route];
+  if (route && route in routeStrategy) return routeStrategy[route];
   return <Navigate to="/" replace />;
 };
 
