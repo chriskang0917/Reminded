@@ -75,7 +75,7 @@ const Editable = observer(
         ) : (
           <div
             className={cn(
-              "w-full cursor-pointer tracking-wide",
+              "w-[calc(100vw-180px)] cursor-pointer truncate tracking-wide min-[560px]:w-[370px]",
               !isEditing && "select-none",
             )}
             onClick={() => setIsEditing(true)}
