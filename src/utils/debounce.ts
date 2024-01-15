@@ -3,9 +3,12 @@ import { db } from "../config/firebase";
 import { authStore } from "../store/authStore";
 import { cookie } from "./cookie";
 
-export const debounce = (fn: Function, delay = 3000) => {
+export const debounce = <T extends any[]>(
+  fn: (...args: T) => void,
+  delay = 3000,
+) => {
   let timerId: ReturnType<typeof setTimeout>;
-  return (...args: any[]) => {
+  return (...args: T) => {
     clearTimeout(timerId);
     timerId = setTimeout(() => fn(...args), delay);
   };
